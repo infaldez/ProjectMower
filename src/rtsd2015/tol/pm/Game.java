@@ -16,10 +16,13 @@ public class Game {
 			ingame = true;
 			gameCycle();
 		}
+		// TODO: end game
 	}
 
 	private boolean initGame() {
 		// TODO: init game elements
+		timer = new Timer();
+		timer.start();
 		return false;
 	}
 
