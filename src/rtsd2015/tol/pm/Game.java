@@ -15,28 +15,16 @@ public class Game {
 	private static long frameId;
 
 	/**
-	 * Starts a new game locally
-	 *
-	 * @throws InterruptedException
-	 */
-	public Game() throws InterruptedException {
-		boolean initialized = initGame();
-		if (initialized) {
-			gameLoop();
-		}
-		// TODO: end game
-	}
-
-	/**
-	 * Initializes the new game
+	 * Initializes a new game
 	 *
 	 * @return true if everything was OK and game can begin
+	 * @throws InterruptedException
 	 */
-	private boolean initGame() {
+	public void initGame() throws InterruptedException {
 		// TODO: init game elements
 		timer = new Timer();
 		timer.start();
-		return false;
+		gameLoop();
 	}
 
 	/**
@@ -44,7 +32,7 @@ public class Game {
 	 *
 	 * @throws InterruptedException
 	 */
-	private static void gameLoop() throws InterruptedException {
+	public static void gameLoop() throws InterruptedException {
 
 		// Init game loop
 		long		lastLoopTime	= System.nanoTime();
@@ -67,6 +55,7 @@ public class Game {
 			limitedCycles--;
 
 			// TODO: content of the cycle
+			System.out.println(frameId);
 
 			// Wait for the next frame
 			Thread.sleep((lastLoopTime-System.nanoTime()+OPTIMAL_TIME)/1000000);
