@@ -13,20 +13,20 @@ public class Entity {
 
 	public static int entityCount;
 
-	public int id;
-	protected int[] position;
+	int id;
+	protected int[] position = new int[2];
 	protected int speed = 0;
 	protected int health = 0;
 	protected Facing dir = Facing.NORTH;
 	protected Side side = Side.GAIA;
 	protected boolean breakable = true;
+	protected boolean alive = true;
 
 	/**
 	 * Initialize entity
 	 * 
 	 */
 	Entity() {
-		position = new int[2];
 		id = entityCount;
 		entityCount++;
 	}
@@ -37,7 +37,7 @@ public class Entity {
 	 * @param x
 	 * @param y
 	 */
-	void setPos(int x, int y) {
+	protected void setPos(int x, int y) {
 		position[0] = x;
 		position[1] = y;
 	}
@@ -50,7 +50,7 @@ public class Entity {
 	int[] getPos() {
 		return position;
 	}
-	
+
 	/**
 	 * Return side
 	 * 
@@ -59,7 +59,7 @@ public class Entity {
 	Side getSide() {
 		return side;
 	}
-	
+
 	/**
 	 * Set a new direction for the entity
 	 * 
@@ -77,7 +77,7 @@ public class Entity {
 	Facing getDir() {
 		return dir;
 	}
-	
+
 	/**
 	 * Move entity
 	 * 
@@ -88,7 +88,7 @@ public class Entity {
 		if (m == Movement.BACKWARD) {
 			steps *= -1;
 		}
-		switch(dir) {
+		switch (dir) {
 		case NORTH:
 			position[1] -= steps;
 			break;
@@ -103,7 +103,7 @@ public class Entity {
 			break;
 		}
 	}
-	
+
 	/**
 	 * Increase entity health
 	 * 
@@ -120,8 +120,11 @@ public class Entity {
 	 */
 	void decreaseHealth(int h) {
 		health -= h;
+		if (health <= 0 && breakable == true) {
+			alive = false;
+		}
 	}
-	
+
 	/**
 	 * Return entity health
 	 * 
@@ -137,11 +140,7 @@ public class Entity {
 	 * @return
 	 */
 	boolean isAlive() {
-		if (health <= 0 && breakable == true) {
-			return false;
-		} else {
-			return true;
-		}
+		return alive;
 	}
 
 }

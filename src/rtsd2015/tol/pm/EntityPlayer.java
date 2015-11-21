@@ -21,6 +21,7 @@ public class EntityPlayer extends Entity {
 	 */
 	EntityPlayer(Side s) {
 		side = s;
+		health = 3;
 		switch (side) {
 		case BLUE:
 			setDir(Facing.EAST);
@@ -32,7 +33,6 @@ public class EntityPlayer extends Entity {
 			break;
 		default:
 			setDir(Facing.NORTH);
-			setPos(0,0);
 			break;
 		}
 		playerCount++;
