@@ -1,16 +1,17 @@
 package rtsd2015.tol.pm;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Game {
 
 	private Timer timer;
 	private Level lvl;
-	private ArrayList<Player> players;
-	private ArrayList<Score> scores;
+	private List<Player> players;
+	private List<Score> scores;
 
 	private static int limitedCycles = 1280;	// For testing purposes only
-	private static int fps = 0;
+	private static int fps;
 	private static long lastFpsTime;
 	private static long frameId;
 
