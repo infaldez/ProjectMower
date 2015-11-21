@@ -15,10 +15,10 @@ public class Entity {
 
 	int id;
 	protected int[] position = new int[2];
-	protected int speed = 0;
-	protected int health = 0;
-	protected Facing dir = Facing.NORTH;
-	protected Side side = Side.GAIA;
+	protected int speed;
+	protected int health;
+	protected Facing dir;
+	protected Side side;
 	protected boolean breakable = true;
 	protected boolean alive = true;
 
@@ -100,6 +100,22 @@ public class Entity {
 			break;
 		case WEST:
 			position[1] -= steps;
+			break;
+		}
+	}
+
+	/**
+	 * Turn entity
+	 * 
+	 * @param turn-direction
+	 */
+	void turn(Movement t) {
+		switch (t) {
+		case LEFT:
+			// TODO: Implement turning
+			break;
+		case RIGHT:
+			// TODO: Implement turning
 			break;
 		}
 	}

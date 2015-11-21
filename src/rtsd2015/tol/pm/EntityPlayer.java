@@ -22,6 +22,8 @@ public class EntityPlayer extends Entity {
 	EntityPlayer(Side s) {
 		side = s;
 		health = 3;
+		speed = 1;
+		// TODO: Properties file
 		switch (side) {
 		case BLUE:
 			setDir(Facing.EAST);
