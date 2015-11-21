@@ -14,9 +14,9 @@ public class Player {
 	
 	public static int playerCount;
 	
-	private int health;
-	private int speed;
-	private int score;
+	private int health = 3;
+	private int speed = 1;
+	private int score = 0;
 	private Side side;
 	private Facing dir;
 	private int[] position;
