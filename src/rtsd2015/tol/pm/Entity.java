@@ -1,6 +1,7 @@
 package rtsd2015.tol.pm;
 
 import rtsd2015.tol.pm.enums.Facing;
+import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
 
 /**
@@ -72,6 +73,32 @@ public class Entity {
 	 */
 	Facing getDir() {
 		return dir;
+	}
+	
+	/**
+	 * Move entity
+	 * 
+	 * @param Movement
+	 * @param steps
+	 */
+	void move(Movement m, int steps) {
+		if (m == Movement.BACKWARD) {
+			steps *= -1;
+		}
+		switch(dir) {
+		case NORTH:
+			position[1] -= steps;
+			break;
+		case EAST:
+			position[0] += steps;
+			break;
+		case SOUTH:
+			position[1] += steps;
+			break;
+		case WEST:
+			position[1] -= steps;
+			break;
+		}
 	}
 	
 	/**

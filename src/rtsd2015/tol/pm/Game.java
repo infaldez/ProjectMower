@@ -62,10 +62,11 @@ public class Game {
 			limitedCycles--;
 
 			// TODO: content of the cycle
-			System.out.println("Current frame: " + frameId + ", frames left: " + limitedCycles);
-			System.out.println("Player 1 side: " + players.get(0).getSide() + " dir: " + players.get(0).getDir());
-			System.out.println("Player 2 side: " + players.get(1).getSide() + " dir: " + players.get(1).getDir());
+			System.out.println("Delta: " + delta + ", frames left: " + limitedCycles);
+			System.out.println("Player 1 side: " + players.get(0).getSide() + " dir: " + players.get(0).getDir() + " pos: " + players.get(0).getPos());
+			System.out.println("Player 2 side: " + players.get(1).getSide() + " dir: " + players.get(1).getDir() + " pos: " + players.get(1).getPos());
 			System.out.println("EntityCount: " + Entity.entityCount);
+			System.out.println("\b");
 
 			// Wait for the next frame
 			Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
