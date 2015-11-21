@@ -13,6 +13,7 @@ public class Entity {
 
 	public static int entityCount;
 
+	public int id;
 	protected int[] position;
 	protected int speed = 0;
 	protected int health = 0;
@@ -25,6 +26,7 @@ public class Entity {
 	 * 
 	 */
 	Entity() {
+		id = entityCount;
 		entityCount++;
 	}
 
@@ -34,7 +36,7 @@ public class Entity {
 	 * @param x
 	 * @param y
 	 */
-	protected void setPos(int x, int y) {
+	void setPos(int x, int y) {
 		position[0] = x;
 		position[1] = y;
 	}
@@ -44,7 +46,7 @@ public class Entity {
 	 * 
 	 * @return position (x, y)
 	 */
-	protected int[] getPos() {
+	int[] getPos() {
 		return position;
 	}
 	
@@ -53,7 +55,7 @@ public class Entity {
 	 * 
 	 * @return Side
 	 */
-	protected Side getSide() {
+	Side getSide() {
 		return side;
 	}
 	
@@ -106,7 +108,7 @@ public class Entity {
 	 * 
 	 * @param amount
 	 */
-	protected void increaseHealth(int h) {
+	void increaseHealth(int h) {
 		health += h;
 	}
 
@@ -115,7 +117,7 @@ public class Entity {
 	 * 
 	 * @param amount
 	 */
-	protected void decreaseHealth(int h) {
+	void decreaseHealth(int h) {
 		health -= h;
 	}
 	
@@ -133,7 +135,7 @@ public class Entity {
 	 * 
 	 * @return
 	 */
-	protected boolean isAlive() {
+	boolean isAlive() {
 		if (health <= 0 && breakable == true) {
 			return false;
 		} else {

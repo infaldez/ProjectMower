@@ -3,6 +3,7 @@ package rtsd2015.tol.pm;
 import java.util.ArrayList;
 import java.util.List;
 
+import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
 
 public class Game {
@@ -63,8 +64,8 @@ public class Game {
 
 			// TODO: content of the cycle
 			System.out.println("Delta: " + delta + ", frames left: " + limitedCycles);
-			System.out.println("Player 1 side: " + players.get(0).getSide() + " dir: " + players.get(0).getDir() + " pos: " + players.get(0).getPos());
-			System.out.println("Player 2 side: " + players.get(1).getSide() + " dir: " + players.get(1).getDir() + " pos: " + players.get(1).getPos());
+			System.out.println("Player(" + players.get(0).id + ") side: " + players.get(0).getSide() + " dir: " + players.get(0).getDir() + " pos: " + players.get(0).getPos()[0] + "," + players.get(0).getPos()[1]);
+			System.out.println("Player(" + players.get(1).id + ") side: " + players.get(1).getSide() + " dir: " + players.get(1).getDir() + " pos: " + players.get(1).getPos()[0] + "," + players.get(1).getPos()[1]);
 			System.out.println("EntityCount: " + Entity.entityCount);
 			System.out.println("\b");
 
