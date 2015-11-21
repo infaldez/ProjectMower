@@ -22,10 +22,11 @@ public class Entity {
 	protected boolean breakable = true;
 
 	/**
-	 * Update entity counter
+	 * Initialize entity
 	 * 
 	 */
 	Entity() {
+		position = new int[2];
 		id = entityCount;
 		entityCount++;
 	}

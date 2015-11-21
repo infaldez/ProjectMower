@@ -21,7 +21,6 @@ public class EntityPlayer extends Entity {
 	 */
 	EntityPlayer(Side s) {
 		side = s;
-		position = new int[2];
 		switch (side) {
 		case BLUE:
 			setDir(Facing.EAST);
