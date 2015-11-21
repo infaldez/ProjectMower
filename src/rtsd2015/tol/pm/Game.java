@@ -13,15 +13,13 @@ public class Game {
 	private static int limitedCycles = 1280;	// For testing purposes only
 	private static long lastFpsTime;
 	private static long frameId;
-
+	
 	/**
 	 * Initializes a new game
-	 *
-	 * @return true if everything was OK and game can begin
+	 * 
 	 * @throws InterruptedException
 	 */
-	void initGame() throws InterruptedException {
-		// TODO: init game elements
+	Game() throws InterruptedException {
 		timer = new Timer();
 		timer.start();
 		gameLoop();
