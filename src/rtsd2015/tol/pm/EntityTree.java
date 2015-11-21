@@ -9,7 +9,7 @@ public class EntityTree extends Entity {
 	 * @param y
 	 */
 	EntityTree(int x, int y) {
-		unbreakable = true;
+		breakable = false;
 		setPos(x, y);
 	}
 }

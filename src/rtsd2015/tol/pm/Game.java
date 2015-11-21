@@ -9,7 +9,7 @@ public class Game {
 
 	private static Timer timer;
 	private static Level lvl;
-	private static List<Player> players = new ArrayList<>();
+	private static List<EntityPlayer> players = new ArrayList<>();
 
 	private static int limitedCycles = 1280; // For testing purposes only
 	private static long lastFpsTime;
@@ -23,8 +23,8 @@ public class Game {
 	Game() throws InterruptedException {
 		
 		// Initialize players
-		players.add(new Player(Side.BLUE));
-		players.add(new Player(Side.RED));
+		players.add(new EntityPlayer(Side.BLUE));
+		players.add(new EntityPlayer(Side.RED));
 		
 		// Initialize in-game timer
 		timer = new Timer();
