@@ -20,7 +20,7 @@ public class Game {
 	 * @return true if everything was OK and game can begin
 	 * @throws InterruptedException
 	 */
-	public void initGame() throws InterruptedException {
+	void initGame() throws InterruptedException {
 		// TODO: init game elements
 		timer = new Timer();
 		timer.start();
@@ -32,13 +32,12 @@ public class Game {
 	 *
 	 * @throws InterruptedException
 	 */
-	public static void gameLoop() throws InterruptedException {
+	private static void gameLoop() throws InterruptedException {
 
 		// Init game loop
 		long		lastLoopTime	= System.nanoTime();
 		final int	TARGET_FPS		= 16;
 		final long	OPTIMAL_TIME	= 1000000000 / TARGET_FPS;
-		// TODO: GUI-call
 
 		while (limitedCycles > 0) {
 
