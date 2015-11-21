@@ -6,6 +6,6 @@ import java.util.List;
 public class Level {
 	public int sizeX;
 	public int sizeY;
-	private List<StaticEntityTree> trees;
+	private List<EntityTree> trees;
 	
 }

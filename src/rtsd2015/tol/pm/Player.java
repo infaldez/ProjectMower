@@ -11,9 +11,9 @@ import rtsd2015.tol.pm.enums.Side;
  * @author Ari
  */
 public class Player {
-	
+
 	public static int playerCount;
-	
+
 	private int health = 3;
 	private int speed = 1;
 	private int score = 0;
@@ -85,7 +85,7 @@ public class Player {
 	Facing getDir() {
 		return dir;
 	}
-	
+
 	/**
 	 * Return player health
 	 * 
@@ -94,17 +94,16 @@ public class Player {
 	int getHealth() {
 		return health;
 	}
-	
+
 	/**
 	 * Decrease player health
 	 * 
-	 * @param health points
-	 * @return true if alive, false if dead
+	 * @param amount
 	 */
 	void decreaseHealth(int h) {
 		health -= h;
 	}
-	
+
 	/**
 	 * Determine whether player is alive or not
 	 * 
