@@ -85,4 +85,36 @@ public class Player {
 	Facing getDir() {
 		return dir;
 	}
+	
+	/**
+	 * Return player health
+	 * 
+	 * @return health points
+	 */
+	int getHealth() {
+		return health;
+	}
+	
+	/**
+	 * Decrease player health
+	 * 
+	 * @param health points
+	 * @return true if alive, false if dead
+	 */
+	void decreaseHealth(int h) {
+		health -= h;
+	}
+	
+	/**
+	 * Determine whether player is alive or not
+	 * 
+	 * @return
+	 */
+	private boolean isAlive() {
+		if (health <= 0) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 }
