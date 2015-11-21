@@ -3,6 +3,11 @@ package rtsd2015.tol.pm;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
 
+/**
+ * Base class for all entities
+ * 
+ * @author Ari
+ */
 public class Entity {
 
 	public static int entityCount;
@@ -52,7 +57,7 @@ public class Entity {
 	}
 	
 	/**
-	 * Set a new direction for the player
+	 * Set a new direction for the entity
 	 * 
 	 * @param newDir
 	 */
@@ -61,12 +66,21 @@ public class Entity {
 	}
 
 	/**
-	 * Return player's direction
+	 * Return entity direction
 	 * 
 	 * @return Facing
 	 */
 	Facing getDir() {
 		return dir;
+	}
+	
+	/**
+	 * Increase entity health
+	 * 
+	 * @param amount
+	 */
+	protected void increaseHealth(int h) {
+		health += h;
 	}
 
 	/**
