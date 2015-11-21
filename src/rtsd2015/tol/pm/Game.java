@@ -11,7 +11,6 @@ public class Game {
 	private List<Score> scores;
 
 	private static int limitedCycles = 1280;	// For testing purposes only
-	private static int fps;
 	private static long lastFpsTime;
 	private static long frameId;
 
@@ -50,12 +49,11 @@ public class Game {
 
 			// Update counters
 			lastFpsTime 			+= updateLength;
-			fps++;
 			frameId++;
 			limitedCycles--;
 
 			// TODO: content of the cycle
-			System.out.println(frameId);
+			System.out.println("Current frame: " + frameId + ", frames left: " + limitedCycles);
 
 			// Wait for the next frame
 			Thread.sleep((lastLoopTime-System.nanoTime()+OPTIMAL_TIME)/1000000);
