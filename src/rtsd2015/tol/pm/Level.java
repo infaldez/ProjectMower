@@ -21,7 +21,7 @@ public class Level {
 	 * @param size-y
 	 * @param seed
 	 */
-	public Level(int x, int y) {
+	Level(int x, int y) {
 		area = new int[2];
 		area[0] = x;
 		area[1] = y;
