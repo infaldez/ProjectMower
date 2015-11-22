@@ -9,6 +9,8 @@ import rtsd2015.tol.pm.enums.Side;
 
 public class Game {
 
+	protected static int seed;
+
 	private static Timer timer;
 	private static Level lvl;
 	private static List<EntityPlayer> players = new ArrayList<>();
@@ -19,18 +21,22 @@ public class Game {
 
 	/**
 	 * Initializes a new game
-	 * 
+	 *
 	 * @throws InterruptedException
 	 */
 	Game() throws InterruptedException {
-		
+
+		// Initialize a new level
+		this.seed = 0; // TODO: Add seed variable
+		lvl = new Level(100, 100);
+
 		// Initialize players
 		players.add(new EntityPlayer(Side.BLUE));
 		players.add(new EntityPlayer(Side.RED));
-		
+
 		// Initialize in-game timer
 		timer = new Timer();
-		
+
 		// Finally, start the game loop
 		gameLoop();
 	}
@@ -65,8 +71,12 @@ public class Game {
 
 			// TODO: content of the cycle
 			System.out.println("Delta: " + delta + ", frames left: " + limitedCycles);
-			System.out.println("Player(" + players.get(0).id + ") side: " + players.get(0).getSide() + " dir: " + players.get(0).getDir() + " pos: " + players.get(0).getPos()[0] + "," + players.get(0).getPos()[1]);
-			System.out.println("Player(" + players.get(1).id + ") side: " + players.get(1).getSide() + " dir: " + players.get(1).getDir() + " pos: " + players.get(1).getPos()[0] + "," + players.get(1).getPos()[1]);
+			System.out.println("Player(" + players.get(0).id + ") side: " + players.get(0).getSide() + " dir: "
+					+ players.get(0).getDir() + " pos: " + players.get(0).getPos()[0] + ","
+					+ players.get(0).getPos()[1]);
+			System.out.println("Player(" + players.get(1).id + ") side: " + players.get(1).getSide() + " dir: "
+					+ players.get(1).getDir() + " pos: " + players.get(1).getPos()[0] + ","
+					+ players.get(1).getPos()[1]);
 			System.out.println("EntityCount: " + Entity.entityCount);
 			System.out.println("\b");
 

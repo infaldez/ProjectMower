@@ -6,7 +6,7 @@ import rtsd2015.tol.pm.enums.Side;
 
 /**
  * Base class for all entities
- * 
+ *
  * @author Ari
  */
 public class Entity {
@@ -24,7 +24,7 @@ public class Entity {
 
 	/**
 	 * Initialize entity
-	 * 
+	 *
 	 */
 	Entity() {
 		id = entityCount;
@@ -33,7 +33,7 @@ public class Entity {
 
 	/**
 	 * Set entity position
-	 * 
+	 *
 	 * @param x
 	 * @param y
 	 */
@@ -44,7 +44,7 @@ public class Entity {
 
 	/**
 	 * Return entity position
-	 * 
+	 *
 	 * @return position (x, y)
 	 */
 	int[] getPos() {
@@ -53,7 +53,7 @@ public class Entity {
 
 	/**
 	 * Return side
-	 * 
+	 *
 	 * @return Side
 	 */
 	Side getSide() {
@@ -62,7 +62,7 @@ public class Entity {
 
 	/**
 	 * Set a new direction for the entity
-	 * 
+	 *
 	 * @param newDir
 	 */
 	void setDir(Facing d) {
@@ -71,7 +71,7 @@ public class Entity {
 
 	/**
 	 * Return entity direction
-	 * 
+	 *
 	 * @return Facing
 	 */
 	Facing getDir() {
@@ -80,7 +80,7 @@ public class Entity {
 
 	/**
 	 * Move entity
-	 * 
+	 *
 	 * @param Movement
 	 * @param steps
 	 */
@@ -106,7 +106,7 @@ public class Entity {
 
 	/**
 	 * Turn entity
-	 * 
+	 *
 	 * @param turn-direction
 	 */
 	void turn(Movement t) {
@@ -122,7 +122,7 @@ public class Entity {
 
 	/**
 	 * Increase entity health
-	 * 
+	 *
 	 * @param amount
 	 */
 	void increaseHealth(int h) {
@@ -131,7 +131,7 @@ public class Entity {
 
 	/**
 	 * Decrease entity health
-	 * 
+	 *
 	 * @param amount
 	 */
 	void decreaseHealth(int h) {
@@ -143,7 +143,7 @@ public class Entity {
 
 	/**
 	 * Return entity health
-	 * 
+	 *
 	 * @return health
 	 */
 	int getHealth() {
@@ -152,7 +152,7 @@ public class Entity {
 
 	/**
 	 * Determine whether entity is alive or not
-	 * 
+	 *
 	 * @return
 	 */
 	boolean isAlive() {
