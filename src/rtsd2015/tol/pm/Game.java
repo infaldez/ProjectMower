@@ -2,6 +2,7 @@ package rtsd2015.tol.pm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
@@ -29,7 +30,7 @@ public class Game {
 		
 		// Initialize in-game timer
 		timer = new Timer();
-
+		
 		// Finally, start the game loop
 		gameLoop();
 	}
