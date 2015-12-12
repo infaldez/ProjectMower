@@ -6,24 +6,31 @@ import java.lang.*;
 import rtsd2015.tol.pm.enums.MessageType;
 
 public class Client implements Runnable {
+	public enum State {
+		DISCONNECTED, CONNECTING, CONNECTED
+	}
 	private DatagramSocket socket = null;
 	private String nickname;
+	private State state = State.DISCONNECTED;
 	
 	private InetAddress serverAddress;
 	private int serverPort;
 	private int serverPing;
 	
+	
+	
 	Client(String nick) {
 		nickname = nick;
 	}
 	
-	public void joinServer(InetAddress address, int port)
-			throws SocketException {
+	public void joinServer(InetAddress address, int port) throws SocketException, IOException {
 		if (socket == null) {
 			serverAddress = address;
 			serverPort = port;
 			socket = new DatagramSocket();
 		}
+		sendMessage(new Message(MessageType.JOIN, nickname));
+		state = State.CONNECTING;
 	}
 	
 	public void disconnect() {
@@ -58,10 +65,22 @@ public class Client implements Runnable {
 			joinServer(InetAddress.getByName("localhost"), 3141);
 			sendMessage(new Message(MessageType.PING, "test"));
 			pingTimer.start();
-			Message message = receiveMessage();
-			double time = pingTimer.msLap();
 			
-			System.out.format("Client received: %s ping: %.2fms\n", message.toString(), time);
+			while(state == State.CONNECTING) {
+				Message message = receiveMessage();
+				switch(message.type) {
+				case PONG:
+					double time = pingTimer.msLap();
+					System.out.format("Client received: %s ping: %.2fms\n", message.toString(),
+							time);
+					break;
+				case ACCEPT:
+					System.out.format("Connection accepted with id: %s\n", message.body);
+					break;
+				default:
+					System.out.format("Unexcepted message: %s", message.toString());
+				}
+			}
 		}
 		catch (Exception e) {
 			System.out.print("Client Exception!");

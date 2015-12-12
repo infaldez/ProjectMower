@@ -8,22 +8,48 @@ import java.util.ArrayList;
 import rtsd2015.tol.pm.enums.MessageType;
 public class Server implements Runnable {
 	private Context context;
-	protected class ConnectedClient {
+	static protected class ConnectedClient {
+		String nickname;
 		InetAddress address;
 		int port;
-		String nick;
+		ConnectedClient(String n, InetAddress a, int p) {
+			nickname = n;
+			address = a;
+			port = p;
+		}
 	}
 
 	protected class Context {
 		public Game game;
 		public DatagramSocket socket;
 		public ArrayList<ConnectedClient> clients;
+		public int clientCounter = 0;
 		public State state;
 	}
 
 	protected interface State {
 		// run returns true for server loop to continue
 		public boolean run(Context context) throws Exception;
+	}
+	
+	static private int addClient(Context context, ConnectedClient newClient) {
+		// Returns clients id if succesful, otherwise returns -1
+		boolean valid = true;
+		int newId = -1;
+		for(ConnectedClient oldClient : context.clients) {
+			// Validate that no same nick or address/port combination exists
+			if((newClient.address.equals(oldClient.address) && newClient.port == oldClient.port) ||
+				newClient.nickname.equals(oldClient.nickname)) {
+				valid = false;
+				break;
+			}
+		}
+		if(valid) {
+			newId = context.clientCounter++;
+			context.clients.add(newId, newClient);
+		}
+
+		return newId;
 	}
 	
 	
@@ -62,11 +88,26 @@ public class Server implements Runnable {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
 				Message message = new Message(packet.getData());
+				Message reply;
 				
 				switch (message.type) {
 				case PING:
-					Message reply = new Message(MessageType.PONG, message.body); 
+					reply = new Message(MessageType.PONG, message.body); 
 					sendMessage(context, reply, packet.getAddress(), packet.getPort());
+					break;
+				case JOIN:
+					ConnectedClient newClient = new ConnectedClient(message.body,
+							packet.getAddress(), packet.getPort());
+					int newClientId = addClient(context, newClient);
+					if(newClientId != -1) {
+						reply = new Message(MessageType.ACCEPT, Integer.toString(newClientId)); 
+						sendMessage(context, reply, packet.getAddress(), packet.getPort());
+					}
+					else {
+						reply = new Message(MessageType.DECLINE, ""); 
+						sendMessage(context, reply, packet.getAddress(), packet.getPort());
+					}
+
 					break;
 				default:
 					System.out.print("Unexpected message: ");
@@ -110,6 +151,7 @@ public class Server implements Runnable {
 	Server(String hostname, int port) throws Exception {
 		context = new Context();
 		context.state = States.WAIT_PLAYERS;
+		context.clients = new ArrayList<ConnectedClient>();
 		context.socket = new DatagramSocket(port);
 		context.socket.setReuseAddress(true);
 	}
@@ -120,11 +162,12 @@ public class Server implements Runnable {
 		try {
 			while(running){
 				try {
-				running = context.state.run(context);
+					running = context.state.run(context);
 				}
 				catch (Exception e){
-					System.err.println(e.getMessage());
 					running = false;
+					System.out.print("Client Exception!");
+					e.printStackTrace(System.err);
 				}
 			}
 		}
