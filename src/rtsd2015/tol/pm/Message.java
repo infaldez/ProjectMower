@@ -19,12 +19,11 @@ public class Message implements Serializable {
 		this(message.type, message.body);
 	}
 
-	public Message(byte[] data) throws Exception {
+	public Message(byte[] data) throws IOException, ClassNotFoundException {
 		this(parseMessage(data));
 	}
 	
-	static public Message parseMessage(byte[] data)
-			throws Exception {
+	static public Message parseMessage(byte[] data) throws IOException, ClassNotFoundException {
 		ByteArrayInputStream inStream = new ByteArrayInputStream(data);
 		ObjectInputStream objInStream = new ObjectInputStream(inStream);
 		
@@ -33,7 +32,7 @@ public class Message implements Serializable {
 		return message;
 	}
 	
-	public byte[] getData() throws Exception {
+	public byte[] getData() throws IOException {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
 

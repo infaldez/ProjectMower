@@ -40,8 +40,7 @@ public class Server implements Runnable {
 		return -1;
 	}
 	
-	static private DatagramPacket receivePacket(Context context)
-			throws Exception {
+	static private DatagramPacket receivePacket(Context context) throws IOException {
 		byte[] data = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
 		
@@ -50,26 +49,24 @@ public class Server implements Runnable {
 		return packet;
 	}
 	
-	static private void sendMessage(Context context, Message message,
-			InetAddress address, int port) throws Exception {
+	static private void sendMessage(Context context, Message message, InetAddress address, int port)
+			throws IOException {
 		byte[] data = message.getData();
-		DatagramPacket packet = new DatagramPacket(data, data.length, address,
-				port);
+		DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
 		context.socket.send(packet);
 	}
 
 	
 	protected enum States implements State {
 		WAIT_PLAYERS {
-			public boolean run(Context context) throws Exception {
+			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
 				Message message = new Message(packet.getData());
 				
 				switch (message.type) {
 				case PING:
 					Message reply = new Message(MessageType.PONG, message.body); 
-					sendMessage(context, reply, packet.getAddress(),
-							packet.getPort());
+					sendMessage(context, reply, packet.getAddress(), packet.getPort());
 					break;
 				default:
 					System.out.print("Unexpected message: ");
@@ -120,14 +117,19 @@ public class Server implements Runnable {
 	public void run() {
 		System.out.println("Server running!");
 		Boolean running = true;
-		while(running){
-			try {
-			running = context.state.run(context);
+		try {
+			while(running){
+				try {
+				running = context.state.run(context);
+				}
+				catch (Exception e){
+					System.err.println(e.getMessage());
+					running = false;
+				}
 			}
-			catch (Exception e){
-				System.err.println(e.getMessage());
-				running = false;
-			}
+		}
+		finally {
+			context.socket.close();
 		}
 	}
 	

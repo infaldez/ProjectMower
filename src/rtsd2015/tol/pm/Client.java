@@ -37,14 +37,14 @@ public class Client implements Runnable {
 		return packet;
 	}
 
-	private Message receiveMessage() throws Exception {
+	private Message receiveMessage() throws IOException, ClassNotFoundException {
 		DatagramPacket packet = receivePacket();
 		Message message = new Message(packet.getData());
 		
 		return message;
 	}
 	
-	private void sendMessage(Message message) throws Exception {
+	private void sendMessage(Message message) throws IOException {
 		byte[] data = message.getData();
 		DatagramPacket packet = new DatagramPacket(data, data.length,
 				serverAddress, serverPort);
@@ -53,16 +53,22 @@ public class Client implements Runnable {
 	
 	public void run() {
 		try {
-		System.out.println("Client running!");
-		joinServer(InetAddress.getByName("localhost"), 3141);
-		sendMessage(new Message(MessageType.PING, "test"));
-		Message message = receiveMessage();
-		
-		System.out.println("Client received: " + message.toString());
+			StopWatch pingTimer = new StopWatch();
+			System.out.println("Client running!");
+			joinServer(InetAddress.getByName("localhost"), 3141);
+			sendMessage(new Message(MessageType.PING, "test"));
+			pingTimer.start();
+			Message message = receiveMessage();
+			double time = pingTimer.msLap();
+			
+			System.out.format("Client received: %s ping: %.2fms\n", message.toString(), time);
 		}
 		catch (Exception e) {
 			System.out.print("Client Exception!");
 			e.printStackTrace(System.err);
+		}
+		finally {
+			socket.close();
 		}
 	}
 }
