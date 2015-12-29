@@ -14,6 +14,8 @@ public class Launcher extends Application {
 
 	private Stage primaryStage;
 	private BorderPane rootLayout;
+	private Thread serverThread = null;
+	private Thread clientThread = null;
 
 	/**
 	 * Begin from constructing the stage
@@ -22,7 +24,6 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Mower Madness 2016");
-
 		initRootLayout();
 	}
 
@@ -48,25 +49,28 @@ public class Launcher extends Application {
 		}
 	}
 
-	public static void main(String[] args) throws Exception {
-		launch(args);
-
-		// TODO: Liitä alla olevat jutut ikkunoihin
-		Client client = new Client("player1");
-		Server server = new Server("localhost",	3141);
-
+	public void setClient(String name) {
+		Client client = new Client(name);
 		Thread clientThread = new Thread(client);
-		Thread serverThread = new Thread(server);
-
 		clientThread.start();
-		serverThread.start();
 
 		Scanner scanner = new Scanner(System.in);
 		scanner.next();
 		scanner.close();
+
 		clientThread.interrupt();
 		serverThread.interrupt();
+	}
 
+	public void setHost(int port) throws Exception {
+		Server server = new Server("localhost", port);
+		Thread serverThread = new Thread(server);
+		serverThread.start();
+		setClient("player1");
+	}
+
+	public static void main(String[] args) throws Exception {
+		launch(args);
 	}
 
 }
