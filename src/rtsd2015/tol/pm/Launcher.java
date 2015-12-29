@@ -18,7 +18,8 @@ public class Launcher extends Application {
 	private Thread clientThread = null;
 
 	/**
-	 * Begin from constructing the stage
+	 * Begin to construct the stage
+	 *
 	 */
 	@Override
 	public void start(Stage primaryStage) {
@@ -28,7 +29,8 @@ public class Launcher extends Application {
 	}
 
 	/**
-	 * Initialize the main window
+	 * Initializes the main BorderPane window
+	 *
 	 */
 	public void initRootLayout() {
 		try {
@@ -49,23 +51,32 @@ public class Launcher extends Application {
 		}
 	}
 
+	/**
+	 * Setups a new client
+	 *
+	 * @param name
+	 */
 	public void setClient(String name) {
 		Client client = new Client(name);
-		Thread clientThread = new Thread(client);
-		clientThread.start();
-
+		this.clientThread = new Thread(client);
+		this.clientThread.start();
 		Scanner scanner = new Scanner(System.in);
 		scanner.next();
 		scanner.close();
-
 		clientThread.interrupt();
 		serverThread.interrupt();
 	}
 
+	/**
+	 * Setups a new host
+	 *
+	 * @param port
+	 * @throws Exception
+	 */
 	public void setHost(int port) throws Exception {
 		Server server = new Server("localhost", port);
-		Thread serverThread = new Thread(server);
-		serverThread.start();
+		this.serverThread = new Thread(server);
+		this.serverThread.start();
 		setClient("player1");
 	}
 
