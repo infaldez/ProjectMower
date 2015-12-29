@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+
+<BorderPane maxHeight="400.0" maxWidth="800.0" minHeight="400.0" minWidth="800.0" prefHeight="400.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rtsd2015.tol.pm.view.RootLayoutController">
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem mnemonicParsing="false" onAction="#handleCredits" text="Credits" />
+              <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close Game" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Host">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#handleNewHost" text="New" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleConnect" text="Join" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
