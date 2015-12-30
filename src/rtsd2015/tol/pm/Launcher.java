@@ -63,7 +63,7 @@ public class Launcher extends Application {
 			AnchorPane page = (AnchorPane) loader.load();
 
 			Stage dialogStage = new Stage();
-	        dialogStage.setTitle("Host a a new game");
+	        dialogStage.setTitle("Host a New Game");
 	        dialogStage.initModality(Modality.WINDOW_MODAL);
 	        dialogStage.initOwner(primaryStage);
 	        Scene scene = new Scene(page);
