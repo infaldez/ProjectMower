@@ -30,6 +30,16 @@ public class NewHostDialogController {
 	private Stage dialogStage;
 
 	@FXML
+	private void portHilite() {
+		port.getStyleClass().add("invalid-hilite");
+	}
+	
+	@FXML
+	private void portNoHilite() {
+		port.getStyleClass().remove("invalid-hilite");
+	}
+	
+	@FXML
 	private void initialize() {}
 
 	public void setMainApp(Stage dialogStage, Launcher mainApp) {
@@ -71,7 +81,10 @@ public class NewHostDialogController {
 			errMsg = "Not valid port";
 		} else {
 			try {
-				Integer.parseInt(port.getText());
+				Integer p = Integer.parseInt(port.getText());
+				if (p < 1024 || p > 65535) {
+					errMsg = "Port must in range 1024 - 65535";
+				}
 			} catch (NumberFormatException e) {
 				errMsg = "Not valid port. Must be an integer!";
 			}
@@ -79,6 +92,7 @@ public class NewHostDialogController {
 		if (errMsg.length() == 0) {
 			return true;
 		} else {
+			portHilite();
 			// Show the error message.
 			Alert alert = new Alert(AlertType.ERROR);
 			alert.initOwner(dialogStage);
