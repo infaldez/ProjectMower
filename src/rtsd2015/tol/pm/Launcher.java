@@ -6,8 +6,11 @@ import java.util.Scanner;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import rtsd2015.tol.pm.view.NewHostDialogController;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
 public class Launcher extends Application {
@@ -47,6 +50,29 @@ public class Launcher extends Application {
 			controller.setMainApp(this);
 			// Show the stage
 			primaryStage.show();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showNewHostDialog() {
+		try {
+			// Load layout
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Launcher.class.getResource("view/NewHostDialog.fxml"));
+			AnchorPane page = (AnchorPane) loader.load();
+
+			Stage dialogStage = new Stage();
+	        dialogStage.setTitle("Host a a new game");
+	        dialogStage.initModality(Modality.WINDOW_MODAL);
+	        dialogStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogStage.setScene(scene);
+
+	        NewHostDialogController newHost = loader.getController();
+	        newHost.setMainApp(dialogStage, this);
+
+	        dialogStage.showAndWait();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

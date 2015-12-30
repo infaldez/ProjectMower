@@ -72,7 +72,8 @@ public class RootLayoutController {
 	 */
 	@FXML
 	private void handleNewHost() throws Exception {
-		mainApp.setHost(3145);
+		//mainApp.setHost(3145);
+		mainApp.showNewHostDialog();
 	}
 
 	/**
@@ -132,8 +133,12 @@ public class RootLayoutController {
 	public void switchBtnDisconnect() {
 		if (btnDisconnect.isDisable()) {
 			btnDisconnect.setDisable(false);
+			btnHost.setDisable(true);
+			btnJoin.setDisable(true);
 		} else {
 			btnDisconnect.setDisable(true);
+			btnHost.setDisable(false);
+			btnJoin.setDisable(false);
 		}
 	}
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="200.0" prefWidth="384.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="rtsd2015.tol.pm.view.NewHostDialogController">
+   <children>
+      <Label layoutX="14.0" layoutY="14.0" prefHeight="17.0" prefWidth="88.0" text="Port" />
+      <ButtonBar layoutY="166.0" prefHeight="40.0" prefWidth="384.0" AnchorPane.rightAnchor="0.0">
+        <buttons>
+          <Button fx:id="cancel" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
+            <Button fx:id="start" mnemonicParsing="false" onAction="#handleStart" text="Start" />
+        </buttons>
+         <padding>
+            <Insets right="8.0" />
+         </padding>
+      </ButtonBar>
+      <TextField fx:id="port" layoutX="14.0" layoutY="31.0" />
+      <Label layoutX="14.0" layoutY="56.0" text="Seed" AnchorPane.topAnchor="56.0">
+         <padding>
+            <Insets top="8.0" />
+         </padding>
+      </Label>
+      <TextField fx:id="seed" layoutX="14.0" layoutY="81.0" />
+      <CheckBox fx:id="dedicated" layoutX="14.0" layoutY="120.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="149.0" text="Run As Dedicated" />
+   </children>
+</AnchorPane>

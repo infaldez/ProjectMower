@@ -109,8 +109,7 @@ public class Server implements Runnable {
 
 					break;
 				default:
-					System.out.print("Unexpected message: ");
-					System.out.println(message.toString());
+					System.out.println("Unexpected message: "+message.toString());
 				}
 
 				context.state = States.WAIT_PLAYERS;
