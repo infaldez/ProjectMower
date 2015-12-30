@@ -31,7 +31,7 @@ public class Server implements Runnable {
 		// run returns true for server loop to continue
 		public boolean run(Context context) throws Exception;
 	}
-	
+
 	static private int addClient(Context context, ConnectedClient newClient) {
 		// Returns clients id if succesful, otherwise returns -1
 		boolean valid = true;
@@ -51,8 +51,7 @@ public class Server implements Runnable {
 
 		return newId;
 	}
-	
-	
+
 	static private int getSender(Context context, DatagramPacket packet) {
 		// Return senders id or -1
 		for (int i = 0; i < context.clients.size(); i++) {
@@ -65,16 +64,16 @@ public class Server implements Runnable {
 		}
 		return -1;
 	}
-	
+
 	static private DatagramPacket receivePacket(Context context) throws IOException {
 		byte[] data = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
-		
+
 		context.socket.receive(packet);
-		
+
 		return packet;
 	}
-	
+
 	static private void sendMessage(Context context, Message message, InetAddress address, int port)
 			throws IOException {
 		byte[] data = message.getData();
@@ -82,17 +81,17 @@ public class Server implements Runnable {
 		context.socket.send(packet);
 	}
 
-	
+
 	protected enum States implements State {
 		WAIT_PLAYERS {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
 				Message message = new Message(packet.getData());
 				Message reply;
-				
+
 				switch (message.type) {
 				case PING:
-					reply = new Message(MessageType.PONG, message.body); 
+					reply = new Message(MessageType.PONG, message.body);
 					sendMessage(context, reply, packet.getAddress(), packet.getPort());
 					break;
 				case JOIN:
@@ -100,11 +99,11 @@ public class Server implements Runnable {
 							packet.getAddress(), packet.getPort());
 					int newClientId = addClient(context, newClient);
 					if(newClientId != -1) {
-						reply = new Message(MessageType.ACCEPT, Integer.toString(newClientId)); 
+						reply = new Message(MessageType.ACCEPT, Integer.toString(newClientId));
 						sendMessage(context, reply, packet.getAddress(), packet.getPort());
 					}
 					else {
-						reply = new Message(MessageType.DECLINE, ""); 
+						reply = new Message(MessageType.DECLINE, "");
 						sendMessage(context, reply, packet.getAddress(), packet.getPort());
 					}
 
@@ -143,11 +142,11 @@ public class Server implements Runnable {
 			}
 		}
 	}
-	
+
 	static protected void broadcastGameState(Context context) {
-	
+
 	}
-	
+
 	Server(String hostname, int port) throws Exception {
 		context = new Context();
 		context.state = States.WAIT_PLAYERS;
@@ -155,7 +154,7 @@ public class Server implements Runnable {
 		context.socket = new DatagramSocket(port);
 		context.socket.setReuseAddress(true);
 	}
-	
+
 	public void run() {
 		System.out.println("Server running!");
 		Boolean running = true;
@@ -166,7 +165,7 @@ public class Server implements Runnable {
 				}
 				catch (Exception e){
 					running = false;
-					System.out.print("Client Exception!");
+					System.out.println("Server Exception!");
 					e.printStackTrace(System.err);
 				}
 			}
@@ -175,5 +174,9 @@ public class Server implements Runnable {
 			context.socket.close();
 		}
 	}
-	
+
+	public void close() {
+		context.socket.close();
+	}
+
 }
