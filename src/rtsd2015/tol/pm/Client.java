@@ -74,24 +74,26 @@ public class Client implements Runnable {
 		try {
 			StopWatch pingTimer = new StopWatch();
 			joinServer(InetAddress.getByName("localhost"));
-			sendMessage(new Message(MessageType.PING, "test"));
+			Message pingMessage = new Message(MessageType.PING, "test");
+			sendMessage(pingMessage);
 			pingTimer.start();
 			while(state == State.CONNECTING) {
 				Message message = receiveMessage();
-				Platform.runLater(() -> {
-					switch(message.type) {
-					case PONG:
-						double time = pingTimer.msLap();
-						controller.setStatus("Client received: "+message.toString()+" ping: "+time+"ms");
+				switch(message.type) {
+				case PONG:
+					double time = pingTimer.msLap();
+					Platform.runLater(() -> {
+						controller.setPing(String.format("%.1f",time));
 						controller.switchBtnDisconnect();
-						break;
-					case ACCEPT:
-						controller.setStatus("Connection accepted with id: "+message.body);
-						break;
-					default:
-						controller.setStatus("Unexcepted message: "+message.toString());
-					}
-				});
+					});
+					sendMessage(pingMessage);
+					break;
+				case ACCEPT:
+					controller.setStatus("Connection accepted with id: "+message.body);
+					break;
+				default:
+					controller.setStatus("Unexcepted message: "+message.toString());
+				}
 			}
 		}
 		catch (Exception e) {

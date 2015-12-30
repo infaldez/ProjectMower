@@ -28,10 +28,11 @@
       </MenuBar>
    </top>
    <bottom>
-      <Text fx:id="lblStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: Not initialized" wrappingWidth="783.13671875" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="8.0" top="8.0" />
-         </BorderPane.margin>
-      </Text>
+      <SplitPane dividerPositions="0.5">
+         <items>
+            <Text fx:id="lblStatus" strokeType="OUTSIDE" strokeWidth="0.0" text="Status: Not initialized" wrappingWidth="758.13671875" />
+            <Text fx:id="lblPing" strokeType="OUTSIDE" strokeWidth="0.0" text="-" textAlignment="RIGHT" wrappingWidth="27.798828125" />
+         </items>
+      </SplitPane>
    </bottom>
 </BorderPane>

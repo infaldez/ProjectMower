@@ -16,6 +16,9 @@ public class RootLayoutController {
 
 	@FXML
 	private Text lblStatus;
+	
+	@FXML
+	private Text lblPing;
 
 	@FXML
 	private MenuItem btnHost;
@@ -97,6 +100,16 @@ public class RootLayoutController {
 	@FXML
 	public void setStatus(String msg) {
 		lblStatus.setText("Status: "+msg);
+	}
+
+	/**
+	 * Update ping
+	 *
+	 * @param msg
+	 */
+	@FXML
+	public void setPing(String msg) {
+		lblPing.setText(msg);
 	}
 
 	/**
