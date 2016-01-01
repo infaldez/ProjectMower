@@ -20,7 +20,7 @@
          </padding>
       </ButtonBar>
       <TextField fx:id="port" layoutX="14.0" layoutY="31.0" onKeyPressed="#portNoHilite" />
-      <Text layoutX="163.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="(1024 - 65535)" />
+      <Text layoutX="163.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="(1024 - 65535)" AnchorPane.leftAnchor="170.0" />
       <Label layoutX="14.0" layoutY="56.0" text="Seed" AnchorPane.topAnchor="56.0">
          <padding>
             <Insets top="8.0" />

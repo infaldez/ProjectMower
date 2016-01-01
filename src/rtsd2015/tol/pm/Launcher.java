@@ -11,6 +11,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import rtsd2015.tol.pm.view.NewHostDialogController;
+import rtsd2015.tol.pm.view.NewJoinDialogController;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
 public class Launcher extends Application {
@@ -71,6 +72,29 @@ public class Launcher extends Application {
 
 	        NewHostDialogController newHost = loader.getController();
 	        newHost.setMainApp(dialogStage, this);
+
+	        dialogStage.showAndWait();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showNewJoinDialog() {
+		try {
+			// Load layout
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(Launcher.class.getResource("view/NewJoinDialog.fxml"));
+			AnchorPane page = (AnchorPane) loader.load();
+
+			Stage dialogStage = new Stage();
+	        dialogStage.setTitle("Join to a game");
+	        dialogStage.initModality(Modality.WINDOW_MODAL);
+	        dialogStage.initOwner(primaryStage);
+	        Scene scene = new Scene(page);
+	        dialogStage.setScene(scene);
+
+	        NewJoinDialogController newJoin = loader.getController();
+	        newJoin.setMainApp(dialogStage, this);
 
 	        dialogStage.showAndWait();
 		} catch (IOException e) {

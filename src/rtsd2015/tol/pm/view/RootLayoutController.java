@@ -16,7 +16,7 @@ public class RootLayoutController {
 
 	@FXML
 	private Text lblStatus;
-	
+
 	@FXML
 	private Text lblPing;
 
@@ -50,7 +50,8 @@ public class RootLayoutController {
 	 */
 	@FXML
 	private void handleConnect() {
-		mainApp.setClient("player2", 3145);
+		//mainApp.setClient("player2", 3145);
+		mainApp.showNewJoinDialog();
 	}
 
 	/**

@@ -33,14 +33,15 @@ public class NewHostDialogController {
 	private void portHilite() {
 		port.getStyleClass().add("invalid-hilite");
 	}
-	
+
 	@FXML
 	private void portNoHilite() {
 		port.getStyleClass().remove("invalid-hilite");
 	}
-	
+
 	@FXML
-	private void initialize() {}
+	private void initialize() {
+	}
 
 	public void setMainApp(Stage dialogStage, Launcher mainApp) {
 		this.dialogStage = dialogStage;
@@ -101,6 +102,6 @@ public class NewHostDialogController {
 			alert.setContentText(errMsg);
 			alert.showAndWait();
 			return false;
-        }
+		}
 	}
 }
