@@ -1,13 +1,15 @@
 package rtsd2015.tol.pm;
 
 import java.io.*;
-import java.util.Scanner;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import rtsd2015.tol.pm.view.NewHostDialogController;
@@ -49,6 +51,7 @@ public class Launcher extends Application {
 			// Give the controller access to the main app
 			controller = loader.getController();
 			controller.setMainApp(this);
+
 			// Show the stage
 			primaryStage.show();
 		} catch (IOException e) {
@@ -102,6 +105,17 @@ public class Launcher extends Application {
 		}
 	}
 
+	public void initRenderCanvas() {
+		Canvas canvas = new Canvas(800, 520);
+		rootLayout.setCenter(canvas);
+		rootLayout.setStyle("-fx-background-color: BLACK");
+
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setStroke(Color.WHITE);
+		gc.strokeText("INSERT GAME TO CONTINUE", 325, 225);
+		gc.setFont(new Font("Consolas", 64));
+	}
+
 	/**
 	 * Setups a new client
 	 *
@@ -113,6 +127,7 @@ public class Launcher extends Application {
 		controller.client = client;
 		this.clientThread = new Thread(client);
 		this.clientThread.start();
+		initRenderCanvas();
 	}
 
 	/**

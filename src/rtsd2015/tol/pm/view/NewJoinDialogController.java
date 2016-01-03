@@ -35,7 +35,8 @@ public class NewJoinDialogController {
 
 	@FXML
 	public void handleJoin() {
-		System.out.println("Join pressed");
+		dialogStage.close();
+		mainApp.setClient("player2", Integer.valueOf(port.getText()));
 	}
 
 	@FXML
