@@ -4,10 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
 
 public class Game {
+
+	private Launcher mainApp;
+	private static GraphicsContext gc;
 
 	protected static int seed;
 
@@ -24,7 +32,9 @@ public class Game {
 	 *
 	 * @throws InterruptedException
 	 */
-	Game() throws InterruptedException {
+	Game(Launcher mainApp) throws InterruptedException {
+
+		this.mainApp = mainApp;
 
 		// Initialize a new level
 		this.seed = 0; // TODO: Add seed variable
@@ -37,9 +47,15 @@ public class Game {
 		// Initialize in-game timer
 		timer = new Timer();
 
+		// Get the main rendering space
+		this.gc = mainApp.getCanvas();
+		gc.clearRect(0, 0, 800, 520);
+
 		// Finally, start the game loop
 		gameLoop();
 	}
+
+
 
 	/**
 	 * The main gameloop
@@ -69,7 +85,11 @@ public class Game {
 			frameId++;
 			limitedCycles--;
 
+			// New rendering frame
+			gc.clearRect(0, 0, 800, 520);
+
 			// TODO: content of the cycle
+			gc.strokeText("Delta: " + delta, 16, 96);
 			System.out.println("Delta: " + delta + ", frames left: " + limitedCycles);
 			System.out.println("Player(" + players.get(0).id + ") side: " + players.get(0).getSide() + " dir: "
 					+ players.get(0).getDir() + " pos: " + players.get(0).getPos()[0] + ","

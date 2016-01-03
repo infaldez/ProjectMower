@@ -23,6 +23,7 @@ public class Launcher extends Application {
 	private RootLayoutController controller;
 	private Thread serverThread;
 	private Thread clientThread;
+	private GraphicsContext gc;
 
 	/**
 	 * Begin to construct the stage
@@ -59,6 +60,10 @@ public class Launcher extends Application {
 		}
 	}
 
+	/**
+	 * Displays a dialog for creating a new host
+	 *
+	 */
 	public void showNewHostDialog() {
 		try {
 			// Load layout
@@ -82,6 +87,10 @@ public class Launcher extends Application {
 		}
 	}
 
+	/**
+	 * Displays a dialog for joining an existing host
+	 *
+	 */
 	public void showNewJoinDialog() {
 		try {
 			// Load layout
@@ -105,6 +114,10 @@ public class Launcher extends Application {
 		}
 	}
 
+	/**
+	 * Initializes the rendering space
+	 *
+	 */
 	public void initRenderCanvas() {
 		Canvas canvas = new Canvas(800, 520);
 		rootLayout.setCenter(canvas);
@@ -112,8 +125,19 @@ public class Launcher extends Application {
 
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setStroke(Color.WHITE);
-		gc.strokeText("INSERT GAME TO CONTINUE", 325, 225);
+		gc.strokeText("Receiving ...", 325, 225);
 		gc.setFont(new Font("Consolas", 64));
+
+		this.gc = gc;
+	}
+
+	/**
+	 * Returns the rendering space for the client to use
+	 *
+	 * @return
+	 */
+	public GraphicsContext getCanvas() {
+		return this.gc;
 	}
 
 	/**
@@ -123,11 +147,11 @@ public class Launcher extends Application {
 	 */
 	public void setClient(String name, int port) {
 		controller.switchBtnClient();
-		Client client = new Client(controller, name, port);
+		initRenderCanvas();
+		Client client = new Client(this, controller, name, port);
 		controller.client = client;
 		this.clientThread = new Thread(client);
 		this.clientThread.start();
-		initRenderCanvas();
 	}
 
 	/**

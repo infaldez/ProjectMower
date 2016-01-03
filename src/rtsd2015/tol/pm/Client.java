@@ -4,6 +4,7 @@ import java.net.*;
 
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.BorderPane;
 
 import java.io.*;
 import java.lang.*;
@@ -22,9 +23,11 @@ public class Client implements Runnable {
 	private int serverPort;
 	private int serverPing;
 
+	private Launcher mainApp;
 	private RootLayoutController controller;
 
-	Client(RootLayoutController c, String nick, int port) {
+	Client(Launcher app, RootLayoutController c, String nick, int port) {
+		mainApp = app;
 		controller = c;
 		nickname = nick;
 		serverPort = port;
@@ -90,6 +93,7 @@ public class Client implements Runnable {
 					break;
 				case ACCEPT:
 					controller.setStatus("Connection accepted with id: "+message.body);
+					Game client = new Game(mainApp);
 					break;
 				default:
 					controller.setStatus("Unexcepted message: "+message.toString());
