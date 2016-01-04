@@ -4,12 +4,15 @@ import java.net.*;
 import java.io.*;
 import java.lang.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 import rtsd2015.tol.pm.enums.MessageType;
 public class Server implements Runnable {
 	private Context context;
-	private int seed = 128;
+	private long seed;
 	static protected class ConnectedClient {
+		public enum ClientState {CONNECTED, READY, DISCONNECTED};
+		ClientState state;
 		String nickname;
 		InetAddress address;
 		int port;
@@ -17,6 +20,7 @@ public class Server implements Runnable {
 			nickname = n;
 			address = a;
 			port = p;
+			state = ClientState.CONNECTED;
 		}
 	}
 
@@ -75,13 +79,23 @@ public class Server implements Runnable {
 		return packet;
 	}
 
+	static private void sendMessage(Context context, Message message, ConnectedClient client)
+			throws IOException {
+		sendMessage(context, message, client.address, client.port);
+	}
+
 	static private void sendMessage(Context context, Message message, InetAddress address, int port)
 			throws IOException {
 		byte[] data = message.getData();
 		DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
 		context.socket.send(packet);
 	}
-
+	
+	static private void broadcastMessage(Context context, Message message) throws IOException {
+		for (ConnectedClient client : context.clients) {
+			sendMessage(context, message, client);
+		}
+	}
 
 	protected enum States implements State {
 		WAIT_PLAYERS {
@@ -109,8 +123,16 @@ public class Server implements Runnable {
 					}
 
 					break;
+				case START_GAME:
+					Message prepareMessage = new Message(MessageType.PREPARE,
+							context.game.getLevel().getSeed() + " " +
+							context.game.getLevel().getSeed() + " " +
+							context.game.getLevel().getSeed()); // seed + width + height
+					broadcastMessage(context, prepareMessage);
+					context.state = States.GAME_START;
+					break;
 				default:
-					System.out.println("Unexpected message: "+message.toString());
+					System.out.println("Server: Unexpected message: "+message.toString());
 				}
 
 				context.state = States.WAIT_PLAYERS;
@@ -118,8 +140,39 @@ public class Server implements Runnable {
 			}
 		},
 		GAME_START {
-			public boolean run(Context context) {
-				context.state = States.GAME_LOOP;
+			public boolean run(Context context) throws IOException, ClassNotFoundException {
+				DatagramPacket packet = receivePacket(context);
+				Message message = new Message(packet.getData());
+				Message reply;
+
+				switch (message.type) {
+				case READY:
+					int senderId = getSender(context, packet);
+					if (0 <= senderId && senderId < context.clients.size()) {
+						context.clients.get(senderId).state = ConnectedClient.ClientState.READY;
+					}
+					else {
+						System.out.println("Server: Unexpected message: "+message.toString());
+					}
+					break;
+				default:
+					System.out.println("Server: Unexpected message: "+message.toString());
+				}
+				
+				boolean allReady = true;
+				for (ConnectedClient client : context.clients) {
+					if (client.state != ConnectedClient.ClientState.READY) {
+						allReady = false;
+					}
+				}
+
+				if (allReady) {
+					context.state = States.GAME_LOOP;
+				}
+				else {
+					context.state = States.GAME_START;
+				}
+				
 				return true;
 			}
 		},
@@ -146,8 +199,12 @@ public class Server implements Runnable {
 	static protected void broadcastGameState(Context context) {
 
 	}
+	
+	Server(String hostname, int port) throws Exception {
+		this(hostname, port, new Random().nextInt()); // Random seed if none given
+	}
 
-	Server(String hostname, int port, int seed) throws Exception {
+	Server(String hostname, int port, long seed) throws Exception {
 		this.seed = seed;
 		context = new Context();
 		context.state = States.WAIT_PLAYERS;

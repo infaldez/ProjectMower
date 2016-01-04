@@ -9,6 +9,10 @@ public class Message implements Serializable {
 	public Message(){
 		this(MessageType.MISC, "");
 	}
+
+	public Message(MessageType t) {
+		this(t, "");
+	}
 	
 	public Message(MessageType t, String b) {
 		type = t;

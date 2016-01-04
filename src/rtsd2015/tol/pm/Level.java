@@ -88,4 +88,8 @@ public class Level {
 			}
 		}
 	}
+	
+	public int getWidth() { return this.width; }
+	public int getHeight() { return this.height; }
+	public long getSeed() { return this.seed; }
 }

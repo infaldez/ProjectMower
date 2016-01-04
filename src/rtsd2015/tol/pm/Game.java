@@ -45,7 +45,7 @@ public class Game {
 	 *
 	 * @throws InterruptedException
 	 */
-	Game(Launcher app, int sd, boolean isClient) throws InterruptedException {
+	Game(Launcher app, long sd, boolean isClient) throws InterruptedException {
 		mainApp = app;
 		seed = sd;
 		gridY = 24;
@@ -168,5 +168,9 @@ public class Game {
 	 */
 	private static void serverGameLoop() {
 		tick++;
+	}
+	
+	public Level getLevel() {
+		return lvl;
 	}
 }

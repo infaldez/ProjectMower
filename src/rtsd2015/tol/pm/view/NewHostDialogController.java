@@ -1,6 +1,8 @@
 package rtsd2015.tol.pm.view;
 
+import java.util.Random;
 import javafx.fxml.FXML;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -46,6 +48,7 @@ public class NewHostDialogController {
 	public void setMainApp(Stage dialogStage, Launcher mainApp) {
 		this.dialogStage = dialogStage;
 		this.mainApp = mainApp;
+		seed.setText(Long.toString(new Random().nextLong()));
 	}
 
 	/**
@@ -57,7 +60,7 @@ public class NewHostDialogController {
 	@FXML
 	public void handleStart() throws NumberFormatException, Exception {
 		if (isInputValid()) {
-			mainApp.setHost(Integer.valueOf(port.getText()), Integer.valueOf(seed.getText()));
+			mainApp.setHost(Integer.valueOf(port.getText()), Long.valueOf(seed.getText()));
 			dialogStage.close();
 		}
 	}
