@@ -10,11 +10,11 @@ public class GameEngine {
 	private long seed;
 	Random random;
 	private ArrayList<EntityPlayer> players = new ArrayList<EntityPlayer>();
-	
+
 	private int area;
 	private int width, height;
 	private Tile[][] board;
-	
+
 	GameEngine (long seed, int size) {
 		this(seed, size, size);
 	}
@@ -22,7 +22,7 @@ public class GameEngine {
 	GameEngine (long seed, int width, int height) {
 		this.seed = seed;
 		this.random = new Random(seed);
-		
+
 		this.width = width;
 		this.height = height;
 		this.area = width * height;
@@ -34,19 +34,19 @@ public class GameEngine {
 				this.board[i][j] = Tile.GRASS;
 			}
 		}
-		
+
 		// Numbers of static entities
 		// densities hard coded
 		int bigRocksNumber = area / 200;
 		int treeNumber = area / 100;
 		int smallRocksNumber = area / 50;
-		
+
 		placeTile(Tile.BIG_ROCK, bigRocksNumber);
 		placeTile(Tile.TREE, treeNumber);
 		placeTile(Tile.SMALL_ROCK, smallRocksNumber);
-		
+
 	}
-	
+
 	/*
 	 * Places given tile to a random location on the board
 	 * */
@@ -70,19 +70,20 @@ public class GameEngine {
 			}
 		}
 	}
-	
+
 	public Tile[][] getBoard() {
 		return this.board;
 	}
-	
+
 	public void tick() {
 		tick++;
+		// NOTE: THIS CLASS IS CURRENTLY OBSOLETE, USE Game -> serverGameLoop()
 		// Handle events
-		
+
 		// Update entities
-		
+
 		// Calculate events collisions/scores/mowed lawn
-		
+
 	}
-	
+
 }
