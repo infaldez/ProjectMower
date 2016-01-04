@@ -131,6 +131,11 @@ public class Launcher extends Application {
 		this.gc = gc;
 	}
 
+	public void setInterfaceContent(Canvas canvas) {
+		rootLayout.setCenter(canvas);
+		rootLayout.setStyle("-fx-background-color: BLACK");
+	}
+
 	/**
 	 * Returns the rendering space for the client to use
 	 *
