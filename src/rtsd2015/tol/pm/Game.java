@@ -2,25 +2,35 @@ package rtsd2015.tol.pm;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.EnumMap;
 import java.util.Random;
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
+import rtsd2015.tol.pm.enums.Tile;
 
 public class Game {
 
 	private Launcher mainApp;
 	private static GraphicsContext gc;
+	private static int canvasWidth, canvasHeight;
+	
+	private static double tileSize, tileOffsetX, tileOffsetY;
+
+	private static EnumMap<Tile, Image> tileImages;
 
 	protected static int seed;
+	protected static int gridY, gridX; // Dimensions in tiles 
 
 	private static Timer timer;
 	private static Level lvl;
+	private static GameEngine gameEngine;
 	private static List<EntityPlayer> players = new ArrayList<>();
 
 	private static int limitedCycles = 1280; // For testing purposes only
@@ -35,10 +45,14 @@ public class Game {
 	Game(Launcher mainApp) throws InterruptedException {
 
 		this.mainApp = mainApp;
+		loadTextures();
 
 		// Initialize a new level
-		this.seed = 0; // TODO: Add seed variable
-		lvl = new Level(100, 100);
+		seed = 2320; // TODO: Add seed variable
+		
+		gridY = 16;
+		gridX = 16;
+		gameEngine = new GameEngine(seed, gridX, gridY);
 
 		// Initialize players
 		players.add(new EntityPlayer(Side.BLUE));
@@ -48,8 +62,19 @@ public class Game {
 		timer = new Timer();
 
 		// Get the main rendering space
+		canvasWidth = 800; 
+		canvasHeight = 520; 
 		this.gc = mainApp.getCanvas();
-		gc.clearRect(0, 0, 800, 520);
+		gc.clearRect(0, 0, canvasWidth, canvasHeight);
+		
+		// Calculate tile dimensions, tiles are squares
+		double tileMaxHeight = (double) canvasHeight / (double) gridY;
+		double tileMaxWidth = (double) canvasWidth / (double) gridX;
+		tileSize = Math.min(tileMaxWidth, tileMaxHeight);
+		tileOffsetY = ((double) canvasHeight - (tileSize * gridY)) / 2;
+		tileOffsetX = ((double) canvasWidth - (tileSize * gridX)) / 2;
+
+		System.out.println(tileSize + " " + tileOffsetY + " " + tileOffsetX);
 
 		// Finally, start the game loop
 		gameLoop();
@@ -86,7 +111,8 @@ public class Game {
 			limitedCycles--;
 
 			// New rendering frame
-			gc.clearRect(0, 0, 800, 520);
+			gc.clearRect(0, 0, canvasWidth, canvasHeight);
+			drawTiles();
 
 			// TODO: content of the cycle
 			gc.strokeText("Delta: " + delta, 16, 96);
@@ -105,4 +131,27 @@ public class Game {
 		}
 	}
 
+	private static void loadTextures() {
+		tileImages = new EnumMap<Tile, Image>(Tile.class);
+		String imgPath = "file:src/rtsd2015/tol/pm/view/";
+		tileImages.put(Tile.DIRT, new Image(imgPath + "dirt.png"));
+		tileImages.put(Tile.GRASS, new Image(imgPath + "grass.png"));
+		tileImages.put(Tile.TREE, new Image(imgPath + "tree.png"));
+		tileImages.put(Tile.BIG_ROCK, new Image(imgPath + "big_rock.png"));
+		tileImages.put(Tile.SMALL_ROCK, new Image(imgPath + "small_rock.png"));
+	};
+	
+	private static void drawTiles() {
+		Tile[][] board = gameEngine.getBoard();
+		for (int i = 0; i < board.length ; i++) {
+			for (int j = 0; j < board[i].length ; j++) {
+				gc.drawImage(tileImages.get(board[i][j]),
+						tileOffsetX + i * tileSize,
+						tileOffsetY + j * tileSize,
+						tileSize, tileSize
+						);
+			}
+		}
+
+	}
 }
