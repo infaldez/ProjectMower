@@ -125,9 +125,9 @@ public class Launcher extends Application {
 
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setStroke(Color.WHITE);
+		gc.setFill(Color.RED);
 		gc.strokeText("Receiving ...", 325, 225);
-		gc.setFont(new Font("Consolas", 64));
-
+		gc.setFont(new Font("Consolas", 16));
 		this.gc = gc;
 	}
 

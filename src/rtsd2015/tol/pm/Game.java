@@ -11,6 +11,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
 import rtsd2015.tol.pm.enums.Tile;
@@ -31,7 +32,7 @@ public class Game {
 	// CLIENT
 	private static GraphicsContext gc;
 	private static EnumMap<Tile, Image> tileImages;
-	private static int limitedCycles = 320; // For testing purposes only
+	private static int limitedCycles = 640; // For testing purposes only
 	private static long lastFpsTime;
 	private static long frameId;
 	private static boolean debug = true;
@@ -101,16 +102,15 @@ public class Game {
 			gc.clearRect(0, 0, canvasWidth, canvasHeight);
 			drawTiles();
 
-			// TODO: content of the cycle
-			System.out.println("Delta: " + delta + ", frames left: " + limitedCycles);
-			System.out.println("Player(" + players.get(0).id + ") side: " + players.get(0).getSide() + " dir: "
-					+ players.get(0).getDir() + " pos: " + players.get(0).getPos()[0] + ","
-					+ players.get(0).getPos()[1]);
-			System.out.println("Player(" + players.get(1).id + ") side: " + players.get(1).getSide() + " dir: "
-					+ players.get(1).getDir() + " pos: " + players.get(1).getPos()[0] + ","
-					+ players.get(1).getPos()[1]);
-			System.out.println("EntityCount: " + Entity.entityCount);
-			System.out.println("\b");
+			// True to draw debug text
+			if (debug) {
+				gc.fillText("Delta: " + delta + "(" + limitedCycles + ")", 16, 96);
+				gc.fillText("Player(0) POS: " + players.get(0).getPos()[0] + "," + players.get(0).getPos()[1], 16, 112);
+				gc.fillText("Player(0) DIR: " + players.get(0).getDir(), 16, 128);
+				gc.fillText("Player(1) POS: " + players.get(1).getPos()[0] + "," + players.get(1).getPos()[1], 16, 144);
+				gc.fillText("Player(1) DIR: " + players.get(1).getDir(), 16, 160);
+				gc.fillText("EntityCount: " + Entity.entityCount, 16, 176);
+			}
 
 			// Wait for the next frame
 			Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
