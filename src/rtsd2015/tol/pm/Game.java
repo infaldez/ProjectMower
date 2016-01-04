@@ -19,14 +19,15 @@ public class Game {
 
 	private Launcher mainApp;
 	private static GraphicsContext gc;
-	private static int canvasWidth, canvasHeight;
-	
+	private static int canvasWidth = 800;
+	private static int canvasHeight = 520;
+
 	private static double tileSize, tileOffsetX, tileOffsetY;
 
 	private static EnumMap<Tile, Image> tileImages;
 
 	protected static int seed;
-	protected static int gridY, gridX; // Dimensions in tiles 
+	protected static int gridY, gridX; // Dimensions in tiles
 
 	private static Timer timer;
 	private static Level lvl;
@@ -49,7 +50,7 @@ public class Game {
 
 		// Initialize a new level
 		seed = 2320; // TODO: Add seed variable
-		
+
 		gridY = 16;
 		gridX = 16;
 		gameEngine = new GameEngine(seed, gridX, gridY);
@@ -62,11 +63,9 @@ public class Game {
 		timer = new Timer();
 
 		// Get the main rendering space
-		canvasWidth = 800; 
-		canvasHeight = 520; 
 		this.gc = mainApp.getCanvas();
 		gc.clearRect(0, 0, canvasWidth, canvasHeight);
-		
+
 		// Calculate tile dimensions, tiles are squares
 		double tileMaxHeight = (double) canvasHeight / (double) gridY;
 		double tileMaxWidth = (double) canvasWidth / (double) gridX;
@@ -140,7 +139,7 @@ public class Game {
 		tileImages.put(Tile.BIG_ROCK, new Image(imgPath + "big_rock.png"));
 		tileImages.put(Tile.SMALL_ROCK, new Image(imgPath + "small_rock.png"));
 	};
-	
+
 	private static void drawTiles() {
 		Tile[][] board = gameEngine.getBoard();
 		for (int i = 0; i < board.length ; i++) {
