@@ -7,5 +7,7 @@ public enum Tile {
 	FENCE,
 	TREE,
 	SMALL_ROCK,
-	BIG_ROCK
+	BIG_ROCK,
+	PLAYER1,
+	PLAYER2
 }

@@ -138,6 +138,8 @@ public class Game {
 		tileImages.put(Tile.TREE, new Image(imgPath + "tree.png"));
 		tileImages.put(Tile.BIG_ROCK, new Image(imgPath + "big_rock.png"));
 		tileImages.put(Tile.SMALL_ROCK, new Image(imgPath + "small_rock.png"));
+		tileImages.put(Tile.PLAYER1, new Image(imgPath + "player1.png"));
+		tileImages.put(Tile.PLAYER2, new Image(imgPath + "player2.png"));
 	};
 
 	private static void drawTiles() {
