@@ -62,10 +62,10 @@ public class Level {
 			boolean placed = false;
 			int x, y;
 			while (!placed) {
-				y = (int) Math.floor(this.random.nextDouble() * height);
 				x = (int) Math.floor(this.random.nextDouble() * width);
-				if (board[y][x] == Tile.GRASS) {
-					board[y][x] = tile;
+				y = (int) Math.floor(this.random.nextDouble() * height);
+				if (board[x][y] == Tile.GRASS) {
+					board[x][y] = tile;
 					placed = true;
 					switch (tile) {
 						case BIG_ROCK: worldEntities.add(new EntityBigRock(x,y));
