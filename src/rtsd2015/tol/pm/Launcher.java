@@ -145,7 +145,7 @@ public class Launcher extends Application {
 	 *
 	 * @param name
 	 */
-	public void setClient(String name, int port, int seed) {
+	public void setClient(String name, int port, long seed) {
 		controller.switchBtnClient();
 		initRenderCanvas();
 		Client client = new Client(this, controller, name, port, seed);
@@ -160,7 +160,7 @@ public class Launcher extends Application {
 	 * @param port
 	 * @throws Exception
 	 */
-	public void setHost(int port, int seed) throws Exception {
+	public void setHost(int port, long seed) throws Exception {
 		controller.switchBtnHost();
 		Server server = new Server("localhost", port, seed);
 		controller.server = server;
