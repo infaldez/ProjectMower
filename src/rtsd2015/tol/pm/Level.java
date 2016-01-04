@@ -4,44 +4,79 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import rtsd2015.tol.pm.enums.Tile;
+
 /**
  * Game level, including all static entities
  *
  * @author Ari
  */
 public class Level {
-	private static int[] area;
-	static List<EntityTree> trees = new ArrayList<>();
+
+	static List<EntityTree> trees = new ArrayList<>(); // TODO: Implement
+
+	private long seed;
+	private int area;
+	private int width, height;
+	private Tile[][] board;
+
+	Random random;
 
 	/**
-	 * Initialize a new level The idea is to use a seed to create randomized
-	 * levels
+	 * Initializes a new level based on seed
 	 *
-	 * @param size-x
-	 * @param size-y
 	 * @param seed
+	 * @param width
+	 * @param height
 	 */
-	Level(int x, int y) {
-		area = new int[2];
-		area[0] = x;
-		area[1] = y;
-		int treeAmount = area[0] / Math.round(10); // for testing purposes
-		addTrees(treeAmount);
+	Level(long seed, int width, int height) {
+		this.seed = seed;
+		this.random = new Random(seed);
+		this.width = width;
+		this.height = height;
+		this.area = width * height;
+
+		addGrass();
+
+		int bigRocksNumber = area / 200;
+		int treeNumber = area / 100;
+		int smallRocksNumber = area / 50;
+
+		placeTile(Tile.BIG_ROCK, bigRocksNumber);
+		placeTile(Tile.TREE, treeNumber);
+		placeTile(Tile.SMALL_ROCK, smallRocksNumber);
+
 	}
 
-	private void addTrees(int count) {
-		while (count > 0) {
-			int x = getSeedIntValue(area[0], count + 64); // some ugly tricks
-			int y = getSeedIntValue(area[1], count + 128);
-			trees.add(new EntityTree(x, y));
-			count--;
+	public Tile[][] getBoard() {
+		return board;
+	}
+
+	private void placeTile(Tile tile) {
+		placeTile(tile, 1);
+	}
+
+	private void placeTile(Tile tile, int count) {
+		for (int i = 0; i < count; i++) {
+			boolean placed = false;
+			int x, y;
+			while (!placed) {
+				y = (int) Math.floor(this.random.nextDouble() * height);
+				x = (int) Math.floor(this.random.nextDouble() * width);
+				if (board[y][x] == Tile.GRASS) {
+					board[y][x] = tile;
+					placed = true;
+				}
+			}
 		}
 	}
 
-	private int getSeedIntValue(int range, int noise) {
-		Random generator = new Random(Game.seed + noise);
-		int value = generator.nextInt(range);
-		return value;
+	private void addGrass() {
+		this.board = new Tile[height][width];
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				board[i][j] = Tile.GRASS;
+			}
+		}
 	}
-
 }
