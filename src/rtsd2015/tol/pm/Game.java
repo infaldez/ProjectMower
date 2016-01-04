@@ -17,66 +17,48 @@ import rtsd2015.tol.pm.enums.Tile;
 
 public class Game {
 
-	private Launcher mainApp;
-	private static GameEngine gameEngine;
-
-	// LOGIC
-	private long tick = 0;
-	private int area;
-	private int width, height;
-	private Tile[][] board;
-
-	// CLIENT
-	private static GraphicsContext gc;
-	private static int canvasWidth = 800;
-	private static int canvasHeight = 520;
-	private static double tileSize, tileOffsetX, tileOffsetY;
-	private static EnumMap<Tile, Image> tileImages;
-	private static int limitedCycles = 1280; // For testing purposes only
-	private static long lastFpsTime;
-	private static long frameId;
-
 	// SHARED
-	protected static long seed;
-	protected static int gridY, gridX;
+	private static Launcher mainApp;
+	private static long seed;
+	private static int gridY, gridX;
 	private static Timer timer;
 	private static Level lvl;
 	private static List<EntityPlayer> players = new ArrayList<>();
+	private static int canvasWidth = 800;
+	private static int canvasHeight = 520;
+	private static double tileSize, tileOffsetX, tileOffsetY;
+
+	// CLIENT
+	private static GraphicsContext gc;
+	private static EnumMap<Tile, Image> tileImages;
+	private static int limitedCycles = 320; // For testing purposes only
+	private static long lastFpsTime;
+	private static long frameId;
+	private static boolean debug = true;
+
+	// LOGIC
+	private static long tick = 0;
 
 	/**
-	 * Initializes a new game for both clients and server
+	 * Initializes a new game for both clients and a server
 	 *
 	 * @throws InterruptedException
 	 */
-	Game(Launcher mainApp, int seed, boolean hasUI) throws InterruptedException {
+	Game(Launcher app, int sd, boolean isClient) throws InterruptedException {
+		mainApp = app;
+		seed = sd;
+		gridY = 24;
+		gridX = 24;
+		lvl = new Level(seed, gridX, gridY);
 
-		// Initial parameters for a new game
-		this.mainApp = mainApp;
-		this.seed = seed;
-		this.gridY = 16;
-		this.gridX = 16;
-		//gameEngine = new GameEngine(seed, gridX, gridY);
-		this.lvl = new Level(seed, gridX, gridY);
-
-		// Initialize players
 		players.add(new EntityPlayer(Side.BLUE));
 		players.add(new EntityPlayer(Side.RED));
 
-		// Initialize in-game timer
 		timer = new Timer();
 
-		// Calculate tile dimensions, tiles are squares
-		double tileMaxHeight = (double) canvasHeight / (double) gridY;
-		double tileMaxWidth = (double) canvasWidth / (double) gridX;
-		tileSize = Math.min(tileMaxWidth, tileMaxHeight);
-		tileOffsetY = ((double) canvasHeight - (tileSize * gridY)) / 2;
-		tileOffsetX = ((double) canvasWidth - (tileSize * gridX)) / 2;
+		initTileDimensions();
 
-		// Finally, start the game loop
-		if (hasUI) {
-			loadTextures();
-			this.gc = mainApp.getCanvas();
-			gc.clearRect(0, 0, canvasWidth, canvasHeight);
+		if (isClient) {
 			clientGameLoop();
 		} else {
 			serverGameLoop();
@@ -84,26 +66,22 @@ public class Game {
 	}
 
 	/**
-	 * The main gameloop for servers, including logic
-	 *
-	 */
-	private static void serverGameLoop() {
-
-	}
-
-	/**
-	 * The main gameloop for clients, including drawing
+	 * The main game loop for clients, includes drawing
 	 *
 	 * @throws InterruptedException
 	 */
 	private static void clientGameLoop() throws InterruptedException {
 
-		// Initialize game loop
+		// Initialize rendering
+		loadTextures();
+		gc = mainApp.getCanvas();
+		gc.clearRect(0, 0, canvasWidth, canvasHeight);
+
+		// Initialize looping
 		long lastLoopTime = System.nanoTime();
 		final int TARGET_FPS = 16;
 		final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 
-		// Start timer
 		timer.start();
 
 		while (limitedCycles > 0) {
@@ -124,7 +102,6 @@ public class Game {
 			drawTiles();
 
 			// TODO: content of the cycle
-			gc.strokeText("Delta: " + delta, 16, 96);
 			System.out.println("Delta: " + delta + ", frames left: " + limitedCycles);
 			System.out.println("Player(" + players.get(0).id + ") side: " + players.get(0).getSide() + " dir: "
 					+ players.get(0).getDir() + " pos: " + players.get(0).getPos()[0] + ","
@@ -140,6 +117,10 @@ public class Game {
 		}
 	}
 
+	/**
+	 * Loads in-game textures
+	 *
+	 */
 	private static void loadTextures() {
 		tileImages = new EnumMap<Tile, Image>(Tile.class);
 		String imgPath = "file:src/rtsd2015/tol/pm/view/";
@@ -150,8 +131,24 @@ public class Game {
 		tileImages.put(Tile.SMALL_ROCK, new Image(imgPath + "small_rock.png"));
 		tileImages.put(Tile.PLAYER1, new Image(imgPath + "player1.png"));
 		tileImages.put(Tile.PLAYER2, new Image(imgPath + "player2.png"));
-	};
+	}
 
+	/**
+	 * Initializes in-game tiles' dimensions
+	 *
+	 */
+	private static void initTileDimensions() {
+		double tileMaxHeight = (double) canvasHeight / (double) gridY;
+		double tileMaxWidth = (double) canvasWidth / (double) gridX;
+		tileSize = Math.min(tileMaxWidth, tileMaxHeight);
+		tileOffsetY = ((double) canvasHeight - (tileSize * gridY)) / 2;
+		tileOffsetX = ((double) canvasWidth - (tileSize * gridX)) / 2;
+	}
+
+	/**
+	 * Draws board tiles
+	 *
+	 */
 	private static void drawTiles() {
 		Tile[][] board = lvl.getBoard();
 		for (int i = 0; i < board.length ; i++) {
@@ -163,6 +160,13 @@ public class Game {
 						);
 			}
 		}
+	}
 
+	/**
+	 * The main game loop for a server, includes logic
+	 *
+	 */
+	private static void serverGameLoop() {
+		tick++;
 	}
 }
