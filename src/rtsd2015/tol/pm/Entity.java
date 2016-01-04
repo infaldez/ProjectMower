@@ -44,7 +44,7 @@ public class Entity {
 	}
 
 	/**
-	 * Set entity position, based on grid coordinates
+	 * Set entity position, based on grid coorinates
 	 *
 	 * @param x
 	 * @param y
@@ -61,6 +61,10 @@ public class Entity {
 	 */
 	int[] getPos() {
 		return position;
+	}
+
+	int[] getGridPos() {
+		return gridpos;
 	}
 
 	/**

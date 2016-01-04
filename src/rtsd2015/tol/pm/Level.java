@@ -13,13 +13,12 @@ import rtsd2015.tol.pm.enums.Tile;
  */
 public class Level {
 
-	static List<EntityTree> trees = new ArrayList<>(); // TODO: Implement
+	private static List<Object> worldEntities = new ArrayList <Object>();	// All objects the level holds
+	private static Tile[][] board;	// All tiles to be textured, based on worldEntities
 
 	private long seed;
 	private int area;
 	private int width, height;
-	protected Tile[][] board;
-	private List<Object> worldEntities = new ArrayList <Object>();
 
 	Random random;
 
