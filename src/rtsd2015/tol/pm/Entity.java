@@ -15,6 +15,7 @@ public class Entity {
 
 	int id;
 	protected int[] position = new int[2];
+	protected int[] gridpos = new int[2];
 	protected int speed;
 	protected int health;
 	protected Facing dir;
@@ -40,6 +41,17 @@ public class Entity {
 	protected void setPos(int x, int y) {
 		position[0] = x;
 		position[1] = y;
+	}
+
+	/**
+	 * Set entity position, based on grid coordinates
+	 *
+	 * @param x
+	 * @param y
+	 */
+	protected void setGridPos(int x, int y) {
+		gridpos[0] = x;
+		gridpos[1] = y;
 	}
 
 	/**

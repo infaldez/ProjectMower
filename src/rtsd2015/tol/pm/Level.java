@@ -18,7 +18,8 @@ public class Level {
 	private long seed;
 	private int area;
 	private int width, height;
-	private Tile[][] board;
+	protected Tile[][] board;
+	private List<Object> worldEntities = new ArrayList <Object>();
 
 	Random random;
 
@@ -66,6 +67,14 @@ public class Level {
 				if (board[y][x] == Tile.GRASS) {
 					board[y][x] = tile;
 					placed = true;
+					switch (tile) {
+						case BIG_ROCK: worldEntities.add(new EntityBigRock(x,y));
+						break;
+						case TREE: worldEntities.add(new EntityTree(x,y));
+						break;
+						case SMALL_ROCK: worldEntities.add(new EntitySmallRock(x,y));
+						break;
+					}
 				}
 			}
 		}
@@ -76,6 +85,7 @@ public class Level {
 		for (int i = 0; i < board.length; i++) {
 			for (int j = 0; j < board[i].length; j++) {
 				board[i][j] = Tile.GRASS;
+				worldEntities.add(new EntityGrass(i,j));
 			}
 		}
 	}

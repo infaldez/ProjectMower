@@ -146,7 +146,7 @@ public class Game {
 	}
 
 	/**
-	 * Draws board tiles
+	 * Draws board tile graphics
 	 *
 	 */
 	private static void drawTiles() {
