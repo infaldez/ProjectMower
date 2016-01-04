@@ -18,28 +18,33 @@ import rtsd2015.tol.pm.enums.Tile;
 public class Game {
 
 	private Launcher mainApp;
+	private static GameEngine gameEngine;
+
+	// LOGIC
+	private long tick = 0;
+	private int area;
+	private int width, height;
+	private Tile[][] board;
+
+	// CLIENT
 	private static GraphicsContext gc;
 	private static int canvasWidth = 800;
 	private static int canvasHeight = 520;
-
 	private static double tileSize, tileOffsetX, tileOffsetY;
-
 	private static EnumMap<Tile, Image> tileImages;
-
-	protected static int seed;
-	protected static int gridY, gridX; // Dimensions in tiles
-
-	private static Timer timer;
-	private static Level lvl;
-	private static GameEngine gameEngine;
-	private static List<EntityPlayer> players = new ArrayList<>();
-
 	private static int limitedCycles = 1280; // For testing purposes only
 	private static long lastFpsTime;
 	private static long frameId;
 
+	// SHARED
+	protected static long seed;
+	protected static int gridY, gridX;
+	private static Timer timer;
+	private static Level lvl;
+	private static List<EntityPlayer> players = new ArrayList<>();
+
 	/**
-	 * Initializes a new game
+	 * Initializes a new game for both clients and server
 	 *
 	 * @throws InterruptedException
 	 */
@@ -48,9 +53,10 @@ public class Game {
 		// Initial parameters for a new game
 		this.mainApp = mainApp;
 		this.seed = seed;
-		gridY = 16;
-		gridX = 16;
-		gameEngine = new GameEngine(seed, gridX, gridY);
+		this.gridY = 16;
+		this.gridX = 16;
+		//gameEngine = new GameEngine(seed, gridX, gridY);
+		this.lvl = new Level(seed, gridX, gridY);
 
 		// Initialize players
 		players.add(new EntityPlayer(Side.BLUE));
@@ -59,13 +65,6 @@ public class Game {
 		// Initialize in-game timer
 		timer = new Timer();
 
-		// Draw UI only for the players
-		if (hasUI) {
-			loadTextures();
-			this.gc = mainApp.getCanvas();
-			gc.clearRect(0, 0, canvasWidth, canvasHeight);
-		}
-
 		// Calculate tile dimensions, tiles are squares
 		double tileMaxHeight = (double) canvasHeight / (double) gridY;
 		double tileMaxWidth = (double) canvasWidth / (double) gridX;
@@ -73,20 +72,31 @@ public class Game {
 		tileOffsetY = ((double) canvasHeight - (tileSize * gridY)) / 2;
 		tileOffsetX = ((double) canvasWidth - (tileSize * gridX)) / 2;
 
-		System.out.println(tileSize + " " + tileOffsetY + " " + tileOffsetX);
-
 		// Finally, start the game loop
-		gameLoop();
+		if (hasUI) {
+			loadTextures();
+			this.gc = mainApp.getCanvas();
+			gc.clearRect(0, 0, canvasWidth, canvasHeight);
+			clientGameLoop();
+		} else {
+			serverGameLoop();
+		}
 	}
 
+	/**
+	 * The main gameloop for servers, including logic
+	 *
+	 */
+	private static void serverGameLoop() {
 
+	}
 
 	/**
-	 * The main gameloop
+	 * The main gameloop for clients, including drawing
 	 *
 	 * @throws InterruptedException
 	 */
-	private static void gameLoop() throws InterruptedException {
+	private static void clientGameLoop() throws InterruptedException {
 
 		// Initialize game loop
 		long lastLoopTime = System.nanoTime();
@@ -143,7 +153,7 @@ public class Game {
 	};
 
 	private static void drawTiles() {
-		Tile[][] board = gameEngine.getBoard();
+		Tile[][] board = lvl.getBoard();
 		for (int i = 0; i < board.length ; i++) {
 			for (int j = 0; j < board[i].length ; j++) {
 				gc.drawImage(tileImages.get(board[i][j]),
