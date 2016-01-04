@@ -22,15 +22,17 @@ public class Client implements Runnable {
 	private InetAddress serverAddress;
 	private int serverPort;
 	private int serverPing;
+	private int seed = 128;
 
 	private Launcher mainApp;
 	private RootLayoutController controller;
 
-	Client(Launcher app, RootLayoutController c, String nick, int port) {
-		mainApp = app;
-		controller = c;
-		nickname = nick;
-		serverPort = port;
+	Client(Launcher mainApp, RootLayoutController controller, String nickname, int port, int seed) {
+		this.mainApp = mainApp;
+		this.controller = controller;
+		this.nickname = nickname;
+		this.serverPort = port;
+		this.seed = seed;
 	}
 
 	public void joinServer(InetAddress address) throws SocketException, IOException {
@@ -93,7 +95,7 @@ public class Client implements Runnable {
 					break;
 				case ACCEPT:
 					controller.setStatus("Connection accepted with id: "+message.body);
-					Game client = new Game(mainApp);
+					Game client = new Game(mainApp, seed, true);
 					break;
 				default:
 					controller.setStatus("Unexcepted message: "+message.toString());

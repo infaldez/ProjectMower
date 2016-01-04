@@ -57,7 +57,7 @@ public class NewHostDialogController {
 	@FXML
 	public void handleStart() throws NumberFormatException, Exception {
 		if (isInputValid()) {
-			mainApp.setHost(Integer.valueOf(port.getText()));
+			mainApp.setHost(Integer.valueOf(port.getText()), Integer.valueOf(seed.getText()));
 			dialogStage.close();
 		}
 	}

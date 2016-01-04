@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import rtsd2015.tol.pm.enums.MessageType;
 public class Server implements Runnable {
 	private Context context;
+	private int seed = 128;
 	static protected class ConnectedClient {
 		String nickname;
 		InetAddress address;
@@ -146,7 +147,8 @@ public class Server implements Runnable {
 
 	}
 
-	Server(String hostname, int port) throws Exception {
+	Server(String hostname, int port, int seed) throws Exception {
+		this.seed = seed;
 		context = new Context();
 		context.state = States.WAIT_PLAYERS;
 		context.clients = new ArrayList<ConnectedClient>();

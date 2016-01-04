@@ -43,14 +43,11 @@ public class Game {
 	 *
 	 * @throws InterruptedException
 	 */
-	Game(Launcher mainApp) throws InterruptedException {
+	Game(Launcher mainApp, int seed, boolean hasUI) throws InterruptedException {
 
+		// Initial parameters for a new game
 		this.mainApp = mainApp;
-		loadTextures();
-
-		// Initialize a new level
-		seed = 2320; // TODO: Add seed variable
-
+		this.seed = seed;
 		gridY = 16;
 		gridX = 16;
 		gameEngine = new GameEngine(seed, gridX, gridY);
@@ -62,9 +59,12 @@ public class Game {
 		// Initialize in-game timer
 		timer = new Timer();
 
-		// Get the main rendering space
-		this.gc = mainApp.getCanvas();
-		gc.clearRect(0, 0, canvasWidth, canvasHeight);
+		// Draw UI only for the players
+		if (hasUI) {
+			loadTextures();
+			this.gc = mainApp.getCanvas();
+			gc.clearRect(0, 0, canvasWidth, canvasHeight);
+		}
 
 		// Calculate tile dimensions, tiles are squares
 		double tileMaxHeight = (double) canvasHeight / (double) gridY;

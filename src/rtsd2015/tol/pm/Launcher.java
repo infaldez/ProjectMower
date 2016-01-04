@@ -145,10 +145,10 @@ public class Launcher extends Application {
 	 *
 	 * @param name
 	 */
-	public void setClient(String name, int port) {
+	public void setClient(String name, int port, int seed) {
 		controller.switchBtnClient();
 		initRenderCanvas();
-		Client client = new Client(this, controller, name, port);
+		Client client = new Client(this, controller, name, port, seed);
 		controller.client = client;
 		this.clientThread = new Thread(client);
 		this.clientThread.start();
@@ -160,13 +160,13 @@ public class Launcher extends Application {
 	 * @param port
 	 * @throws Exception
 	 */
-	public void setHost(int port) throws Exception {
+	public void setHost(int port, int seed) throws Exception {
 		controller.switchBtnHost();
-		Server server = new Server("localhost", port);
+		Server server = new Server("localhost", port, seed);
 		controller.server = server;
 		this.serverThread = new Thread(server);
 		this.serverThread.start();
-		setClient("player1", port);
+		setClient("player1", port, seed);
 	}
 
 	public static void main(String[] args) throws Exception {
