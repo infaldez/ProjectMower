@@ -47,6 +47,10 @@ public class Game implements Runnable {
 		return level;
 	}
 
+	public List<EntityPlayer> getPlayers() {
+		return players;
+	}
+
 	/**
 	 * Update entity defined by id.
 	 *

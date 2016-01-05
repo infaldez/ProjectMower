@@ -1,6 +1,8 @@
 package rtsd2015.tol.pm;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -114,6 +116,7 @@ public class ClientRenderer implements Runnable {
 			double delta;
 
 			Level level = game.getLevel();
+			List<EntityPlayer> players = game.getPlayers();
 
 			while (render) {
 				// Define this cycle
@@ -132,6 +135,8 @@ public class ClientRenderer implements Runnable {
 
 				// Draw resources
 				drawBoard(level.getBoard());
+				gc.drawImage(tileImages.get(Tile.PLAYER1), players.get(0).getPos()[0], players.get(0).getPos()[1]);
+				gc.drawImage(tileImages.get(Tile.PLAYER2), players.get(1).getPos()[0], players.get(1).getPos()[1]);
 
 				// Wait for the next cycle
 				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
