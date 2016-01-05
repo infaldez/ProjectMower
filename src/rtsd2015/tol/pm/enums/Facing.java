@@ -7,5 +7,5 @@ package rtsd2015.tol.pm.enums;
  */
 public enum Facing {
 	NORTH, EAST, SOUTH, WEST;
-
+	public static final Facing values[] = values();
 }
