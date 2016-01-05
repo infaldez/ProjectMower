@@ -35,7 +35,7 @@ public class Client implements Runnable {
 		this.nickname = nickname;
 		this.serverPort = port;
 		this.seed = seed;
-		KeyboardInput input = new KeyboardInput(mainApp);
+
 	}
 
 	public void joinServer(InetAddress address) throws SocketException, IOException {
@@ -130,6 +130,8 @@ public class Client implements Runnable {
 			renderer = new ClientRenderer(mainApp, clientGame, 24, 24);
 			renderThread = new Thread(renderer);
 			renderThread.start();
+
+			KeyboardInput input = new KeyboardInput(mainApp, clientGame);
 
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
