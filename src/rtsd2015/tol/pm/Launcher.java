@@ -127,7 +127,7 @@ public class Launcher extends Application {
 	 *
 	 */
 	public void setViewport() {
-		this.canvas = new Canvas(800, 520);
+		this.canvas = new Canvas(contentSpace[0], contentSpace[1]);
 		rootLayout.setCenter(canvas);
 		rootLayout.setStyle("-fx-background-color: BLACK");
 	}

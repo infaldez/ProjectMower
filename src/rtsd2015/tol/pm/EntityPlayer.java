@@ -7,16 +7,17 @@ import rtsd2015.tol.pm.enums.Side;
 
 /**
  * The player entity
- * 
+ *
  * @author Ari
  */
 public class EntityPlayer extends Entity {
 
 	public static int playerCount;
+	private int score = 0;
 
 	/**
 	 * Initialize player
-	 * 
+	 *
 	 * @param side
 	 */
 	EntityPlayer(Side s) {
@@ -38,6 +39,14 @@ public class EntityPlayer extends Entity {
 			break;
 		}
 		playerCount++;
+	}
+
+	public void setScore() {
+		this.score++;
+	}
+
+	public int getScore() {
+		return this.score;
 	}
 
 }
