@@ -13,6 +13,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                  <RadioMenuItem fx:id="btnDebug" mnemonicParsing="false" onAction="#handleDebug" text="Debug" />
                   <MenuItem mnemonicParsing="false" onAction="#handleCredits" text="Credits" />
               <MenuItem mnemonicParsing="false" onAction="#handleClose" text="Close Game" />
             </items>

@@ -91,7 +91,7 @@ public class Client implements Runnable {
 
 	public void run() {
 		try {
-			Game client;
+			Game clientGame;
 			ClientRenderer renderer;
 			Thread gameThread;
 			Thread renderThread;
@@ -121,11 +121,10 @@ public class Client implements Runnable {
 			}
 			// FIXME init game here to get graphics rolling, to be removed once graphics remade
 			// not to run forever
-		    //client = new Game(mainApp, seed, true);
-			client = new Game(seed);
-			gameThread = new Thread(client);
+			clientGame = new Game(seed);
+			gameThread = new Thread(clientGame);
 			gameThread.start();
-			renderer = new ClientRenderer(mainApp, client, 24, 24);
+			renderer = new ClientRenderer(mainApp, clientGame, 24, 24);
 			renderThread = new Thread(renderer);
 			renderThread.start();
 

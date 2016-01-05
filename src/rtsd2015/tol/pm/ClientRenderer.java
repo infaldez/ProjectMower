@@ -22,7 +22,6 @@ public class ClientRenderer implements Runnable {
 	private int[] grid = new int[2];
 	private double tileSize, tileOffsetX, tileOffsetY;
 	private boolean render = true;
-	private boolean debug = true;
 
 	private EnumMap<Tile, Image> tileImages;
 
@@ -114,7 +113,7 @@ public class ClientRenderer implements Runnable {
 			long updateLength;
 			double delta;
 
-			Level lvl = game.getLevel();
+			Level level = game.getLevel();
 
 			while (render) {
 				// Define this cycle
@@ -127,12 +126,12 @@ public class ClientRenderer implements Runnable {
 				clearViewport();
 
 				// Show debug
-				if (debug) {
+				if (mainApp.getDebug()) {
 					debug(delta);
 				}
 
 				// Draw resources
-				drawBoard(lvl.getBoard());
+				drawBoard(level.getBoard());
 
 				// Wait for the next cycle
 				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);

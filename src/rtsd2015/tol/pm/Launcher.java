@@ -24,6 +24,7 @@ public class Launcher extends Application {
 	private GraphicsContext gc;
 	private Canvas canvas;
 	private int[] contentSpace = new int[2];
+	private boolean debug = false;
 
 	/**
 	 * Begin to construct the stage
@@ -126,15 +127,6 @@ public class Launcher extends Application {
 		this.canvas = new Canvas(800, 520);
 		rootLayout.setCenter(canvas);
 		rootLayout.setStyle("-fx-background-color: BLACK");
-		//gc = canvas.getGraphicsContext2D();
-		/*
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-		gc.setStroke(Color.WHITE);
-		gc.setFill(Color.RED);
-		gc.strokeText("Receiving ...", 325, 225);
-		gc.setFont(new Font("Consolas", 16));
-		this.gc = gc;
-		*/
 	}
 
 	/**
@@ -148,6 +140,14 @@ public class Launcher extends Application {
 
 	public Canvas getCanvas() {
 		return this.canvas;
+	}
+
+	public void setDebug(boolean b) {
+		this.debug = b;
+	}
+
+	public boolean getDebug() {
+		return this.debug;
 	}
 
 	public int[] getContentSpace() {
