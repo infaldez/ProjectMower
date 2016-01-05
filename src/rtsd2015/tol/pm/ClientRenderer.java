@@ -19,6 +19,8 @@ public class ClientRenderer implements Runnable {
 	Canvas canvas;
 	GraphicsContext gc;
 	Tile[][] board;
+	Level level;
+	List<EntityPlayer> players;
 	private int render_w;
 	private int render_y;
 	private int[] grid = new int[2];
@@ -35,7 +37,6 @@ public class ClientRenderer implements Runnable {
 		this.render_w = mainApp.getContentSpace()[0];
 		this.render_y = mainApp.getContentSpace()[1];
 		this.gc = canvas.getGraphicsContext2D();
-
 	}
 
 	private void init() {
@@ -86,7 +87,7 @@ public class ClientRenderer implements Runnable {
 		tileOffsetY = ((double) render_y - (tileSize * grid[1])) / 2;
 	}
 
-	private void drawBoard(Tile[][] board) {
+	private void drawBoard() {
 		for (int i = 0; i < board.length ; i++) {
 			for (int j = 0; j < board[i].length ; j++) {
 				gc.drawImage(tileImages.get(board[i][j]),
@@ -98,8 +99,18 @@ public class ClientRenderer implements Runnable {
 		}
 	}
 
+	private void drawPlayers() {
+		gc.drawImage(tileImages.get(Tile.PLAYER1), players.get(0).getPos()[0], players.get(0).getPos()[1]);
+		gc.drawImage(tileImages.get(Tile.PLAYER2), players.get(1).getPos()[0], players.get(1).getPos()[1]);
+	}
+
+	private void drawUI() {
+		gc.fillText("Player 1: " + players.get(0).getScore(), 16, 16);
+		gc.fillText("Player 2: " + players.get(1).getScore(), 16, 32);
+	}
+
 	private void debug(double delta) {
-		gc.fillText("Delta: " + delta, 16, 16);
+		gc.fillText("Delta: " + delta, 16, 504);
 	}
 
 	@Override
@@ -116,7 +127,8 @@ public class ClientRenderer implements Runnable {
 			double delta;
 
 			Level level = game.getLevel();
-			List<EntityPlayer> players = game.getPlayers();
+			board = level.getBoard();
+			players = game.getPlayers();
 
 			while (render) {
 				// Define this cycle
@@ -134,9 +146,9 @@ public class ClientRenderer implements Runnable {
 				}
 
 				// Draw resources
-				drawBoard(level.getBoard());
-				gc.drawImage(tileImages.get(Tile.PLAYER1), players.get(0).getPos()[0], players.get(0).getPos()[1]);
-				gc.drawImage(tileImages.get(Tile.PLAYER2), players.get(1).getPos()[0], players.get(1).getPos()[1]);
+				drawBoard();
+				drawPlayers();
+				drawUI();
 
 				// Wait for the next cycle
 				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);

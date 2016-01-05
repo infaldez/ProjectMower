@@ -7,14 +7,11 @@ import rtsd2015.tol.pm.enums.Side;
 
 public class Game implements Runnable {
 
-	// SHARED
 	private int[] grid = new int[2];
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
 	private Timer timer = new Timer();
-
 	private boolean run = true;
-
 
 	/**
 	 * Initializes a new game for both clients and a server
