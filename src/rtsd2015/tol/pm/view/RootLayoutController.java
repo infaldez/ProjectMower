@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.RadioMenuItem;
 import javafx.scene.text.Text;
 import rtsd2015.tol.pm.Client;
 import rtsd2015.tol.pm.Launcher;
@@ -29,6 +30,9 @@ public class RootLayoutController {
 	@FXML
 	private MenuItem btnDisconnect;
 
+	@FXML
+	private RadioMenuItem btnDebug;
+
 	public void setMainApp(Launcher mainApp) {
 		this.mainApp = mainApp;
 		btnDisconnect.setDisable(true);
@@ -40,7 +44,6 @@ public class RootLayoutController {
 	 */
 	@FXML
 	private void handleClose() {
-		// TODO: Make sure sockets are cleared
 		System.exit(0);
 	}
 
@@ -93,12 +96,20 @@ public class RootLayoutController {
 		alert.showAndWait();
 	}
 
+	@FXML void handleDebug() {
+		System.out.println("jo");
+		if (btnDebug.isSelected()) {
+			mainApp.setDebug(true);
+		} else {
+			mainApp.setDebug(false);
+		}
+	}
+
 	/**
 	 * Update status message
 	 *
 	 * @param msg
 	 */
-	@FXML
 	public void setStatus(String msg) {
 		lblStatus.setText("Status: "+msg);
 	}
@@ -108,7 +119,6 @@ public class RootLayoutController {
 	 *
 	 * @param msg
 	 */
-	@FXML
 	public void setPing(String msg) {
 		lblPing.setText(msg);
 	}
@@ -117,7 +127,6 @@ public class RootLayoutController {
 	 * Enable/disable Host button
 	 *
 	 */
-	@FXML
 	public void switchBtnHost() {
 		if (btnHost.isDisable()) {
 			btnHost.setDisable(false);
@@ -130,7 +139,6 @@ public class RootLayoutController {
 	 * Enable/disable Join button
 	 *
 	 */
-	@FXML
 	public void switchBtnClient() {
 		if (btnJoin.isDisable()) {
 			btnJoin.setDisable(false);
@@ -143,7 +151,6 @@ public class RootLayoutController {
 	 * Enable/disable Disconnect button
 	 *
 	 */
-	@FXML
 	public void switchBtnDisconnect() {
 		if (btnDisconnect.isDisable()) {
 			btnDisconnect.setDisable(false);
