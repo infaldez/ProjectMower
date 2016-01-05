@@ -53,7 +53,6 @@ public class RootLayoutController {
 	 */
 	@FXML
 	private void handleConnect() {
-		//mainApp.setClient("player2", 3145);
 		mainApp.showNewJoinDialog();
 	}
 
@@ -97,7 +96,6 @@ public class RootLayoutController {
 	}
 
 	@FXML void handleDebug() {
-		System.out.println("jo");
 		if (btnDebug.isSelected()) {
 			mainApp.setDebug(true);
 		} else {
