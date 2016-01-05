@@ -12,6 +12,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
 import rtsd2015.tol.pm.enums.Tile;
@@ -173,4 +174,18 @@ public class Game {
 	public Level getLevel() {
 		return lvl;
 	}
+	
+	/**
+	 * Update entity defined by id.
+	 */
+	public void updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
+		// TODO Get entity from entity list by id
+		Entity entity;
+		// Update entity
+//		entity.setPos(x, y);
+//		entity.setDir(dir);
+//		entity.setSpeed(speed);
+//		entity.setHealth(health);
+	}
+	
 }

@@ -1,5 +1,6 @@
 package rtsd2015.tol.pm;
 
+import java.lang.*;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
@@ -13,7 +14,7 @@ public class Entity {
 
 	public static int entityCount;
 
-	int id;
+	protected int id;
 	protected int[] position = new int[2];
 	protected int[] gridpos = new int[2];
 	protected int speed;
@@ -32,6 +33,15 @@ public class Entity {
 		entityCount++;
 	}
 
+	/**
+	 * Return entity id.
+	 * 
+	 * @return id
+	 */
+	int getId() {
+		return id;
+	}
+	
 	/**
 	 * Set entity position
 	 *
@@ -65,6 +75,23 @@ public class Entity {
 
 	int[] getGridPos() {
 		return gridpos;
+	}
+
+	/**
+	 * Return entity speed
+	 * 
+	 * @return speed
+	 */
+	int getSpeed() {
+		return speed;
+	}
+	
+	/**
+	 * Set entity speed
+	 * @param newSpeed
+	 */
+	void setSpeed(int newSpeed) {
+		speed = newSpeed;
 	}
 
 	/**
@@ -165,6 +192,10 @@ public class Entity {
 	int getHealth() {
 		return health;
 	}
+	
+	void setHealth(int newHealth) {
+		health = newHealth;
+	}
 
 	/**
 	 * Determine whether entity is alive or not
@@ -174,5 +205,5 @@ public class Entity {
 	boolean isAlive() {
 		return alive;
 	}
-
+	
 }

@@ -6,6 +6,7 @@ import java.lang.*;
 import java.util.ArrayList;
 import java.util.Random;
 
+import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.MessageType;
 public class Server implements Runnable {
 	private Context context;
@@ -95,6 +96,34 @@ public class Server implements Runnable {
 		for (ConnectedClient client : context.clients) {
 			sendMessage(context, message, client);
 		}
+	}
+
+	public String getEntityStatusString(Entity entity) {
+		int id = entity.getId();
+		int[] pos = entity.getPos();
+		int dir = entity.getDir().ordinal();
+		int speed = entity.getSpeed();
+		int health = entity.getHealth();
+
+		return id +  "," +  pos[0] + "," + pos[1] + "," + dir + "," + speed + "," + health;
+	}
+	
+	public void setEntityFromStatusString(String status) {
+		String[] parts = status.split(",");
+		if (parts.length != 6) {
+			throw(new java.lang.IllegalArgumentException("status string must contain 6 fields"));
+		}
+		
+		int id = Integer.parseInt(parts[0]);
+		
+		// TODO get entity by id and set attributes
+		
+		int x = Integer.parseInt(parts[1]);
+		int y = Integer.parseInt(parts[2]);
+		Facing dir = Facing.values[Integer.parseInt(parts[3])];
+		int speed = Integer.parseInt(parts[4]);
+		int health = Integer.parseInt(parts[5]);
+		
 	}
 
 	protected enum States implements State {
