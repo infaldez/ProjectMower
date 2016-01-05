@@ -92,6 +92,9 @@ public class Client implements Runnable {
 	public void run() {
 		try {
 			Game client;
+			ClientRenderer renderer;
+			Thread gameThread;
+			Thread renderThread;
 			StopWatch pingTimer = new StopWatch();
 			joinServer(InetAddress.getByName("localhost"));
 			Message pingMessage = new Message(MessageType.PING, "test");
@@ -118,23 +121,29 @@ public class Client implements Runnable {
 			}
 			// FIXME init game here to get graphics rolling, to be removed once graphics remade
 			// not to run forever
-		    client = new Game(mainApp, seed, true);
+		    //client = new Game(mainApp, seed, true);
+			client = new Game(seed);
+			gameThread = new Thread(client);
+			gameThread.start();
+			renderer = new ClientRenderer(mainApp, client, 24, 24);
+			renderThread = new Thread(renderer);
+			renderThread.start();
 
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
 				if (message != null) {
 					switch(message.type) {
-					case PREPARE:
-						String[] parts = message.body.split(" ");
-						seed = Long.valueOf(parts[0]);
-						int width = Integer.valueOf(parts[1]);
-						int height = Integer.valueOf(parts[2]);
-						client = new Game(mainApp, seed, true);
-						sendMessage(new Message(MessageType.READY));
-						state = State.IN_GAME;
-						break;
-					default:
-						controller.setStatus("Unexcepted message: "+message.toString());
+						case PREPARE:
+							String[] parts = message.body.split(" ");
+							seed = Long.valueOf(parts[0]);
+							int width = Integer.valueOf(parts[1]);
+							int height = Integer.valueOf(parts[2]);
+							//client = new Game(mainApp, seed, true);
+							sendMessage(new Message(MessageType.READY));
+							state = State.IN_GAME;
+							break;
+						default:
+							controller.setStatus("Unexcepted message: "+message.toString());
 					}
 				}
 			}
@@ -143,7 +152,7 @@ public class Client implements Runnable {
 			int updateDeadline = 20;
 			while(state == State.IN_GAME) {
 				// Game loop
-
+				System.out.println("je");
 				// Read user input
 
 				// Determine how long socket is allowed to block
