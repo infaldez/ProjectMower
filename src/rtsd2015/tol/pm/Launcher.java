@@ -14,6 +14,9 @@ import rtsd2015.tol.pm.view.NewHostDialogController;
 import rtsd2015.tol.pm.view.NewJoinDialogController;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
+import javafx.event.*;
+import javafx.scene.input.KeyEvent;
+
 public class Launcher extends Application {
 
 	private Stage primaryStage;
@@ -25,7 +28,7 @@ public class Launcher extends Application {
 	private Canvas canvas;
 	private int[] contentSpace = new int[2];
 	private boolean debug = false;
-
+	private Scene scene;
 	/**
 	 * Begin to construct the stage
 	 *
@@ -48,7 +51,7 @@ public class Launcher extends Application {
 			loader.setLocation(Launcher.class.getResource("view/RootLayout.fxml"));
 			rootLayout = (BorderPane) loader.load();
 			// Create a scene
-			Scene scene = new Scene(rootLayout);
+			scene = new Scene(rootLayout);
 			primaryStage.setScene(scene);
 			// Give the controller access to the main app
 			controller = loader.getController();
@@ -152,6 +155,10 @@ public class Launcher extends Application {
 
 	public int[] getContentSpace() {
 		return this.contentSpace;
+	}
+
+	public Scene getScene(){
+		return scene;
 	}
 
 	/**

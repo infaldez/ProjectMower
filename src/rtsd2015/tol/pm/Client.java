@@ -3,7 +3,9 @@ package rtsd2015.tol.pm;
 import java.net.*;
 
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 
 import java.io.*;
@@ -33,6 +35,7 @@ public class Client implements Runnable {
 		this.nickname = nickname;
 		this.serverPort = port;
 		this.seed = seed;
+		KeyboardInput input = new KeyboardInput(mainApp);
 	}
 
 	public void joinServer(InetAddress address) throws SocketException, IOException {
