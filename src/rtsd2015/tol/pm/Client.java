@@ -138,15 +138,15 @@ public class Client implements Runnable {
 					}
 				}
 			}
-			
+
 			long lastUpdate = System.currentTimeMillis();
 			int updateDeadline = 20;
 			while(state == State.IN_GAME) {
-				// Game loop 
-				
+				// Game loop
+
 				// Read user input
-				
-				// Determine how long socket is allowed to block	
+
+				// Determine how long socket is allowed to block
 				long tillDeadline = lastUpdate - System.currentTimeMillis() + updateDeadline;
 				try {
 					socket.setSoTimeout(Math.toIntExact(tillDeadline));
@@ -167,13 +167,13 @@ public class Client implements Runnable {
 					default:
 						System.out.println("Client: Unexpected message: "+message.toString());
 					}
-					
+
 					while(state == State.PAUSED) {
 						state = State.IN_GAME;
 					}
 				}
 				// TODO Run view update
-				
+
 				lastUpdate = System.currentTimeMillis();
 			}
 		}

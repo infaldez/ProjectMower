@@ -36,6 +36,7 @@ public class Game {
 	private static long lastFpsTime;
 	private static long frameId;
 	private static boolean debug = true;
+	private static ClientRenderer renderer;
 
 	// LOGIC
 	private static long tick = 0;
@@ -74,9 +75,7 @@ public class Game {
 	private static void clientGameLoop() throws InterruptedException {
 
 		// Initialize rendering
-		loadTextures();
-		gc = mainApp.getCanvas();
-		gc.clearRect(0, 0, canvasWidth, canvasHeight);
+		renderer = new ClientRenderer(mainApp, 24, 24);
 
 		// Initialize looping
 		long lastLoopTime = System.nanoTime();
@@ -99,10 +98,11 @@ public class Game {
 			limitedCycles--;
 
 			// New rendering frame
-			gc.clearRect(0, 0, canvasWidth, canvasHeight);
-			drawTiles();
+			//renderer.redraw();
+			//drawTiles();
 
 			// True to draw debug text
+			/*
 			if (debug) {
 				gc.fillText("Delta: " + delta + "(" + limitedCycles + ")", 16, 96);
 				gc.fillText("Player(0) POS: " + players.get(0).getPos()[0] + "," + players.get(0).getPos()[1], 16, 112);
@@ -111,7 +111,7 @@ public class Game {
 				gc.fillText("Player(1) DIR: " + players.get(1).getDir(), 16, 160);
 				gc.fillText("EntityCount: " + Entity.entityCount, 16, 176);
 			}
-
+			*/
 			// Wait for the next frame
 			Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
 		}
@@ -169,7 +169,7 @@ public class Game {
 	private static void serverGameLoop() {
 		tick++;
 	}
-	
+
 	public Level getLevel() {
 		return lvl;
 	}

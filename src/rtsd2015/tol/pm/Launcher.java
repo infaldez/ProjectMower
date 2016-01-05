@@ -24,6 +24,8 @@ public class Launcher extends Application {
 	private Thread serverThread;
 	private Thread clientThread;
 	private GraphicsContext gc;
+	private Canvas canvas;
+	private int[] contentSpace = new int[2];
 
 	/**
 	 * Begin to construct the stage
@@ -52,6 +54,10 @@ public class Launcher extends Application {
 			// Give the controller access to the main app
 			controller = loader.getController();
 			controller.setMainApp(this);
+
+			// Initialize space dedicated for the content
+			contentSpace[0] = 800;
+			contentSpace[1] = 520;
 
 			// Show the stage
 			primaryStage.show();
@@ -118,22 +124,19 @@ public class Launcher extends Application {
 	 * Initializes the rendering space
 	 *
 	 */
-	public void initRenderCanvas() {
-		Canvas canvas = new Canvas(800, 520);
+	public void setViewport() {
+		this.canvas = new Canvas(800, 520);
 		rootLayout.setCenter(canvas);
 		rootLayout.setStyle("-fx-background-color: BLACK");
-
+		//gc = canvas.getGraphicsContext2D();
+		/*
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setStroke(Color.WHITE);
 		gc.setFill(Color.RED);
 		gc.strokeText("Receiving ...", 325, 225);
 		gc.setFont(new Font("Consolas", 16));
 		this.gc = gc;
-	}
-
-	public void setInterfaceContent(Canvas canvas) {
-		rootLayout.setCenter(canvas);
-		rootLayout.setStyle("-fx-background-color: BLACK");
+		*/
 	}
 
 	/**
@@ -141,8 +144,16 @@ public class Launcher extends Application {
 	 *
 	 * @return
 	 */
-	public GraphicsContext getCanvas() {
+	public GraphicsContext getGraphicsContext() {
 		return this.gc;
+	}
+
+	public Canvas getCanvas() {
+		return this.canvas;
+	}
+
+	public int[] getContentSpace() {
+		return this.contentSpace;
 	}
 
 	/**
@@ -152,7 +163,7 @@ public class Launcher extends Application {
 	 */
 	public void setClient(String name, int port, long seed) {
 		controller.switchBtnClient();
-		initRenderCanvas();
+		setViewport();
 		Client client = new Client(this, controller, name, port, seed);
 		controller.client = client;
 		this.clientThread = new Thread(client);
