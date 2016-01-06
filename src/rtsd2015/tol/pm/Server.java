@@ -91,7 +91,7 @@ public class Server implements Runnable {
 		DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
 		context.socket.send(packet);
 	}
-	
+
 	static private void broadcastMessage(Context context, Message message) throws IOException {
 		for (ConnectedClient client : context.clients) {
 			sendMessage(context, message, client);
@@ -107,23 +107,24 @@ public class Server implements Runnable {
 
 		return id +  "," +  pos[0] + "," + pos[1] + "," + dir + "," + speed + "," + health;
 	}
-	
+
 	public void setEntityFromStatusString(String status) {
 		String[] parts = status.split(",");
 		if (parts.length != 6) {
 			throw(new java.lang.IllegalArgumentException("status string must contain 6 fields"));
 		}
-		
+
 		int id = Integer.parseInt(parts[0]);
-		
+
 		// TODO get entity by id and set attributes
-		
+
 		int x = Integer.parseInt(parts[1]);
 		int y = Integer.parseInt(parts[2]);
-		Facing dir = Facing.values[Integer.parseInt(parts[3])];
+		// TODO: FIX!
+		//Facing dir = Facing.values[Integer.parseInt(parts[3])];
 		int speed = Integer.parseInt(parts[4]);
 		int health = Integer.parseInt(parts[5]);
-		
+
 	}
 
 	protected enum States implements State {
@@ -187,7 +188,7 @@ public class Server implements Runnable {
 				default:
 					System.out.println("Server: Unexpected message: "+message.toString());
 				}
-				
+
 				boolean allReady = true;
 				for (ConnectedClient client : context.clients) {
 					if (client.state != ConnectedClient.ClientState.READY) {
@@ -201,7 +202,7 @@ public class Server implements Runnable {
 				else {
 					context.state = States.GAME_START;
 				}
-				
+
 				return true;
 			}
 		},
@@ -228,7 +229,7 @@ public class Server implements Runnable {
 	static protected void broadcastGameState(Context context) {
 
 	}
-	
+
 	Server(String hostname, int port) throws Exception {
 		this(hostname, port, new Random().nextInt()); // Random seed if none given
 	}

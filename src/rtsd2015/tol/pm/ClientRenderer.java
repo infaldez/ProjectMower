@@ -10,6 +10,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.transform.Rotate;
+import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Tile;
 
 public class ClientRenderer implements Runnable {
@@ -99,16 +101,46 @@ public class ClientRenderer implements Runnable {
 		}
 	}
 
-	private void drawPlayers() {
-		gc.drawImage(tileImages.get(Tile.PLAYER1), players.get(0).getPos()[0], players.get(0).getPos()[1]);
-		gc.drawImage(tileImages.get(Tile.PLAYER2), players.get(1).getPos()[0], players.get(1).getPos()[1]);
-	}
-
 	private void drawUI() {
 		gc.fillText("Player 1: " + players.get(0).getScore(), 16, 16);
 		gc.fillText("Player 2: " + players.get(1).getScore(), 16, 32);
 	}
 
+	/**
+	 * Sets the transform for the GraphicsContext to rotate around a pivot point
+	 *
+	 * @param angle the angle of rotation
+	 * @param px the x pivot coordinate for the rotation (in canvas coordinates)
+	 * @param py the y pivot coordinate for the rotation (in canvas coordinates)
+	 */
+	private void rotate(double angle, double px, double py) {
+		Rotate r = new Rotate(angle, px, py);
+		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+	}
+
+	/**
+	 * Draws a turnable image on a graphics context
+	 *
+	 * The image is drawn at (tlpx, tlpy) rotated by angle pivoted around the point:
+	 * (tlpx + image.getWidth() / 2, tlpy + image.getHeight() / 2)
+	 *
+	 * @param image the image to be drawn
+	 * @param angle the angle of rotation
+	 * @param tlpx the top left x coordinate where the image will be plotted (in canvas coordinates)
+	 * @param tlpy the top left y coordinate where the image will be plotted (in canvas coordinates)
+	 */
+	private void drawRotatedImage(Image image, double angle, double tlpx, double tlpy) {
+		gc.save();
+		rotate(angle, tlpx + image.getWidth() / 2, tlpy + image.getHeight() / 2);
+		gc.drawImage(image, tlpx, tlpy);
+		gc.restore();
+	}
+
+	/**
+	 * Draws debug information
+	 *
+	 * @param delta
+	 */
 	private void debug(double delta) {
 		gc.fillText("Delta: " + delta, 16, 504);
 	}
@@ -147,7 +179,8 @@ public class ClientRenderer implements Runnable {
 
 				// Draw resources
 				drawBoard();
-				drawPlayers();
+				drawRotatedImage(tileImages.get(Tile.PLAYER1), players.get(0).getDir().getDirections(), players.get(0).getPos()[0], players.get(0).getPos()[1]);
+				drawRotatedImage(tileImages.get(Tile.PLAYER2), players.get(1).getDir().getDirections(), players.get(1).getPos()[0], players.get(1).getPos()[1]);
 				drawUI();
 
 				// Wait for the next cycle
