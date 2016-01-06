@@ -19,9 +19,9 @@ public class Game implements Runnable {
 	 * @throws InterruptedException
 	 */
 	Game(long sd) throws InterruptedException {
-		this.grid[0] = 24;
-		this.grid[1] = 24;
-		this.level = new Level(sd, grid[0], grid[1]);
+		this.grid[0] = 16;
+		this.grid[1] = 16;
+		this.level = new Level(sd, grid[0], grid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE));
 		players.add(new EntityPlayer(Side.RED));
 	}

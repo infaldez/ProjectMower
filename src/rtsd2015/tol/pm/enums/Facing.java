@@ -21,4 +21,6 @@ public enum Facing {
 		return dirs;
 	}
 
+	public static final Facing values[] = values();
+
 }

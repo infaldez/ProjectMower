@@ -4,6 +4,7 @@ import java.lang.*;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
+import rtsd2015.tol.pm.enums.Tile;
 
 /**
  * Base class for all entities
@@ -19,8 +20,9 @@ public class Entity {
 	protected int[] gridpos = new int[2];
 	protected int speed;
 	protected int health;
-	protected Facing dir;
+	protected Facing dir = Facing.NORTH;
 	protected Side side;
+	protected Tile tile;
 	protected boolean breakable = true;
 	protected boolean alive = true;
 
@@ -35,13 +37,13 @@ public class Entity {
 
 	/**
 	 * Return entity id.
-	 * 
+	 *
 	 * @return id
 	 */
 	int getId() {
 		return id;
 	}
-	
+
 	/**
 	 * Set entity position
 	 *
@@ -49,8 +51,8 @@ public class Entity {
 	 * @param y
 	 */
 	protected void setPos(int x, int y) {
-		position[0] = x;
-		position[1] = y;
+		this.position[0] = x;
+		this.position[1] = y;
 	}
 
 	/**
@@ -60,8 +62,8 @@ public class Entity {
 	 * @param y
 	 */
 	protected void setGridPos(int x, int y) {
-		gridpos[0] = x;
-		gridpos[1] = y;
+		this.gridpos[0] = x;
+		this.gridpos[1] = y;
 	}
 
 	/**
@@ -77,21 +79,29 @@ public class Entity {
 		return gridpos;
 	}
 
+	protected void setTile(Tile tile) {
+		this.tile = tile;
+	}
+
+	public Tile getTile() {
+		return this.tile;
+	}
+
 	/**
 	 * Return entity speed
-	 * 
+	 *
 	 * @return speed
 	 */
 	int getSpeed() {
 		return speed;
 	}
-	
+
 	/**
 	 * Set entity speed
 	 * @param newSpeed
 	 */
 	void setSpeed(int newSpeed) {
-		speed = newSpeed;
+		this.speed = newSpeed;
 	}
 
 	/**
@@ -109,7 +119,7 @@ public class Entity {
 	 * @param newDir
 	 */
 	void setDir(Facing d) {
-		dir = d;
+		this.dir = d;
 	}
 
 	/**
@@ -169,7 +179,7 @@ public class Entity {
 	 * @param amount
 	 */
 	void increaseHealth(int h) {
-		health += h;
+		this.health += h;
 	}
 
 	/**
@@ -180,7 +190,7 @@ public class Entity {
 	void decreaseHealth(int h) {
 		health -= h;
 		if (health <= 0 && breakable == true) {
-			alive = false;
+			this.alive = false;
 		}
 	}
 
@@ -192,9 +202,9 @@ public class Entity {
 	int getHealth() {
 		return health;
 	}
-	
+
 	void setHealth(int newHealth) {
-		health = newHealth;
+		this.health = newHealth;
 	}
 
 	/**
@@ -205,5 +215,5 @@ public class Entity {
 	boolean isAlive() {
 		return alive;
 	}
-	
+
 }

@@ -19,7 +19,9 @@ public class ClientRenderer implements Runnable {
 	GraphicsContext gc;
 	Tile[][] board;
 	Level level;
-	List<EntityPlayer> players;
+	List<EntityPlayer> playerEntities;
+	List<Object> surfaceEntities;
+	List<Object> staticEntities;
 	private String resources = "file:src/rtsd2015/tol/pm/resources/";
 	private int render_w;
 	private int render_y;
@@ -82,21 +84,9 @@ public class ClientRenderer implements Runnable {
 		tileOffsetY = ((double) render_y - (tileSize * grid[1])) / 2;
 	}
 
-	private void drawBoard() {
-		for (int i = 0; i < board.length ; i++) {
-			for (int j = 0; j < board[i].length ; j++) {
-				gc.drawImage(tileImages.get(board[i][j]),
-						tileOffsetX + i * tileSize,
-						tileOffsetY + j * tileSize,
-						tileSize, tileSize
-						);
-			}
-		}
-	}
-
 	private void drawUI() {
-		gc.fillText("Player 1: " + players.get(0).getScore(), 16, 16);
-		gc.fillText("Player 2: " + players.get(1).getScore(), 16, 32);
+		gc.fillText("Player 1: " + playerEntities.get(0).getScore(), 16, 16);
+		gc.fillText("Player 2: " + playerEntities.get(1).getScore(), 16, 32);
 	}
 
 	/**
@@ -122,10 +112,14 @@ public class ClientRenderer implements Runnable {
 	 * @param tlpx the top left x coordinate where the image will be plotted (in canvas coordinates)
 	 * @param tlpy the top left y coordinate where the image will be plotted (in canvas coordinates)
 	 */
-	private void drawRotatedImage(Image image, double angle, double tlpx, double tlpy) {
+	private void drawRotatedImage(Image image, double angle, double tlpx, double tlpy, boolean offset) {
 		gc.save();
-		rotate(angle, tlpx + image.getWidth() / 2, tlpy + image.getHeight() / 2);
-		gc.drawImage(image, tlpx, tlpy);
+		rotate(angle, tlpx + tileSize / 2, tlpy + tileSize / 2);
+		if (offset) {
+			tlpx = tileOffsetX + tlpx * tileSize;
+			tlpy = tileOffsetY + tlpy * tileSize;
+		}
+		gc.drawImage(image, tlpx, tlpy, tileSize, tileSize);
 		gc.restore();
 	}
 
@@ -152,8 +146,9 @@ public class ClientRenderer implements Runnable {
 			double delta;
 
 			Level level = game.getLevel();
-			board = level.getBoard();
-			players = game.getPlayers();
+			surfaceEntities = level.getSurfaceEntities();
+			staticEntities = level.getStaticEntities();
+			playerEntities = game.getPlayers();
 
 			while (render) {
 				// Define this cycle
@@ -171,9 +166,22 @@ public class ClientRenderer implements Runnable {
 				}
 
 				// Draw resources
-				drawBoard();
-				drawRotatedImage(tileImages.get(Tile.PLAYER1), players.get(0).getDir().getDirections(), players.get(0).getPos()[0], players.get(0).getPos()[1]);
-				drawRotatedImage(tileImages.get(Tile.PLAYER2), players.get(1).getDir().getDirections(), players.get(1).getPos()[0], players.get(1).getPos()[1]);
+
+				for (Object obj : surfaceEntities) {
+					Entity entity = (Entity) obj;
+					drawRotatedImage(tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], true);
+				}
+
+				for (Object obj : staticEntities) {
+					Entity entity = (Entity) obj;
+					drawRotatedImage(tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], true);
+				}
+
+				for (EntityPlayer obj : playerEntities) {
+					Entity entity = (Entity) obj;
+					drawRotatedImage(tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getPos()[0], entity.getPos()[1], false);
+				}
+
 				drawUI();
 
 				// Wait for the next cycle

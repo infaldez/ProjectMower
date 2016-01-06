@@ -4,11 +4,12 @@ import java.util.ArrayList;
 
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
+import rtsd2015.tol.pm.enums.Tile;
 
 /**
  * The player entity
  *
- * @author Ari
+ * @author Ari, Janne
  */
 public class EntityPlayer extends Entity {
 
@@ -28,14 +29,17 @@ public class EntityPlayer extends Entity {
 		switch (side) {
 		case BLUE:
 			setDir(Facing.EAST);
+			setTile(Tile.PLAYER1);
 			// TODO: Define BLUE player starting position
 			break;
 		case RED:
 			setDir(Facing.WEST);
+			setTile(Tile.PLAYER2);
 			// TODO: Define RED player starting position
 			break;
 		default:
 			setDir(Facing.NORTH);
+			setTile(Tile.PLAYER1);
 			break;
 		}
 		playerCount++;

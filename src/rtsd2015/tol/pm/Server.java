@@ -121,7 +121,7 @@ public class Server implements Runnable {
 		int x = Integer.parseInt(parts[1]);
 		int y = Integer.parseInt(parts[2]);
 		// TODO: FIX!
-		//Facing dir = Facing.values[Integer.parseInt(parts[3])];
+		Facing dir = Facing.values[Integer.parseInt(parts[3])];
 		int speed = Integer.parseInt(parts[4]);
 		int health = Integer.parseInt(parts[5]);
 

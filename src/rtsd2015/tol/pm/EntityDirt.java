@@ -2,10 +2,10 @@ package rtsd2015.tol.pm;
 
 import rtsd2015.tol.pm.enums.Tile;
 
-public class EntityBigRock extends Entity {
-	EntityBigRock(int x, int y) {
+public class EntityDirt extends Entity {
+	EntityDirt(int x, int y) {
 		breakable = true;
 		setGridPos(x, y);
-		setTile(Tile.BIG_ROCK);
+		setTile(Tile.DIRT);
 	}
 }
