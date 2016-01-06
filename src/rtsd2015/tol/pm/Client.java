@@ -98,6 +98,7 @@ public class Client implements Runnable {
 			ClientRenderer renderer;
 			Thread gameThread;
 			Thread renderThread;
+			KeyboardInput input;
 			StopWatch pingTimer = new StopWatch();
 			joinServer(InetAddress.getByName("localhost"));
 			Message pingMessage = new Message(MessageType.PING, "test");
@@ -130,8 +131,7 @@ public class Client implements Runnable {
 			renderer = new ClientRenderer(mainApp, clientGame, 24, 24);
 			renderThread = new Thread(renderer);
 			renderThread.start();
-
-			KeyboardInput input = new KeyboardInput(mainApp, clientGame);
+			input = new KeyboardInput(mainApp, clientGame);
 
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
