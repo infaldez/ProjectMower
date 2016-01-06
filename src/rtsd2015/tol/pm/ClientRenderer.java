@@ -23,6 +23,7 @@ public class ClientRenderer implements Runnable {
 	Tile[][] board;
 	Level level;
 	List<EntityPlayer> players;
+	private String resources = "file:src/rtsd2015/tol/pm/resources/";
 	private int render_w;
 	private int render_y;
 	private int[] grid = new int[2];
@@ -67,14 +68,13 @@ public class ClientRenderer implements Runnable {
 	 */
 	private void buildTextures() {
 		tileImages = new EnumMap<Tile, Image>(Tile.class);
-		String imgPath = "file:src/rtsd2015/tol/pm/view/";
-		tileImages.put(Tile.DIRT, new Image(imgPath + "dirt.png"));
-		tileImages.put(Tile.GRASS, new Image(imgPath + "grass.png"));
-		tileImages.put(Tile.TREE, new Image(imgPath + "tree.png"));
-		tileImages.put(Tile.BIG_ROCK, new Image(imgPath + "big_rock.png"));
-		tileImages.put(Tile.SMALL_ROCK, new Image(imgPath + "small_rock.png"));
-		tileImages.put(Tile.PLAYER1, new Image(imgPath + "player1.png"));
-		tileImages.put(Tile.PLAYER2, new Image(imgPath + "player2.png"));
+		tileImages.put(Tile.DIRT, new Image(resources + "dirt.png"));
+		tileImages.put(Tile.GRASS, new Image(resources + "grass.png"));
+		tileImages.put(Tile.TREE, new Image(resources + "tree.png"));
+		tileImages.put(Tile.BIG_ROCK, new Image(resources + "big_rock.png"));
+		tileImages.put(Tile.SMALL_ROCK, new Image(resources + "small_rock.png"));
+		tileImages.put(Tile.PLAYER1, new Image(resources + "player1.png"));
+		tileImages.put(Tile.PLAYER2, new Image(resources + "player2.png"));
 	}
 
 	/**
