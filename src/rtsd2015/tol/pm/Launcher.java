@@ -10,6 +10,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import rtsd2015.tol.pm.view.NewHostDialogController;
 import rtsd2015.tol.pm.view.NewJoinDialogController;
 import rtsd2015.tol.pm.view.RootLayoutController;
@@ -37,6 +38,11 @@ public class Launcher extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Mower Madness 2016");
+		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent we) {
+				System.exit(0);
+			}
+		});
 		initRootLayout();
 	}
 
