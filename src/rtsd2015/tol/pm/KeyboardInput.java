@@ -14,21 +14,22 @@ public class KeyboardInput {
         mainApp.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+            	System.out.println(game.getPlayers().get(0).getGridPos()[0] + "." + game.getPlayers().get(0).getGridPos()[1]);
                 switch (event.getCode()) {
                     case UP:
-                    	game.getPlayers().get(0).setPos(game.getPlayers().get(0).getPos()[0], game.getPlayers().get(0).getPos()[1] -1);
+                    	game.getPlayers().get(0).setGridPos(game.getPlayers().get(0).getGridPos()[0], game.getPlayers().get(0).getGridPos()[1] -1);
                     	game.getPlayers().get(0).setDir(Facing.NORTH);
                     	break;
                     case DOWN:
-                    	game.getPlayers().get(0).setPos(game.getPlayers().get(0).getPos()[0], game.getPlayers().get(0).getPos()[1] +1);
+                    	game.getPlayers().get(0).setGridPos(game.getPlayers().get(0).getGridPos()[0], game.getPlayers().get(0).getGridPos()[1] +1);
                     	game.getPlayers().get(0).setDir(Facing.SOUTH);
 	                	break;
                     case LEFT:
-                    	game.getPlayers().get(0).setPos(game.getPlayers().get(0).getPos()[0] -1, game.getPlayers().get(0).getPos()[1]);
+                    	game.getPlayers().get(0).setGridPos(game.getPlayers().get(0).getGridPos()[0] -1, game.getPlayers().get(0).getGridPos()[1]);
                     	game.getPlayers().get(0).setDir(Facing.WEST);
 	                	break;
                     case RIGHT:
-	                	game.getPlayers().get(0).setPos(game.getPlayers().get(0).getPos()[0] +1, game.getPlayers().get(0).getPos()[1]);
+	                	game.getPlayers().get(0).setGridPos(game.getPlayers().get(0).getGridPos()[0] +1, game.getPlayers().get(0).getGridPos()[1]);
 	                	game.getPlayers().get(0).setDir(Facing.EAST);
 	                	break;
                 }

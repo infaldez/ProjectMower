@@ -113,14 +113,12 @@ public class ClientRenderer implements Runnable {
 	 * @param tlpy the top left y coordinate where the image will be plotted (in canvas coordinates)
 	 */
 	private void drawRotatedImage(Image image, double angle, double tlpx, double tlpy, boolean offset) {
-		gc.save();
-		rotate(angle, tlpx + tileSize / 2, tlpy + tileSize / 2);
 		if (offset) {
 			tlpx = tileOffsetX + tlpx * tileSize;
 			tlpy = tileOffsetY + tlpy * tileSize;
 		}
+		rotate(angle, tlpx + (tileSize / 2), tlpy + (tileSize / 2));
 		gc.drawImage(image, tlpx, tlpy, tileSize, tileSize);
-		gc.restore();
 	}
 
 	/**
@@ -158,15 +156,10 @@ public class ClientRenderer implements Runnable {
 				delta = updateLength / ((double) OPTIMAL_TIME);
 
 				// Clear viewport
+				gc.save();
 				clearViewport();
 
-				// Show debug
-				if (mainApp.getDebug()) {
-					debug(delta);
-				}
-
 				// Draw resources
-
 				for (Object obj : surfaceEntities) {
 					Entity entity = (Entity) obj;
 					drawRotatedImage(tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], true);
@@ -179,10 +172,17 @@ public class ClientRenderer implements Runnable {
 
 				for (EntityPlayer obj : playerEntities) {
 					Entity entity = (Entity) obj;
-					drawRotatedImage(tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getPos()[0], entity.getPos()[1], false);
+					drawRotatedImage(tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], true);
 				}
 
+				gc.restore();
+
 				drawUI();
+
+				// Show debug
+				if (mainApp.getDebug()) {
+					debug(delta);
+				}
 
 				// Wait for the next cycle
 				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);

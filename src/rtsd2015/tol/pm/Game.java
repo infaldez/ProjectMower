@@ -22,8 +22,8 @@ public class Game implements Runnable {
 		this.grid[0] = 16;
 		this.grid[1] = 16;
 		this.level = new Level(sd, grid[0], grid[1], 40);
-		players.add(new EntityPlayer(Side.BLUE));
-		players.add(new EntityPlayer(Side.RED));
+		players.add(new EntityPlayer(Side.BLUE, 0, 0));
+		players.add(new EntityPlayer(Side.RED, this.grid[0], this.grid[1]));
 	}
 
 	/**

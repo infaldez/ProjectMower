@@ -21,10 +21,11 @@ public class EntityPlayer extends Entity {
 	 *
 	 * @param side
 	 */
-	EntityPlayer(Side s) {
+	EntityPlayer(Side s, int x, int y) {
 		side = s;
 		health = 3;
 		speed = 1;
+		setGridPos(x, y);
 		// TODO: Properties file
 		switch (side) {
 		case BLUE:
