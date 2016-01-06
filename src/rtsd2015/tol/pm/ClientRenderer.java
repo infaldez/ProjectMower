@@ -1,17 +1,14 @@
 package rtsd2015.tol.pm;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Rotate;
-import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Tile;
 
 public class ClientRenderer implements Runnable {
@@ -48,10 +45,6 @@ public class ClientRenderer implements Runnable {
 		gc.fillText("Initializing ...", 16, 16);
 		buildTextures();
 		initTileDimensions();
-	}
-
-	private GraphicsContext getGraphicsContext() {
-		return gc;
 	}
 
 	/**
