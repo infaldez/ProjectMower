@@ -16,7 +16,11 @@ import rtsd2015.tol.pm.enums.Tile;
 public class Entity {
 
 	// ThreadLocal to separate client and server thread
-	public ThreadLocal<Integer> entityCount;
+	public ThreadLocal<Integer> entityCount = new ThreadLocal<Integer>() {
+		@Override protected Integer initialValue() {
+			return new Integer(0);
+		}
+	};
 
 	protected int id;
 	protected int[] position = new int[2];
