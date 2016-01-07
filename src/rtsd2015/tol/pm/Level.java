@@ -41,7 +41,7 @@ public class Level {
 
 		initSurfaceEntities();
 		initMissionEntities();
-		initStaticEntities(density);
+		initWorldEntities(density);
 	}
 
 	/**
@@ -98,7 +98,7 @@ public class Level {
 	 *
 	 * @param density the density orders how filled the final board will be
 	 */
-	private void initStaticEntities(double density) {
+	private void initWorldEntities(double density) {
 		boolean placed = false;
 		if (density >= 1) {
 			density = density / 100;
