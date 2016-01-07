@@ -308,7 +308,7 @@ public class Entity {
 	 *
 	 * @return
 	 */
-	public long getInteractionScore() {
+	public long getInteractionScore(Side side) {
 		return interactionScore;
 	}
 

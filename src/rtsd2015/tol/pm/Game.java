@@ -99,20 +99,26 @@ public class Game implements Runnable {
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 				time.setTextString("Time Left: ");
 
-				// Collision
+				players.get(0).move();
+
 				switch(level.getHitbox(players.get(0).getNewGridPos()[0], players.get(0).getNewGridPos()[1])){
 				case NONE:
 					players.get(0).changePos();
 					break;
 				case BREAKABLE:
-					players.get(0).setScore(1);
 					players.get(0).changePos();
+					if(((Entity) level.getEntity(players.get(0).getGridPos()[0], players.get(0).getGridPos()[1])).isAlive()){
+						players.get(0).setScore(((Entity) level.getEntity(players.get(0).getGridPos()[0], players.get(0).getGridPos()[1])).getInteractionScore(players.get(0).getSide()));
+						((Entity) level.getEntity(players.get(0).getGridPos()[0], players.get(0).getGridPos()[1])).setAlive(false);
+					}
 					break;
 				case PLAYER:
 					break;
 				case STATIC:
 					break;
 				}
+
+
 
 				// Prevent players from leaving the game area
 				for (EntityPlayer entity : players) {
