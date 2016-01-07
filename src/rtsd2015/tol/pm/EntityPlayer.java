@@ -22,7 +22,7 @@ public class EntityPlayer extends Entity {
 	 *
 	 * @param side
 	 */
-	EntityPlayer(Side s, int x, int y) {
+	public EntityPlayer(Side s, int x, int y) {
 		side = s;
 		health = 3;
 		speed = 1;
@@ -54,6 +54,11 @@ public class EntityPlayer extends Entity {
 
 	public int getScore() {
 		return this.score;
+	}
+
+	public void changePos() {
+		this.gridpos[0] = this.newgridpos[0];
+		this.gridpos[1] = this.newgridpos[1];
 	}
 
 }

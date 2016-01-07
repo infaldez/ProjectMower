@@ -11,7 +11,7 @@ public class EntityTree extends Entity {
 	 * @param x
 	 * @param y
 	 */
-	EntityTree(int x, int y) {
+	public EntityTree(int x, int y) {
 		breakable = false;
 		setGridPos(x, y);
 		setTile(Tile.TREE);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
+import rtsd2015.tol.pm.enums.Hitbox;
 
 public class Game implements Runnable {
 
@@ -79,6 +80,22 @@ public class Game implements Runnable {
 				lastLoopTime = System.nanoTime();
 
 				// TODO: Add logic content
+
+				// Collision
+				switch(level.getHitbox(players.get(0).getNewGridPos()[0], players.get(0).getNewGridPos()[1])){
+				case NONE:
+					players.get(0).changePos();
+					break;
+				case BREAKABLE:
+					players.get(0).setScore();
+					players.get(0).changePos();
+					break;
+				case PLAYER:
+					break;
+				case STATIC:
+					break;
+				}
+
 
 				// Prevent players from leaving the game area
 				for (EntityPlayer entity : players) {

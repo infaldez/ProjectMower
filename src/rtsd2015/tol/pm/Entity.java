@@ -25,8 +25,10 @@ public class Entity {
 	protected int id;
 	protected int[] position = new int[2];
 	protected int[] gridpos = new int[2];
+	protected int[] newgridpos = new int[2];
 	protected int speed;
 	protected int health;
+	protected long interactionScore = 0;
 	protected Facing dir = Facing.NORTH;
 	protected Hitbox hitbox = Hitbox.NONE;
 	protected Side side;
@@ -82,6 +84,11 @@ public class Entity {
 		this.gridpos[1] = y;
 	}
 
+	public void setNewGridPos(int x, int y) {
+		this.newgridpos[0] = x;
+		this.newgridpos[1] = y;
+	}
+
 	/**
 	 * Return entity position
 	 *
@@ -93,6 +100,10 @@ public class Entity {
 
 	public int[] getGridPos() {
 		return gridpos;
+	}
+
+	public int [] getNewGridPos() {
+		return newgridpos;
 	}
 
 	protected void setTile(Tile tile) {
@@ -250,6 +261,15 @@ public class Entity {
 	 */
 	public Hitbox getHitbox() {
 		return hitbox;
+	}
+
+	/**
+	 * Returns the possible score for interacting with this entity
+	 *
+	 * @return
+	 */
+	public long getInteractionScore() {
+		return interactionScore;
 	}
 
 }
