@@ -32,7 +32,6 @@ public class KeyboardInput {
 	                	game.getPlayers().get(0).setDir(Facing.EAST);
 	                	break;
                 }
-                System.out.println(game.getLevel().getHitbox(game.getPlayers().get(0).getGridPos()[0], game.getPlayers().get(0).getGridPos()[1]));
             }
         });
 
