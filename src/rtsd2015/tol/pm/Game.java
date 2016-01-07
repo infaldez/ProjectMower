@@ -17,9 +17,8 @@ public class Game implements Runnable {
 	/**
 	 * Initializes a new game for both clients and a server
 	 *
-	 * @throws InterruptedException
 	 */
-	Game(long sd) throws InterruptedException {
+	Game(long sd) {
 		gameGrid[0] = 16;
 		gameGrid[1] = 16;
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
@@ -55,12 +54,14 @@ public class Game implements Runnable {
 	 */
 	public void updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
 		// TODO Get entity from entity list by id
-		//Entity entity;
+		Entity entity = Entity.getEntity(id);
 		// Update entity
-//		entity.setPos(x, y);
-//		entity.setDir(dir);
-//		entity.setSpeed(speed);
-//		entity.setHealth(health);
+		if(entity != null) {
+			entity.setPos(x, y);
+			entity.setDir(dir);
+			entity.setSpeed(speed);
+			entity.setHealth(health);
+		}
 	}
 
 	/**
