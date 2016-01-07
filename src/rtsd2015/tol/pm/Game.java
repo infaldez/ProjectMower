@@ -69,7 +69,7 @@ public class Game implements Runnable {
 	public void run() {
 		try {
 			long lastLoopTime = System.nanoTime();
-			final int TARGET_FPS = 16;
+			final int TARGET_FPS = 30;
 			final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 
 			timer.start();
