@@ -1,44 +1,44 @@
 package rtsd2015.tol.pm;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import rtsd2015.tol.pm.view.NewHostDialogController;
 import rtsd2015.tol.pm.view.NewJoinDialogController;
 import rtsd2015.tol.pm.view.RootLayoutController;
-
 import javafx.event.*;
-import javafx.scene.input.KeyEvent;
 
 public class Launcher extends Application {
 
-	private Stage primaryStage;
-	private BorderPane rootLayout;
-	private RootLayoutController controller;
-	private Thread serverThread;
-	private Thread clientThread;
-	private GraphicsContext gc;
-	private Canvas canvas;
-	private int[] contentSpace = new int[2];
-	private boolean debug = false;
-	private Scene scene;
+	private static Stage primaryStage;
+	private static BorderPane rootLayout;
+	private static RootLayoutController controller;
+	private static Thread serverThread;
+	private static Thread clientThread;
+	private static List<Canvas> canvases = new ArrayList <Canvas>();
+	private static int[] contentSpace = new int[2];
+	private static boolean debug = false;
+	private static Scene scene;
 	/**
 	 * Begin to construct the stage
 	 *
 	 */
 	@Override
 	public void start(Stage primaryStage) {
-		this.primaryStage = primaryStage;
-		this.primaryStage.setTitle("Mower Madness 2016");
-		this.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+		Launcher.primaryStage = primaryStage;
+		Launcher.primaryStage.setTitle("Mower Madness 2016");
+		Launcher.primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			public void handle(WindowEvent we) {
 				System.exit(0);
 			}
@@ -133,34 +133,30 @@ public class Launcher extends Application {
 	 *
 	 */
 	public void setViewport() {
-		this.canvas = new Canvas(contentSpace[0], contentSpace[1]);
-		rootLayout.setCenter(canvas);
+		canvases.add(new Canvas(contentSpace[0], contentSpace[1]));
+		canvases.add(new Canvas(contentSpace[0], contentSpace[1]));
+		Pane gfx = new Pane();
+		gfx.getChildren().add(canvases.get(0));
+		gfx.getChildren().add(canvases.get(1));
+		canvases.get(0).toFront();
+		rootLayout.setCenter(gfx);
 		rootLayout.setStyle("-fx-background-color: BLACK");
 	}
 
-	/**
-	 * Returns the rendering space for the client to use
-	 *
-	 * @return
-	 */
-	public GraphicsContext getGraphicsContext() {
-		return this.gc;
-	}
-
-	public Canvas getCanvas() {
-		return this.canvas;
+	public Canvas getCanvas(int c) {
+		return Launcher.canvases.get(c);
 	}
 
 	public void setDebug(boolean b) {
-		this.debug = b;
+		debug = b;
 	}
 
 	public boolean getDebug() {
-		return this.debug;
+		return debug;
 	}
 
 	public int[] getContentSpace() {
-		return this.contentSpace;
+		return contentSpace;
 	}
 
 	public Scene getScene(){
@@ -177,8 +173,8 @@ public class Launcher extends Application {
 		setViewport();
 		Client client = new Client(this, controller, name, port, seed);
 		controller.client = client;
-		this.clientThread = new Thread(client);
-		this.clientThread.start();
+		clientThread = new Thread(client);
+		clientThread.start();
 	}
 
 	/**
@@ -191,8 +187,8 @@ public class Launcher extends Application {
 		controller.switchBtnHost();
 		Server server = new Server("localhost", port, seed);
 		controller.server = server;
-		this.serverThread = new Thread(server);
-		this.serverThread.start();
+		serverThread = new Thread(server);
+		serverThread.start();
 		setClient("player1", port, seed);
 	}
 

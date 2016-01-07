@@ -14,7 +14,6 @@ public class KeyboardInput {
         mainApp.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-            	System.out.println(game.getPlayers().get(0).getGridPos()[0] + "." + game.getPlayers().get(0).getGridPos()[1]);
                 switch (event.getCode()) {
                     case UP:
                     	game.getPlayers().get(0).setGridPos(game.getPlayers().get(0).getGridPos()[0], game.getPlayers().get(0).getGridPos()[1] -1);

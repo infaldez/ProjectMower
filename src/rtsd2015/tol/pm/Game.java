@@ -7,7 +7,7 @@ import rtsd2015.tol.pm.enums.Side;
 
 public class Game implements Runnable {
 
-	private int[] grid = new int[2];
+	private int[] gameGrid = new int[2];
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
 	private Timer timer = new Timer();
@@ -19,11 +19,11 @@ public class Game implements Runnable {
 	 * @throws InterruptedException
 	 */
 	Game(long sd) throws InterruptedException {
-		this.grid[0] = 16;
-		this.grid[1] = 16;
-		this.level = new Level(sd, grid[0], grid[1], 40);
+		gameGrid[0] = 16;
+		gameGrid[1] = 16;
+		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
-		players.add(new EntityPlayer(Side.RED, this.grid[0], this.grid[1]));
+		players.add(new EntityPlayer(Side.RED, gameGrid[0], gameGrid[1]));
 	}
 
 	/**
@@ -32,7 +32,7 @@ public class Game implements Runnable {
 	 * @return
 	 */
 	public int[] getGrid() {
-		return this.grid;
+		return gameGrid;
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class Game implements Runnable {
 	 */
 	public void updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
 		// TODO Get entity from entity list by id
-		Entity entity;
+		//Entity entity;
 		// Update entity
 //		entity.setPos(x, y);
 //		entity.setDir(dir);
@@ -79,6 +79,22 @@ public class Game implements Runnable {
 				lastLoopTime = System.nanoTime();
 
 				// TODO: Add logic content
+
+				// Prevent players from leaving the game area
+				for (EntityPlayer entity : players) {
+					if (entity.getGridPos()[0] < 0) {
+						entity.setGridPosX(0);
+					}
+					if (entity.getGridPos()[1] < 0) {
+						entity.setGridPosY(0);
+					}
+					if (entity.getGridPos()[0] > gameGrid[0]-1) {
+						entity.setGridPosX(gameGrid[0]-1);
+					}
+					if (entity.getGridPos()[1] > gameGrid[1]-1) {
+						entity.setGridPosY(gameGrid[1]-1);
+					}
+				}
 
 				// Wait for the next cycle
 				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);

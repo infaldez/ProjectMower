@@ -1,6 +1,5 @@
 package rtsd2015.tol.pm;
 
-import java.lang.*;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
@@ -66,16 +65,24 @@ public class Entity {
 		this.gridpos[1] = y;
 	}
 
+	public void setGridPosX(int x) {
+		this.gridpos[0] = x;
+	}
+
+	public void setGridPosY(int y) {
+		this.gridpos[1] = y;
+	}
+
 	/**
 	 * Return entity position
 	 *
 	 * @return position (x, y)
 	 */
-	int[] getPos() {
+	public int[] getPos() {
 		return position;
 	}
 
-	int[] getGridPos() {
+	public int[] getGridPos() {
 		return gridpos;
 	}
 
@@ -169,6 +176,8 @@ public class Entity {
 			break;
 		case RIGHT:
 			// TODO: Implement turning
+			break;
+		default:
 			break;
 		}
 	}

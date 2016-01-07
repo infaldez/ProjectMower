@@ -2,8 +2,6 @@ package rtsd2015.tol.pm;
 
 import java.util.EnumMap;
 import java.util.List;
-
-import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -15,19 +13,25 @@ public class ClientRenderer implements Runnable {
 
 	Launcher mainApp;
 	Game game;
-	Canvas canvas;
-	GraphicsContext gc;
 	Tile[][] board;
 	Level level;
 	List<EntityPlayer> playerEntities;
 	List<Object> surfaceEntities;
 	List<Object> staticEntities;
-	private String resources = "file:src/rtsd2015/tol/pm/resources/";
+	private static GraphicsContext gc_dynamic;
+	private static GraphicsContext gc_static;
+	private static String resources = "file:src/rtsd2015/tol/pm/resources/";
 	private int render_w;
 	private int render_y;
 	private int[] grid = new int[2];
 	private double tileSize, tileOffsetX, tileOffsetY;
 	private boolean render = true;
+	private final int TARGET_FPS = 30;
+	private final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+	private long now;
+	private long lastLoopTime = System.nanoTime();
+	private long updateLength;
+	private double delta;
 
 	private EnumMap<Tile, Image> tileImages;
 
@@ -35,26 +39,21 @@ public class ClientRenderer implements Runnable {
 		this.mainApp = mainApp;
 		this.game = game;
 		this.grid = game.getGrid();
-		this.canvas = mainApp.getCanvas();
 		this.render_w = mainApp.getContentSpace()[0];
 		this.render_y = mainApp.getContentSpace()[1];
-		this.gc = canvas.getGraphicsContext2D();
+		gc_dynamic = mainApp.getCanvas(0).getGraphicsContext2D();
+		gc_static = mainApp.getCanvas(1).getGraphicsContext2D();
+		level = game.getLevel();
+		staticEntities = level.getStaticEntities();
+		playerEntities = game.getPlayers();
 	}
 
 	private void init() {
-		gc.setFill(Color.WHITE);
-		gc.setFont(new Font("Consolas", 12));
-		gc.fillText("Initializing ...", 16, 16);
+		gc_dynamic.setFill(Color.WHITE);
+		gc_dynamic.setFont(new Font("Consolas", 12));
+		gc_dynamic.fillText("Initializing ...", 16, 16);
 		buildTextures();
 		initTileDimensions();
-	}
-
-	/**
-	 * Clears the viewport
-	 *
-	 */
-	private void clearViewport() {
-		gc.clearRect(0, 0, render_w, render_y);
 	}
 
 	/**
@@ -85,20 +84,11 @@ public class ClientRenderer implements Runnable {
 	}
 
 	private void drawUI() {
-		gc.fillText("Player 1: " + playerEntities.get(0).getScore(), 16, 16);
-		gc.fillText("Player 2: " + playerEntities.get(1).getScore(), 16, 32);
-	}
-
-	/**
-	 * Sets the transform for the GraphicsContext to rotate around a pivot point
-	 *
-	 * @param angle the angle of rotation
-	 * @param px the x pivot coordinate for the rotation (in canvas coordinates)
-	 * @param py the y pivot coordinate for the rotation (in canvas coordinates)
-	 */
-	private void rotate(double angle, double px, double py) {
-		Rotate r = new Rotate(angle, px, py);
-		gc.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+		gc_dynamic.fillText("Player 1: " + playerEntities.get(0).getScore(), 16, 16);
+		gc_dynamic.fillText("Player 2: " + playerEntities.get(1).getScore(), 16, 32);
+		if (mainApp.getDebug()) {
+			debug();
+		}
 	}
 
 	/**
@@ -112,13 +102,19 @@ public class ClientRenderer implements Runnable {
 	 * @param tlpx the top left x coordinate where the image will be plotted (in canvas coordinates)
 	 * @param tlpy the top left y coordinate where the image will be plotted (in canvas coordinates)
 	 */
-	private void drawRotatedImage(Image image, double angle, double tlpx, double tlpy, boolean offset) {
+	private void drawImage(boolean dynamic, boolean offset, Image image, double angle, double x, double y, double w, double h) {
 		if (offset) {
-			tlpx = tileOffsetX + tlpx * tileSize;
-			tlpy = tileOffsetY + tlpy * tileSize;
+			x = tileOffsetX + x * w;
+			y = tileOffsetY + y * h;
 		}
-		rotate(angle, tlpx + (tileSize / 2), tlpy + (tileSize / 2));
-		gc.drawImage(image, tlpx, tlpy, tileSize, tileSize);
+		Rotate r = new Rotate(angle, x + (w / 2), y + (h / 2));
+		if (dynamic) {
+			gc_dynamic.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+			gc_dynamic.drawImage(image, x, y, w, h);
+		} else {
+			gc_static.setTransform(r.getMxx(), r.getMyx(), r.getMxy(), r.getMyy(), r.getTx(), r.getTy());
+			gc_static.drawImage(image, x, y, w, h);
+		}
 	}
 
 	/**
@@ -126,66 +122,53 @@ public class ClientRenderer implements Runnable {
 	 *
 	 * @param delta
 	 */
-	private void debug(double delta) {
-		gc.fillText("Delta: " + delta, 16, 504);
+	private void debug() {
+		now = System.nanoTime();
+		updateLength = now - lastLoopTime;
+		lastLoopTime = now;
+		delta = updateLength / ((double) OPTIMAL_TIME);
+		gc_dynamic.fillText("FPS: " + Math.round(TARGET_FPS * delta), 16, 504);
+	}
+
+	public void setRender(boolean r) {
+		this.render = r;
+	}
+
+	public boolean getRender() {
+		return this.render;
 	}
 
 	@Override
 	public void run() {
 		try {
 			init();
-
-			long lastLoopTime = System.nanoTime();
-			final int TARGET_FPS = 16;
-			final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
-
-			long now;
-			long updateLength;
-			double delta;
-
-			Level level = game.getLevel();
-			surfaceEntities = level.getSurfaceEntities();
-			staticEntities = level.getStaticEntities();
-			playerEntities = game.getPlayers();
-
+			// Draw static resources
+			for (Object obj : staticEntities) {
+				Entity entity = (Entity) obj;
+				drawImage(false, true, tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+			}
 			while (render) {
+				// Save the following attributes onto a stack and clear the frame
+				gc_dynamic.save();
+				gc_dynamic.clearRect(0, 0, render_w, render_y);
+
 				// Define this cycle
-				now = System.nanoTime();
-				updateLength = now - lastLoopTime;
-				lastLoopTime = now;
-				delta = updateLength / ((double) OPTIMAL_TIME);
 
-				// Clear viewport
-				gc.save();
-				clearViewport();
 
-				// Draw resources
-				for (Object obj : surfaceEntities) {
-					Entity entity = (Entity) obj;
-					drawRotatedImage(tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], true);
-				}
-
-				for (Object obj : staticEntities) {
-					Entity entity = (Entity) obj;
-					drawRotatedImage(tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], true);
-				}
-
+				// Draw dynamic resources
 				for (EntityPlayer obj : playerEntities) {
 					Entity entity = (Entity) obj;
-					drawRotatedImage(tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], true);
+					drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
 				}
 
-				gc.restore();
+				// Pop the state off of the stack, set the following attributes to their value at the time when that state was pushed onto the stack
+				gc_dynamic.restore();
 
+				// Draw interface elements
 				drawUI();
 
-				// Show debug
-				if (mainApp.getDebug()) {
-					debug(delta);
-				}
-
 				// Wait for the next cycle
-				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
+				Thread.sleep((System.nanoTime() - System.nanoTime() + OPTIMAL_TIME) / 1000000);
 			}
 		} catch (Exception e) {
 			System.out.println("Renderer Exception!");

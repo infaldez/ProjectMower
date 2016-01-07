@@ -11,7 +11,6 @@ import java.util.Random;
  */
 public class Level {
 
-	private static List<Object> surfaceEntities = new ArrayList <Object>();
 	private static List<Object> staticEntities = new ArrayList <Object>();
 	private static boolean[][] boardSpaceOccupied;
 
@@ -53,9 +52,9 @@ public class Level {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				if (i == 0 || j == 0 || i == width-1 || j == height-1) {
-					surfaceEntities.add(new EntityDirt(i, j));
+					staticEntities.add(new EntityDirt(i, j));
 				} else {
-					surfaceEntities.add(new EntityGrass(i, j));
+					staticEntities.add(new EntityGrass(i, j));
 				}
 			}
 		}
@@ -106,15 +105,6 @@ public class Level {
 				}
 			}
 		}
-	}
-
-	/**
-	 * Returns a list of all surface entities
-	 *
-	 * @return
-	 */
-	public List<Object> getSurfaceEntities() {
-		return Level.surfaceEntities;
 	}
 
 	/**
