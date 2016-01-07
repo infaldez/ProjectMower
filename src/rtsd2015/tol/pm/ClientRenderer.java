@@ -137,6 +137,7 @@ public class ClientRenderer implements Runnable {
 		gc_dynamic.fillText("PL1 HBox: " + level.getHitbox(game.getPlayers().get(0).getGridPos()[0], game.getPlayers().get(0).getGridPos()[1]), 16, render_y - 48);
 		gc_dynamic.fillText("PL2 HBox: " + level.getHitbox(game.getPlayers().get(1).getGridPos()[0], game.getPlayers().get(1).getGridPos()[1]), 16, render_y - 32);
 		gc_dynamic.fillText("FPS: " + Math.round(TARGET_FPS * delta), 16, render_y - 16);
+		gc_dynamic.fillText("Tick: " + Math.round(game.getTick()), 65, render_y - 16);
 	}
 
 	/**
