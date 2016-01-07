@@ -22,6 +22,14 @@ public class GameUpdate implements Serializable {
 		tick = t;
 		updates = u;
 	}
+
+	static public GameUpdate fromEntities(int t, List<Entity> u) {
+		GameUpdate gameUpdate = new GameUpdate(t);
+		for (Entity e : u) {
+			gameUpdate.updates.add(new EntityUpdate(e));
+		}
+		return gameUpdate;
+	}
 	
 	public static GameUpdate deserialize(String s) throws IOException, ClassNotFoundException {
 		byte[] data = Base64.getDecoder().decode(s);
@@ -31,11 +39,16 @@ public class GameUpdate implements Serializable {
 		return object;
 	}
 	
-	public String serialize() throws IOException {
+	public String serialize() {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-		ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
-		objectOutputStream.writeObject(this);
-		objectOutputStream.close();
+		try {
+			ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+			objectOutputStream.writeObject(this);
+			objectOutputStream.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace(System.err);
+		}
 		
 		return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 	}

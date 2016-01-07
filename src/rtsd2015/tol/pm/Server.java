@@ -244,9 +244,17 @@ public class Server implements Runnable {
 			}
 		}
 	}
+	
+	static protected void doServerTick(Context context) {
+
+		
+		broadcastGameState(context);
+	}
 
 	static protected void broadcastGameState(Context context) {
-
+		GameUpdate gameUpdate = GameUpdate.fromEntities(context.game.increaseTick(), context.game.flushUpdatedEntities());
+		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());
+		broadcastMessage(context, gameUpdateMsg);
 	}
 
 	Server(String hostname, int port) throws Exception {

@@ -20,4 +20,14 @@ public class EntityUpdate implements Serializable {
 		this.speed = speed;
 		this.health = health;
 	}
+
+	EntityUpdate(Entity e) {
+		this.id = e.getId();
+		int[] pos = e.getPos();
+		this.x = pos[0];
+		this.y = pos[1];
+		this.dir = e.getDir();
+		this.speed = e.getSpeed();
+		this.health = e.getHealth();
+	}
 }
