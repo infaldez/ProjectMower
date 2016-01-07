@@ -56,4 +56,9 @@ public class EntityPlayer extends Entity {
 		return this.score;
 	}
 
+	public void changePos() {
+		this.gridpos[0] = this.newgridpos[0];
+		this.gridpos[1] = this.newgridpos[1];
+	}
+
 }
