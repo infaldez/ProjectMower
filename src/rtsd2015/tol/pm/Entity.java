@@ -31,7 +31,7 @@ public class Entity {
 	protected long interactionScore = 0;
 	protected Facing dir = Facing.NORTH;
 	protected Hitbox hitbox = Hitbox.NONE;
-	protected Side side;
+	protected Side side = Side.GAIA;
 	protected Tile tile;
 	protected boolean breakable = true;
 	protected boolean alive = true;

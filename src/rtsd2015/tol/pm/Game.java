@@ -75,14 +75,9 @@ public class Game implements Runnable {
 
 			timer.start();
 
-			Hitbox activeHitboxP1 = Hitbox.NONE;
-			Hitbox activeHitboxP2 = Hitbox.NONE;
-
 			while (run) {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
-
-				// TODO: Add logic content
 
 				// Collision
 				switch(level.getHitbox(players.get(0).getNewGridPos()[0], players.get(0).getNewGridPos()[1])){
