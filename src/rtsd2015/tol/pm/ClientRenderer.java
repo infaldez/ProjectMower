@@ -209,12 +209,16 @@ public class ClientRenderer implements Runnable {
 				// Draw dynamic resources
 				for (Object obj : dynamicEntities) {
 					Entity entity = (Entity) obj;
-					drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+					if (entity.isAlive()) {
+						drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+					}
 				}
 
 				for (EntityPlayer obj : playerEntities) {
 					Entity entity = (Entity) obj;
-					drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+					if (entity.isAlive()) {
+						drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+					}
 				}
 
 				// Pop the state off of the stack, set the following attributes to their value at the time when that state was pushed onto the stack

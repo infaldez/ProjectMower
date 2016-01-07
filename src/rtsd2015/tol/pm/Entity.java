@@ -53,7 +53,7 @@ public class Entity {
 		entityCount.set(id + 1);
 		entities.get().add(this);
 	}
-	
+
 	/**
 	 * Get list of all entities.
 	 * @return entities
@@ -272,8 +272,17 @@ public class Entity {
 	 *
 	 * @return
 	 */
-	boolean isAlive() {
+	public boolean isAlive() {
 		return alive;
+	}
+
+	/**
+	 * Makes the Entity either dead or alive
+	 *
+	 * @param state
+	 */
+	public void setAlive(boolean state) {
+		this.alive = state;
 	}
 
 	/**
