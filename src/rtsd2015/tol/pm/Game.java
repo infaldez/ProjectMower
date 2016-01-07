@@ -4,27 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
-import rtsd2015.tol.pm.enums.Hitbox;
 
 public class Game implements Runnable {
 
 	private int[] gameGrid = new int[2];
+	private int tick;
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
+	private List<InterfaceText> interfaceTexts = new ArrayList<>();
 	private Timer timer = new Timer();
 	private boolean run = true;
+	
+	private List<Entity> updatedEntities;
 
 	/**
 	 * Initializes a new game for both clients and a server
 	 *
-	 * @throws InterruptedException
 	 */
-	Game(long sd) throws InterruptedException {
+	Game(long sd) {
+		tick = 0;
 		gameGrid[0] = 16;
 		gameGrid[1] = 16;
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
 		players.add(new EntityPlayer(Side.RED, gameGrid[0], gameGrid[1]));
+		
+		updatedEntities = new ArrayList<Entity>();
 	}
 
 	/**
@@ -49,18 +54,44 @@ public class Game implements Runnable {
 		return players;
 	}
 
+	public List<InterfaceText> getInterfaceTexts() {
+		return this.interfaceTexts;
+	}
+
 	/**
 	 * Update entity defined by id.
 	 *
 	 */
-	public void updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
+	public Entity updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
 		// TODO Get entity from entity list by id
-		//Entity entity;
+		Entity entity = Entity.getEntity(id);
 		// Update entity
-//		entity.setPos(x, y);
-//		entity.setDir(dir);
-//		entity.setSpeed(speed);
-//		entity.setHealth(health);
+		if(entity != null) {
+			entity.setGridPos(x, y);
+			entity.setDir(dir);
+			entity.setSpeed(speed);
+			entity.setHealth(health);
+		}
+		
+		return entity;
+	}
+	
+	/**
+	 * Get and clear the list of updated entitites
+	 * @return entity list
+	 */
+	public List<Entity> flushUpdatedEntities() {
+		List<Entity> copy = new ArrayList<Entity>(updatedEntities);
+		updatedEntities.clear();
+		return copy;
+	}
+	
+	public int increaseTick() {
+		return ++tick;
+	}
+	
+	public int getTick() {
+		return tick;
 	}
 
 	/**
@@ -73,11 +104,27 @@ public class Game implements Runnable {
 			final int TARGET_FPS = 30;
 			final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 
+			EntityPlayer pl1 = players.get(0);
+			EntityPlayer pl2 = players.get(1);
+
+			InterfaceText p1_score = new InterfaceText(16,32);
+			interfaceTexts.add(p1_score);
+			InterfaceText p2_score = new InterfaceText(16,96);
+			interfaceTexts.add(p2_score);
+			InterfaceText time = new InterfaceText(16,160);
+			interfaceTexts.add(time);
+
 			timer.start();
 
 			while (run) {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
+
+
+
+				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
+				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
+				time.setTextString("Time Left: ");
 
 				players.get(0).move();
 

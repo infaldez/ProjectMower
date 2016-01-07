@@ -2,6 +2,7 @@ package rtsd2015.tol.pm;
 
 import java.net.*;
 
+import javafx.animation.Animation.Status;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +20,7 @@ public class Client implements Runnable {
 	}
 	private DatagramSocket socket = null;
 	private String nickname;
+	private int playerId = -1;
 	private State state = State.DISCONNECTED;
 
 	private InetAddress serverAddress;
@@ -64,7 +66,8 @@ public class Client implements Runnable {
 		// Add handler for the response
 		messageHandler.addHandler(MessageType.ACCEPT, (Message msg) -> {
 			messageHandler.removeHandler(MessageType.ACCEPT); // Remove this handler
-			controller.setStatus("Connection accepted with id: " + msg.body);
+			playerId = Integer.parseInt(msg.body);
+			controller.setStatus("Connection accepted with id: " + playerId);
 			state = State.CONNECTED;
 		});
 
@@ -188,9 +191,31 @@ public class Client implements Runnable {
 
 			long lastUpdate = System.currentTimeMillis();
 			int updateDeadline = 20;
-			while(state == State.IN_GAME) {
+			
+			// GameUpdate handler
+			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
+				try {
+					GameUpdate gameUpdate = GameUpdate.deserialize(msg.body);
+				
+					// TODO check tick
+					for (EntityUpdate u : gameUpdate.updates) {
+						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health); 
+					}
+				
+				}
+				catch(Exception e) {
+					System.err.println("Client: Error in parsing GameUpdate!");
+					e.printStackTrace(System.err);
+				}
+				state = State.IN_GAME;
+			});
+			
+			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
+				state = State.PAUSED;
+			});
+
+			while (state == State.IN_GAME || state == State.PAUSED) {
 				// Game loop
-				System.out.println("je");
 				// Read user input
 
 				// Determine how long socket is allowed to block
@@ -205,21 +230,8 @@ public class Client implements Runnable {
 
 				Message message = receiveMessage();
 				if (message != null) {
-					switch(message.type) {
-					case GAME_UPDATE:
-						break;
-					case PAUSE:
-						state = State.PAUSED;
-						break;
-					default:
-						System.out.println("Client: Unexpected message: "+message.toString());
-					}
-
-					while(state == State.PAUSED) {
-						state = State.IN_GAME;
-					}
+					messageHandler.handle(message);
 				}
-				// TODO Run view update
 
 				lastUpdate = System.currentTimeMillis();
 			}
