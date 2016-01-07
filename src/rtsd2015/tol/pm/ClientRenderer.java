@@ -11,21 +11,21 @@ import rtsd2015.tol.pm.enums.Tile;
 
 public class ClientRenderer implements Runnable {
 
-	Launcher mainApp;
-	Game game;
-	Tile[][] board;
-	Level level;
-	List<EntityPlayer> playerEntities;
-	List<Object> surfaceEntities;
-	List<Object> staticEntities;
+	protected Launcher mainApp;
+	protected Game game;
+	protected Level level;
+	protected List<EntityPlayer> playerEntities;
+	protected List<Object> staticEntities;
+
 	private static GraphicsContext gc_dynamic;
 	private static GraphicsContext gc_static;
 	private static String resources = "file:src/rtsd2015/tol/pm/resources/";
-	private int render_w;
-	private int render_y;
+	private static int render_w = 0;
+	private static int render_y = 0;
+	private static boolean render = true;
+
 	private int[] grid = new int[2];
 	private double tileSize, tileOffsetX, tileOffsetY;
-	private boolean render = true;
 	private final int TARGET_FPS = 30;
 	private final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 	private long now;
@@ -39,21 +39,46 @@ public class ClientRenderer implements Runnable {
 		this.mainApp = mainApp;
 		this.game = game;
 		this.grid = game.getGrid();
-		this.render_w = mainApp.getContentSpace()[0];
-		this.render_y = mainApp.getContentSpace()[1];
 		gc_dynamic = mainApp.getCanvas(0).getGraphicsContext2D();
 		gc_static = mainApp.getCanvas(1).getGraphicsContext2D();
-		level = game.getLevel();
-		staticEntities = level.getStaticEntities();
-		playerEntities = game.getPlayers();
+		this.level = game.getLevel();
+		this.staticEntities = level.getStaticEntities();
+		this.playerEntities = game.getPlayers();
 	}
 
+	/**
+	 * Initializes the renderer
+	 *
+	 */
 	private void init() {
 		gc_dynamic.setFill(Color.WHITE);
 		gc_dynamic.setFont(new Font("Consolas", 12));
 		gc_dynamic.fillText("Initializing ...", 16, 16);
 		buildTextures();
-		initTileDimensions();
+	}
+
+	/**
+	 * Makes sure the content fills out the entire screen space
+	 * @throws InterruptedException
+	 *
+	 */
+	private void updateViewPortDimensions() throws InterruptedException {
+		int new_w = mainApp.getContentSpace()[0];
+		int new_y = mainApp.getContentSpace()[1];
+		if (render_w != new_w || render_y != new_y) {
+			try {
+				Thread.sleep(100);
+				mainApp.updateViewPortSize();
+				gc_static.clearRect(0, 0, render_w, render_y);
+				render_w = new_w;
+				render_y = new_y;
+				initTileDimensions();
+				drawStaticResources();
+			} catch (Exception e) {
+				System.out.println("Renderer Exception!");
+				e.printStackTrace(System.err);
+			}
+		}
 	}
 
 	/**
@@ -83,12 +108,29 @@ public class ClientRenderer implements Runnable {
 		tileOffsetY = ((double) render_y - (tileSize * grid[1])) / 2;
 	}
 
+	/**
+	 * Draws the in-game UI
+	 *
+	 */
 	private void drawUI() {
 		gc_dynamic.fillText("Player 1: " + playerEntities.get(0).getScore(), 16, 16);
 		gc_dynamic.fillText("Player 2: " + playerEntities.get(1).getScore(), 16, 32);
 		if (mainApp.getDebug()) {
 			debug();
 		}
+	}
+
+	/**
+	 * Draws debug information
+	 *
+	 * @param delta
+	 */
+	private void debug() {
+		now = System.nanoTime();
+		updateLength = now - lastLoopTime;
+		lastLoopTime = now;
+		delta = updateLength / ((double) OPTIMAL_TIME);
+		gc_dynamic.fillText("FPS: " + Math.round(TARGET_FPS * delta), 16, render_y - 16);
 	}
 
 	/**
@@ -118,42 +160,45 @@ public class ClientRenderer implements Runnable {
 	}
 
 	/**
-	 * Draws debug information
+	 * To enable (true) or disable (false) rendering
+	 * Note: if you disable the renderer, you must create a new renderer to re-enable it
 	 *
-	 * @param delta
+	 * @param r
 	 */
-	private void debug() {
-		now = System.nanoTime();
-		updateLength = now - lastLoopTime;
-		lastLoopTime = now;
-		delta = updateLength / ((double) OPTIMAL_TIME);
-		gc_dynamic.fillText("FPS: " + Math.round(TARGET_FPS * delta), 16, 504);
-	}
-
 	public void setRender(boolean r) {
-		this.render = r;
+		render = r;
 	}
 
+	/**
+	 * Returns whether the rendering is active (true) or not (false)
+	 *
+	 * @return true to active rendering
+	 */
 	public boolean getRender() {
-		return this.render;
+		return render;
 	}
 
+	private void drawStaticResources() {
+		for (Object obj : staticEntities) {
+			Entity entity = (Entity) obj;
+			drawImage(false, true, tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+		}
+	}
+
+	/**
+	 * The main render-loop
+	 *
+	 */
 	@Override
 	public void run() {
 		try {
 			init();
-			// Draw static resources
-			for (Object obj : staticEntities) {
-				Entity entity = (Entity) obj;
-				drawImage(false, true, tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
-			}
 			while (render) {
 				// Save the following attributes onto a stack and clear the frame
 				gc_dynamic.save();
 				gc_dynamic.clearRect(0, 0, render_w, render_y);
 
-				// Define this cycle
-
+				updateViewPortDimensions();
 
 				// Draw dynamic resources
 				for (EntityPlayer obj : playerEntities) {

@@ -27,7 +27,6 @@ public class Launcher extends Application {
 	private static Thread serverThread;
 	private static Thread clientThread;
 	private static List<Canvas> canvases = new ArrayList <Canvas>();
-	private static int[] contentSpace = new int[2];
 	private static boolean debug = false;
 	private static Scene scene;
 	/**
@@ -63,15 +62,18 @@ public class Launcher extends Application {
 			controller = loader.getController();
 			controller.setMainApp(this);
 
-			// Initialize space dedicated for the content
-			contentSpace[0] = 800;
-			contentSpace[1] = 520;
-
 			// Show the stage
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public int[] getContentSpace() {
+		int[] space = new int[2];
+		space[0] = (int) rootLayout.getWidth();
+		space[1] = (int) rootLayout.getHeight()-48;
+		return space;
 	}
 
 	/**
@@ -133,9 +135,9 @@ public class Launcher extends Application {
 	 *
 	 */
 	public void setViewport() {
-		canvases.add(new Canvas(contentSpace[0], contentSpace[1]));
-		canvases.add(new Canvas(contentSpace[0], contentSpace[1]));
 		Pane gfx = new Pane();
+		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
+		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
 		gfx.getChildren().add(canvases.get(0));
 		gfx.getChildren().add(canvases.get(1));
 		canvases.get(0).toFront();
@@ -143,6 +145,24 @@ public class Launcher extends Application {
 		rootLayout.setStyle("-fx-background-color: BLACK");
 	}
 
+	/**
+	 * Update size of the canvases to correspond the new screen dimensions
+	 *
+	 */
+	public void updateViewPortSize() {
+		canvases.get(0).setWidth(getContentSpace()[0]);
+		canvases.get(0).setHeight(getContentSpace()[1]);
+		canvases.get(1).setWidth(getContentSpace()[0]);
+		canvases.get(1).setHeight(getContentSpace()[1]);
+	}
+
+	/**
+	 * Returns the desired canvas
+	 * 0: dynamic, 1: static
+	 *
+	 * @param c
+	 * @return
+	 */
 	public Canvas getCanvas(int c) {
 		return Launcher.canvases.get(c);
 	}
@@ -153,10 +173,6 @@ public class Launcher extends Application {
 
 	public boolean getDebug() {
 		return debug;
-	}
-
-	public int[] getContentSpace() {
-		return contentSpace;
 	}
 
 	public Scene getScene(){
