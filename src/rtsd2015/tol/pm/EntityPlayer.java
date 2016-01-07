@@ -22,7 +22,7 @@ public class EntityPlayer extends Entity {
 	 *
 	 * @param side
 	 */
-	EntityPlayer(Side s, int x, int y) {
+	public EntityPlayer(Side s, int x, int y) {
 		side = s;
 		health = 3;
 		speed = 1;

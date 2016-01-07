@@ -3,7 +3,6 @@ package rtsd2015.tol.pm;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import rtsd2015.tol.pm.enums.Hitbox;
 
 /**
@@ -25,7 +24,8 @@ public class Level {
 	private double bigRockDensity = 0.2;
 	private double smallRockDensity = 0.3;
 
-	Random random;
+	private Random random;
+	private Random randomFill = new Random();;
 
 	/**
 	 * Initializes a new level based on seed
@@ -45,7 +45,7 @@ public class Level {
 
 		initStaticSpace(density);
 		initSurfaceEntities();
-		initStaticEntities();
+		populateWorld(density);
 	}
 
 	/**
@@ -74,6 +74,28 @@ public class Level {
 		if (density > 100) {density = 100;};
 		if (density < 0) {density = 0;};
 		this.freeStaticSpace = Math.floor(area * (density / 100));
+	}
+
+	private void populateWorld(double density) {
+		if (density >= 1) {
+			density = density / 100;
+		}
+		if (density < 0) {
+			density = 0;
+		}
+		System.out.println("density: " + density);
+		for (int i = 1; i < height-1; i++) {
+			for (int j = 1; j < width-1; j++) {
+				if (getRandomBoolean(density)) {
+					System.out.println("TRUE");
+					staticEntities.add(new EntityTree(i,j));
+				}
+			}
+		}
+	}
+
+	private boolean getRandomBoolean(double propability) {
+		return 0 + (1 - 0) * randomFill.nextDouble() < propability;
 	}
 
 	/**
