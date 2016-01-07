@@ -117,7 +117,7 @@ public class Level {
 					}
 					if (!placed && WorldFillProbability.SMALLROCK.getWillBePlaced()) {
 						placed = true;
-						staticEntities.add(new EntitySmallRock(i,j));
+						dynamicEntities.add(new EntitySmallRock(i,j));
 						hitboxBoard[i][j] = Hitbox.BREAKABLE;
 					}
 					if (!placed && WorldFillProbability.TREE.getWillBePlaced()) {
