@@ -77,7 +77,7 @@ public class Game implements Runnable {
 	 * @return entity list
 	 */
 	public List<Entity> flushUpdatedEntities() {
-		ArrayList<Entity> copy = new ArrayList(updatedEntities);
+		List<Entity> copy = new ArrayList<Entity>(updatedEntities);
 		updatedEntities.clear();
 		return copy;
 	}
