@@ -4,28 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import rtsd2015.tol.pm.enums.Hitbox;
+import rtsd2015.tol.pm.enums.Side;
+import rtsd2015.tol.pm.enums.WorldFillProbability;
 
 /**
  * Game level, including all static entities
  *
- * @author Ari
+ * @author Ari, Janne
  */
 public class Level {
 
 	private List<Object> staticEntities = new ArrayList <Object>();
-	private boolean[][] boardSpaceOccupied;
+	private List<Object> dynamicEntities = new ArrayList <Object>();
 	private Hitbox[][] hitboxBoard;
 
 	private long seed;
 	private int area;
 	private int width, height;
-	private double freeStaticSpace = 0;
-	private double treeDensity = 0.5;
-	private double bigRockDensity = 0.2;
-	private double smallRockDensity = 0.3;
 
-	private Random random;
-	private Random randomFill = new Random();;
+	private Random randomFillDynamic = new Random();
+	private Random randomFill = new Random();
 
 	/**
 	 * Initializes a new level based on seed
@@ -36,16 +34,14 @@ public class Level {
 	 */
 	Level(long seed, int width, int height, double density) {
 		this.seed = seed;
-		this.random = new Random(seed);
 		this.width = width;
 		this.height = height;
 		this.area = width * height;
-		this.boardSpaceOccupied = new boolean[height][width];
 		this.hitboxBoard = new Hitbox[height][width];
 
-		initStaticSpace(density);
 		initSurfaceEntities();
-		populateWorld(density);
+		initMissionEntities();
+		initStaticEntities(density);
 	}
 
 	/**
@@ -66,79 +62,86 @@ public class Level {
 	}
 
 	/**
-	 * Initializes the density what the object fill will follow
+	 * Populates world board with mission entities, like flowers
 	 *
-	 * @param density 0.0-100.0
 	 */
-	private void initStaticSpace(double density) {
-		if (density > 100) {density = 100;};
-		if (density < 0) {density = 0;};
-		this.freeStaticSpace = Math.floor(area * (density / 100));
+	private void initMissionEntities() {
+		double toBePlacedB = Math.floor(area / 16);
+		double toBePlacedR = Math.floor(area / 16);
+		int count = 0;
+		int limit = area * 2;
+		while (toBePlacedB > 0 && count < limit) {
+			count++;
+			int x = randomFillDynamic.nextInt(width-2) + 1;
+			int y = randomFillDynamic.nextInt(height-2) + 1;
+			if (hitboxBoard[x][y] == Hitbox.NONE) {
+				dynamicEntities.add(new EntityFlowerBlue(Side.BLUE, x, y));
+				hitboxBoard[x][y] = Hitbox.BREAKABLE;
+				toBePlacedB--;
+			}
+		}
+		count = 0;
+		while (toBePlacedR > 0 && count < limit) {
+			count++;
+			int x = randomFillDynamic.nextInt(width-2) + 1;
+			int y = randomFillDynamic.nextInt(height-2) + 1;
+			if (hitboxBoard[x][y] == Hitbox.NONE) {
+				dynamicEntities.add(new EntityFlowerRed(Side.RED, x, y));
+				hitboxBoard[x][y] = Hitbox.BREAKABLE;
+				toBePlacedR--;
+			}
+		}
 	}
 
-	private void populateWorld(double density) {
+	/**
+	 * Populates world board with static entities, like trees and rocks
+	 *
+	 * @param density the density orders how filled the final board will be
+	 */
+	private void initStaticEntities(double density) {
+		boolean placed = false;
 		if (density >= 1) {
 			density = density / 100;
 		}
 		if (density < 0) {
 			density = 0;
 		}
-		System.out.println("density: " + density);
 		for (int i = 1; i < height-1; i++) {
 			for (int j = 1; j < width-1; j++) {
-				if (getRandomBoolean(density)) {
-					System.out.println("TRUE");
-					staticEntities.add(new EntityTree(i,j));
+				placed = false;
+				if (getRandomBoolean(density) && hitboxBoard[i][j] == Hitbox.NONE) {
+					if (!placed && WorldFillProbability.BIGROCK.getWillBePlaced()) {
+						placed = true;
+						staticEntities.add(new EntityBigRock(i,j));
+						hitboxBoard[i][j] = Hitbox.STATIC;
+					}
+					if (!placed && WorldFillProbability.SMALLROCK.getWillBePlaced()) {
+						placed = true;
+						staticEntities.add(new EntitySmallRock(i,j));
+						hitboxBoard[i][j] = Hitbox.BREAKABLE;
+					}
+					if (!placed && WorldFillProbability.TREE.getWillBePlaced()) {
+						placed = true;
+						staticEntities.add(new EntityTree(i,j));
+						hitboxBoard[i][j] = Hitbox.STATIC;
+					}
 				}
 			}
 		}
 	}
 
+	/**
+	 * Returns random boolean, but can be weighed with a probability number
+	 *
+	 * @param propability
+	 * @return boolean
+	 */
 	private boolean getRandomBoolean(double propability) {
 		return 0 + (1 - 0) * randomFill.nextDouble() < propability;
 	}
 
 	/**
-	 * Initializes the static entities like trees and rocks
-	 *
-	 */
-	private void initStaticEntities() {
-		double treeCount = Math.floor(freeStaticSpace * treeDensity);
-		double smallRockCount = Math.floor(freeStaticSpace * smallRockDensity);
-		double bigRockCount = Math.floor(freeStaticSpace * bigRockDensity);
-		int x, y;
-		boolean populated;
-		while (freeStaticSpace > 0) {
-			freeStaticSpace--;
-			populated = false;
-			x = (int) Math.floor(this.random.nextDouble() * width);
-			y = (int) Math.floor(this.random.nextDouble() * height);
-			if (!boardSpaceOccupied[x][y] && x != 0 && y != 0 && x != height-1 && y != width-1) {
-				boardSpaceOccupied[x][y] = true;
-				if (treeCount > 0) {
-					treeCount--;
-					staticEntities.add(new EntityTree(x, y));
-					hitboxBoard[x][y] = Hitbox.STATIC;
-					populated = true;
-				}
-				if (smallRockCount > 0 && !populated) {
-					smallRockCount--;
-					staticEntities.add(new EntitySmallRock(x, y));
-					hitboxBoard[x][y] = Hitbox.BREAKABLE;
-					populated = true;
-				}
-				if (bigRockCount > 0 && !populated) {
-					bigRockCount--;
-					staticEntities.add(new EntityBigRock(x, y));
-					hitboxBoard[x][y] = Hitbox.STATIC;
-					populated = true;
-				}
-			}
-		}
-	}
-
-	/**
-	 * returns a list of all static entities
+	 * Returns a list of all static entities
 	 *
 	 * @return
 	 */
@@ -146,6 +149,22 @@ public class Level {
 		return this.staticEntities;
 	}
 
+	/**
+	 * Returns a list of all dynamic entities
+	 *
+	 * @return
+	 */
+	public List<Object> getDynamicEntities() {
+		return this.dynamicEntities;
+	}
+
+	/**
+	 * Returns a hitbox of a certain grid coordinate
+	 *
+	 * @param x
+	 * @param y
+	 * @return Hitbox
+	 */
 	public Hitbox getHitbox(int x, int y) {
 		if (x < 0) {x = 0;}
 		if (y < 0) {y = 0;}

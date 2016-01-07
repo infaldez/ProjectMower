@@ -21,6 +21,7 @@ public class Entity {
 	protected int[] newgridpos = new int[2];
 	protected int speed;
 	protected int health;
+	protected long interactionScore = 0;
 	protected Facing dir = Facing.NORTH;
 	protected Hitbox hitbox = Hitbox.NONE;
 	protected Side side;
@@ -253,6 +254,15 @@ public class Entity {
 	 */
 	public Hitbox getHitbox() {
 		return hitbox;
+	}
+
+	/**
+	 * Returns the possible score for interacting with this entity
+	 *
+	 * @return
+	 */
+	public long getInteractionScore() {
+		return interactionScore;
 	}
 
 }

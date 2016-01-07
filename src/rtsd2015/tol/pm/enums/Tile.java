@@ -8,6 +8,8 @@ public enum Tile {
 	TREE,
 	SMALL_ROCK,
 	BIG_ROCK,
+	FLOWER_BLUE,
+	FLOWER_RED,
 	PLAYER1,
 	PLAYER2
 }

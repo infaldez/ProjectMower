@@ -14,8 +14,9 @@ public class ClientRenderer implements Runnable {
 	protected Launcher mainApp;
 	protected Game game;
 	protected Level level;
-	protected List<EntityPlayer> playerEntities;
 	protected List<Object> staticEntities;
+	protected List<Object> dynamicEntities;
+	protected List<EntityPlayer> playerEntities;
 
 	private static GraphicsContext gc_dynamic;
 	private static GraphicsContext gc_static;
@@ -43,6 +44,7 @@ public class ClientRenderer implements Runnable {
 		gc_static = mainApp.getCanvas(1).getGraphicsContext2D();
 		this.level = game.getLevel();
 		this.staticEntities = level.getStaticEntities();
+		this.dynamicEntities = level.getDynamicEntities();
 		this.playerEntities = game.getPlayers();
 	}
 
@@ -92,6 +94,8 @@ public class ClientRenderer implements Runnable {
 		tileImages.put(Tile.TREE, new Image(resources + "tree.png"));
 		tileImages.put(Tile.BIG_ROCK, new Image(resources + "big_rock.png"));
 		tileImages.put(Tile.SMALL_ROCK, new Image(resources + "small_rock.png"));
+		tileImages.put(Tile.FLOWER_BLUE, new Image(resources + "flower_blue.png"));
+		tileImages.put(Tile.FLOWER_RED, new Image(resources + "flower_red.png"));
 		tileImages.put(Tile.PLAYER1, new Image(resources + "player1.png"));
 		tileImages.put(Tile.PLAYER2, new Image(resources + "player2.png"));
 	}
@@ -203,6 +207,11 @@ public class ClientRenderer implements Runnable {
 				updateViewPortDimensions();
 
 				// Draw dynamic resources
+				for (Object obj : dynamicEntities) {
+					Entity entity = (Entity) obj;
+					drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+				}
+
 				for (EntityPlayer obj : playerEntities) {
 					Entity entity = (Entity) obj;
 					drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
