@@ -1,6 +1,7 @@
 package rtsd2015.tol.pm;
 
 import rtsd2015.tol.pm.enums.Facing;
+import rtsd2015.tol.pm.enums.Hitbox;
 import rtsd2015.tol.pm.enums.Movement;
 import rtsd2015.tol.pm.enums.Side;
 import rtsd2015.tol.pm.enums.Tile;
@@ -20,6 +21,7 @@ public class Entity {
 	protected int speed;
 	protected int health;
 	protected Facing dir = Facing.NORTH;
+	protected Hitbox hitbox = Hitbox.NONE;
 	protected Side side;
 	protected Tile tile;
 	protected boolean breakable = true;
@@ -223,6 +225,24 @@ public class Entity {
 	 */
 	boolean isAlive() {
 		return alive;
+	}
+
+	/**
+	 * Sets hit-box type for the entity
+	 *
+	 * @param h
+	 */
+	public void setHitbox(Hitbox h) {
+		this.hitbox = h;
+	}
+
+	/**
+	 * Returns the hit-box type
+	 *
+	 * @return Hitbox
+	 */
+	public Hitbox getHitbox() {
+		return hitbox;
 	}
 
 }

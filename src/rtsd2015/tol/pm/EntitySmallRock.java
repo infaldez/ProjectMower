@@ -1,5 +1,6 @@
 package rtsd2015.tol.pm;
 
+import rtsd2015.tol.pm.enums.Hitbox;
 import rtsd2015.tol.pm.enums.Tile;
 
 public class EntitySmallRock extends Entity {
@@ -7,5 +8,6 @@ public class EntitySmallRock extends Entity {
 		breakable = true;
 		setGridPos(x, y);
 		setTile(Tile.SMALL_ROCK);
+		setHitbox(Hitbox.BREAKABLE);
 	}
 }

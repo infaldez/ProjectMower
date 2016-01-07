@@ -3,6 +3,7 @@ package rtsd2015.tol.pm;
 import java.util.ArrayList;
 
 import rtsd2015.tol.pm.enums.Facing;
+import rtsd2015.tol.pm.enums.Hitbox;
 import rtsd2015.tol.pm.enums.Side;
 import rtsd2015.tol.pm.enums.Tile;
 
@@ -26,6 +27,7 @@ public class EntityPlayer extends Entity {
 		health = 3;
 		speed = 1;
 		setGridPos(x, y);
+		setHitbox(Hitbox.PLAYER);
 		// TODO: Properties file
 		switch (side) {
 		case BLUE:
