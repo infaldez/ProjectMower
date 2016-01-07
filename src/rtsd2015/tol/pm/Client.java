@@ -28,7 +28,7 @@ public class Client implements Runnable {
 
 	private Launcher mainApp;
 	private RootLayoutController controller;
-	
+
 	private MessageHandler messageHandler;
 
 	Client(Launcher mainApp, RootLayoutController controller, String nickname, int port, long seed) {
@@ -38,7 +38,7 @@ public class Client implements Runnable {
 		this.serverPort = port;
 		this.seed = seed;
 		this.messageHandler = new MessageHandler();
-		
+
 		this.messageHandler.addHandler(MessageType.PING, (Message msg) -> {
 			Message response = new Message(MessageType.PONG, msg.body);
 			try {
@@ -131,7 +131,7 @@ public class Client implements Runnable {
 			Message pingMessage = new Message(MessageType.PING, "test");
 			sendMessage(pingMessage);
 			pingTimer.start();
-			
+
 			messageHandler.addHandler(MessageType.PONG, (Message msg) -> {
 				double time = pingTimer.msLap();
 				Platform.runLater(() -> {
@@ -163,7 +163,7 @@ public class Client implements Runnable {
 			renderThread = new Thread(renderer);
 			renderThread.start();
 			input = new KeyboardInput(mainApp, clientGame);
-			
+
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");
 				seed = Long.valueOf(parts[0]);
