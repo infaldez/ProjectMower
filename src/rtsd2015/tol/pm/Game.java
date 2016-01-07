@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
-import rtsd2015.tol.pm.enums.Hitbox;
 
 public class Game implements Runnable {
 
 	private int[] gameGrid = new int[2];
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
+	private List<InterfaceText> interfaceTexts = new ArrayList<>();
 	private Timer timer = new Timer();
 	private boolean run = true;
 
@@ -49,6 +49,10 @@ public class Game implements Runnable {
 		return players;
 	}
 
+	public List<InterfaceText> getInterfaceTexts() {
+		return this.interfaceTexts;
+	}
+
 	/**
 	 * Update entity defined by id.
 	 *
@@ -73,11 +77,27 @@ public class Game implements Runnable {
 			final int TARGET_FPS = 30;
 			final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 
+			EntityPlayer pl1 = players.get(0);
+			EntityPlayer pl2 = players.get(1);
+
+			InterfaceText p1_score = new InterfaceText(16,32);
+			interfaceTexts.add(p1_score);
+			InterfaceText p2_score = new InterfaceText(16,96);
+			interfaceTexts.add(p2_score);
+			InterfaceText time = new InterfaceText(16,160);
+			interfaceTexts.add(time);
+
 			timer.start();
 
 			while (run) {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
+
+
+
+				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
+				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
+				time.setTextString("Time Left: ");
 
 				// Collision
 				switch(level.getHitbox(players.get(0).getNewGridPos()[0], players.get(0).getNewGridPos()[1])){

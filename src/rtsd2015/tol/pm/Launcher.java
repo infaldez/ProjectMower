@@ -138,9 +138,12 @@ public class Launcher extends Application {
 		Pane gfx = new Pane();
 		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
 		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
+		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
 		gfx.getChildren().add(canvases.get(0));
 		gfx.getChildren().add(canvases.get(1));
+		gfx.getChildren().add(canvases.get(2));
 		canvases.get(0).toFront();
+		canvases.get(2).toFront();
 		rootLayout.setCenter(gfx);
 		rootLayout.setStyle("-fx-background-color: BLACK");
 	}
@@ -154,6 +157,8 @@ public class Launcher extends Application {
 		canvases.get(0).setHeight(getContentSpace()[1]);
 		canvases.get(1).setWidth(getContentSpace()[0]);
 		canvases.get(1).setHeight(getContentSpace()[1]);
+		canvases.get(2).setWidth(getContentSpace()[0]);
+		canvases.get(2).setHeight(getContentSpace()[1]);
 	}
 
 	/**
