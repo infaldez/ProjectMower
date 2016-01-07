@@ -1,6 +1,8 @@
 package rtsd2015.tol.pm;
 
 import java.lang.ThreadLocal;
+import java.util.List;
+import java.util.ArrayList;
 
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Hitbox;
@@ -16,9 +18,15 @@ import rtsd2015.tol.pm.enums.Tile;
 public class Entity {
 
 	// ThreadLocal to separate client and server thread
-	public ThreadLocal<Integer> entityCount = new ThreadLocal<Integer>() {
+	private static ThreadLocal<Integer> entityCount = new ThreadLocal<Integer>() {
 		@Override protected Integer initialValue() {
 			return new Integer(0);
+		}
+	};
+
+	private static ThreadLocal<List<Entity>> entities = new ThreadLocal<List<Entity>>() {
+		@Override protected List<Entity> initialValue() {
+			return new ArrayList<Entity>();
 		}
 	};
 
@@ -43,6 +51,29 @@ public class Entity {
 	Entity() {
 		id = entityCount.get();
 		entityCount.set(id + 1);
+		entities.get().add(this);
+	}
+	
+	/**
+	 * Get list of all entities.
+	 * @return entities
+	 */
+	static List<Entity> getEntities() {
+		return entities.get();
+	}
+
+	/**
+	 * Get entity corresponding to id or null.
+	 * @param id
+	 * @return entity
+	 */
+	static Entity getEntity(int id) {
+		try {
+			return entities.get().get(id);
+		}
+		catch (IndexOutOfBoundsException e){
+			return null;
+		}
 	}
 
 	/**
