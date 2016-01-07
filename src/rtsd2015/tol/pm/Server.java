@@ -28,6 +28,7 @@ public class Server implements Runnable {
 	}
 
 	protected class Context {
+		public Server server;
 		public Game game;
 		public DatagramSocket socket;
 		public ArrayList<ConnectedClient> clients;
@@ -35,7 +36,8 @@ public class Server implements Runnable {
 		public State state;
 		public MessageHandler messageHandler;
 		
-		Context() {
+		Context(Server owner) {
+			server = owner;
 			messageHandler = new MessageHandler();
 			clients = new ArrayList<ConnectedClient>();
 		}
@@ -167,6 +169,9 @@ public class Server implements Runnable {
 				});
 				
 				context.messageHandler.addHandler(MessageType.START_GAME, (Message msg) -> {
+					// Create game
+					context.game = new Game(context.server.seed);
+					
 					Message prepareMessage = new Message(MessageType.PREPARE,
 							context.game.getLevel().getSeed() + " " +
 							context.game.getLevel().getWidth() + " " +
@@ -250,7 +255,7 @@ public class Server implements Runnable {
 
 	Server(String hostname, int port, long seed) throws Exception {
 		this.seed = seed;
-		context = new Context();
+		context = new Context(this);
 		context.state = States.WAIT_PLAYERS;
 		context.socket = new DatagramSocket(port);
 		context.socket.setReuseAddress(true);
