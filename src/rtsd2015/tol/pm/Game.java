@@ -14,7 +14,7 @@ public class Game implements Runnable {
 	private List<InterfaceText> interfaceTexts = new ArrayList<>();
 	private Timer timer = new Timer();
 	private boolean run = true;
-	
+
 	private List<Entity> updatedEntities;
 
 	/**
@@ -28,7 +28,7 @@ public class Game implements Runnable {
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
 		players.add(new EntityPlayer(Side.RED, gameGrid[0], gameGrid[1]));
-		
+
 		updatedEntities = new ArrayList<Entity>();
 	}
 
@@ -72,10 +72,10 @@ public class Game implements Runnable {
 			entity.setSpeed(speed);
 			entity.setHealth(health);
 		}
-		
+
 		return entity;
 	}
-	
+
 	/**
 	 * Get and clear the list of updated entitites
 	 * @return entity list
@@ -85,11 +85,11 @@ public class Game implements Runnable {
 		updatedEntities.clear();
 		return copy;
 	}
-	
+
 	public int increaseTick() {
 		return ++tick;
 	}
-	
+
 	public int getTick() {
 		return tick;
 	}
@@ -120,8 +120,6 @@ public class Game implements Runnable {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
 
-
-
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 				time.setTextString("Time Left: ");
@@ -144,8 +142,6 @@ public class Game implements Runnable {
 				case STATIC:
 					break;
 				}
-
-
 
 				// Prevent players from leaving the game area
 				for (EntityPlayer entity : players) {
