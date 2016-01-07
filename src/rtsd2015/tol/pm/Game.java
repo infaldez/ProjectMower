@@ -75,6 +75,9 @@ public class Game implements Runnable {
 
 			timer.start();
 
+			Hitbox activeHitboxP1 = Hitbox.NONE;
+			Hitbox activeHitboxP2 = Hitbox.NONE;
+
 			while (run) {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
@@ -87,7 +90,7 @@ public class Game implements Runnable {
 					players.get(0).changePos();
 					break;
 				case BREAKABLE:
-					players.get(0).setScore();
+					players.get(0).setScore(1);
 					players.get(0).changePos();
 					break;
 				case PLAYER:
@@ -95,7 +98,6 @@ public class Game implements Runnable {
 				case STATIC:
 					break;
 				}
-
 
 				// Prevent players from leaving the game area
 				for (EntityPlayer entity : players) {

@@ -15,7 +15,7 @@ import rtsd2015.tol.pm.enums.Tile;
 public class EntityPlayer extends Entity {
 
 	public static int playerCount;
-	private int score = 0;
+	private long score = 0;
 
 	/**
 	 * Initialize player
@@ -48,11 +48,11 @@ public class EntityPlayer extends Entity {
 		playerCount++;
 	}
 
-	public void setScore() {
-		this.score++;
+	public void setScore(long s) {
+		this.score = this.score + s;
 	}
 
-	public int getScore() {
+	public long getScore() {
 		return this.score;
 	}
 
