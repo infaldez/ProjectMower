@@ -36,11 +36,16 @@ public class Message implements Serializable {
 		return message;
 	}
 	
-	public byte[] getData() throws IOException {
+	public byte[] getData() {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
+		try {
+			ObjectOutputStream objOutStream = new ObjectOutputStream(outStream);
+			objOutStream.writeObject(this);
+		}
+		catch (IOException e) {
+			e.printStackTrace(System.err);
+		}
 
-		objOutStream.writeObject(this);
 		byte[] data = outStream.toByteArray();
 		return data;
 	}
