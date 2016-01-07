@@ -11,4 +11,12 @@ public class EntityFlowerBlue extends Entity {
 		setGridPos(x, y);
 		setTile(Tile.FLOWER_BLUE);
 	}
+
+	public long getInteractionScore(Side side) {
+		if(side == Side.RED){
+			return -interactionScore;
+		}
+		return interactionScore;
+	}
+
 }
