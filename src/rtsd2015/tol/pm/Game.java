@@ -8,23 +8,28 @@ import rtsd2015.tol.pm.enums.Side;
 public class Game implements Runnable {
 
 	private int[] gameGrid = new int[2];
+	private int tick;
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
 	private List<InterfaceText> interfaceTexts = new ArrayList<>();
 	private Timer timer = new Timer();
 	private boolean run = true;
+	
+	private List<Entity> updatedEntities;
 
 	/**
 	 * Initializes a new game for both clients and a server
 	 *
-	 * @throws InterruptedException
 	 */
-	Game(long sd) throws InterruptedException {
+	Game(long sd) {
+		tick = 0;
 		gameGrid[0] = 16;
 		gameGrid[1] = 16;
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
 		players.add(new EntityPlayer(Side.RED, gameGrid[0], gameGrid[1]));
+		
+		updatedEntities = new ArrayList<Entity>();
 	}
 
 	/**
@@ -57,14 +62,36 @@ public class Game implements Runnable {
 	 * Update entity defined by id.
 	 *
 	 */
-	public void updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
+	public Entity updateEntity(int id, int x, int y, Facing dir, int speed, int health) {
 		// TODO Get entity from entity list by id
-		//Entity entity;
+		Entity entity = Entity.getEntity(id);
 		// Update entity
-//		entity.setPos(x, y);
-//		entity.setDir(dir);
-//		entity.setSpeed(speed);
-//		entity.setHealth(health);
+		if(entity != null) {
+			entity.setGridPos(x, y);
+			entity.setDir(dir);
+			entity.setSpeed(speed);
+			entity.setHealth(health);
+		}
+		
+		return entity;
+	}
+	
+	/**
+	 * Get and clear the list of updated entitites
+	 * @return entity list
+	 */
+	public List<Entity> flushUpdatedEntities() {
+		List<Entity> copy = new ArrayList<Entity>(updatedEntities);
+		updatedEntities.clear();
+		return copy;
+	}
+	
+	public int increaseTick() {
+		return ++tick;
+	}
+	
+	public int getTick() {
+		return tick;
 	}
 
 	/**
