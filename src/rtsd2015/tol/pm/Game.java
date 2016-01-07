@@ -63,7 +63,7 @@ public class Game implements Runnable {
 		Entity entity = Entity.getEntity(id);
 		// Update entity
 		if(entity != null) {
-			entity.setPos(x, y);
+			entity.setGridPos(x, y);
 			entity.setDir(dir);
 			entity.setSpeed(speed);
 			entity.setHealth(health);

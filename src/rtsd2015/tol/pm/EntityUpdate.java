@@ -23,7 +23,7 @@ public class EntityUpdate implements Serializable {
 
 	EntityUpdate(Entity e) {
 		this.id = e.getId();
-		int[] pos = e.getPos();
+		int[] pos = e.getGridPos();
 		this.x = pos[0];
 		this.y = pos[1];
 		this.dir = e.getDir();
