@@ -20,6 +20,7 @@ public class Client implements Runnable {
 	}
 	private DatagramSocket socket = null;
 	private String nickname;
+	private int playerId = -1;
 	private State state = State.DISCONNECTED;
 
 	private InetAddress serverAddress;
@@ -65,7 +66,8 @@ public class Client implements Runnable {
 		// Add handler for the response
 		messageHandler.addHandler(MessageType.ACCEPT, (Message msg) -> {
 			messageHandler.removeHandler(MessageType.ACCEPT); // Remove this handler
-			controller.setStatus("Connection accepted with id: " + msg.body);
+			playerId = Integer.parseInt(msg.body);
+			controller.setStatus("Connection accepted with id: " + playerId);
 			state = State.CONNECTED;
 		});
 
