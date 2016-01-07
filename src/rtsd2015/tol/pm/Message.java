@@ -1,10 +1,15 @@
 package rtsd2015.tol.pm;
 import java.io.*;
+import java.net.InetAddress;
+import java.net.DatagramPacket;
+
 import rtsd2015.tol.pm.enums.MessageType;
 
 public class Message implements Serializable {
 	MessageType type;
 	String body;
+	InetAddress address;
+	int port;
 	
 	public Message(){
 		this(MessageType.MISC, "");
@@ -25,6 +30,12 @@ public class Message implements Serializable {
 
 	public Message(byte[] data) throws IOException, ClassNotFoundException {
 		this(parseMessage(data));
+	}
+	
+	public Message(DatagramPacket packet) throws IOException, ClassNotFoundException  {
+		this(packet.getData());
+		address = packet.getAddress();
+		port = packet.getPort();
 	}
 	
 	static public Message parseMessage(byte[] data) throws IOException, ClassNotFoundException {
