@@ -1,5 +1,7 @@
 package rtsd2015.tol.pm;
 
+import java.lang.ThreadLocal;
+
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Hitbox;
 import rtsd2015.tol.pm.enums.Movement;
@@ -13,7 +15,8 @@ import rtsd2015.tol.pm.enums.Tile;
  */
 public class Entity {
 
-	public static int entityCount;
+	// ThreadLocal to separate client and server thread
+	public ThreadLocal<Integer> entityCount;
 
 	protected int id;
 	protected int[] position = new int[2];
@@ -32,8 +35,8 @@ public class Entity {
 	 *
 	 */
 	Entity() {
-		id = entityCount;
-		entityCount++;
+		id = entityCount.get();
+		entityCount.set(id + 1);
 	}
 
 	/**
