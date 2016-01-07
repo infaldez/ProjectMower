@@ -8,6 +8,8 @@ import java.util.Random;
 
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.MessageType;
+
+
 public class Server implements Runnable {
 	private Context context;
 	private long seed;
@@ -31,6 +33,13 @@ public class Server implements Runnable {
 		public ArrayList<ConnectedClient> clients;
 		public int clientCounter = 0;
 		public State state;
+		public MessageHandler messageHandler;
+		
+		Context() {
+			messageHandler = new MessageHandler();
+			clients = new ArrayList<ConnectedClient>();
+		}
+		
 	}
 
 	protected interface State {
@@ -58,12 +67,18 @@ public class Server implements Runnable {
 		return newId;
 	}
 
+	static private int getSender(Context context,  Message msg) {
+		return getSender(context, msg.address, msg.port);
+	}
+
 	static private int getSender(Context context, DatagramPacket packet) {
 		// Return senders id or -1
+		return getSender(context, packet.getAddress(), packet.getPort());
+	}
+
+	static private int getSender(Context context, InetAddress address, int port) {
 		for (int i = 0; i < context.clients.size(); i++) {
 			ConnectedClient client = context.clients.get(i);
-			InetAddress address = packet.getAddress();
-			int port = packet.getPort();
 			if (client.address.equals(address) && client.port == port) {
 				return i;
 			}
@@ -80,19 +95,23 @@ public class Server implements Runnable {
 		return packet;
 	}
 
-	static private void sendMessage(Context context, Message message, ConnectedClient client)
-			throws IOException {
+	static private void sendMessage(Context context, Message message, ConnectedClient client) {
 		sendMessage(context, message, client.address, client.port);
 	}
 
-	static private void sendMessage(Context context, Message message, InetAddress address, int port)
-			throws IOException {
+	static private void sendMessage(Context context, Message message, InetAddress address, int port) {
 		byte[] data = message.getData();
 		DatagramPacket packet = new DatagramPacket(data, data.length, address, port);
-		context.socket.send(packet);
+		try {
+			context.socket.send(packet);
+		}
+		catch (IOException e) {
+			System.out.println("Server exception when sending message: "+message.toString());
+			e.printStackTrace();
+		}
 	}
 
-	static private void broadcastMessage(Context context, Message message) throws IOException {
+	static private void broadcastMessage(Context context, Message message) {
 		for (ConnectedClient client : context.clients) {
 			sendMessage(context, message, client);
 		}
@@ -131,41 +150,38 @@ public class Server implements Runnable {
 		WAIT_PLAYERS {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
-				Message message = new Message(packet.getData());
-				Message reply;
+				Message message = new Message(packet);
 
-				switch (message.type) {
-				case PING:
-					reply = new Message(MessageType.PONG, message.body);
-					sendMessage(context, reply, packet.getAddress(), packet.getPort());
-					break;
-				case JOIN:
-					ConnectedClient newClient = new ConnectedClient(message.body,
+				context.messageHandler.addHandler(MessageType.JOIN, (Message msg) -> {
+					Message reply;
+					ConnectedClient newClient = new ConnectedClient(msg.body,
 							packet.getAddress(), packet.getPort());
 					int newClientId = addClient(context, newClient);
 					if(newClientId != -1) {
 						reply = new Message(MessageType.ACCEPT, Integer.toString(newClientId));
-						sendMessage(context, reply, packet.getAddress(), packet.getPort());
 					}
 					else {
 						reply = new Message(MessageType.DECLINE, "");
-						sendMessage(context, reply, packet.getAddress(), packet.getPort());
 					}
-
-					break;
-				case START_GAME:
+					sendMessage(context, reply, packet.getAddress(), packet.getPort());
+				});
+				
+				context.messageHandler.addHandler(MessageType.START_GAME, (Message msg) -> {
 					Message prepareMessage = new Message(MessageType.PREPARE,
 							context.game.getLevel().getSeed() + " " +
-							context.game.getLevel().getSeed() + " " +
-							context.game.getLevel().getSeed()); // seed + width + height
+							context.game.getLevel().getWidth() + " " +
+							context.game.getLevel().getHeight()); // seed + width + height
 					broadcastMessage(context, prepareMessage);
-					context.state = States.GAME_START;
-					break;
-				default:
-					System.out.println("Server: Unexpected message: "+message.toString());
-				}
+					
+					// Remove handlers not needed in next state
+					context.messageHandler.removeHandler(MessageType.START_GAME);
+					context.messageHandler.removeHandler(MessageType.JOIN);
 
-				context.state = States.WAIT_PLAYERS;
+					context.state = States.GAME_START;
+				});
+
+				context.messageHandler.handle(message);
+
 				return true;
 			}
 		},
@@ -173,22 +189,20 @@ public class Server implements Runnable {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
 				Message message = new Message(packet.getData());
-				Message reply;
 
-				switch (message.type) {
-				case READY:
-					int senderId = getSender(context, packet);
+				context.messageHandler.addHandler(MessageType.READY, (Message msg) -> {
+					int senderId = getSender(context, msg);
 					if (0 <= senderId && senderId < context.clients.size()) {
 						context.clients.get(senderId).state = ConnectedClient.ClientState.READY;
 					}
 					else {
-						System.out.println("Server: Unexpected message: "+message.toString());
+						System.out.println("Server: Unexpected READY from: " + msg.address + ":" + msg.port);
 					}
-					break;
-				default:
-					System.out.println("Server: Unexpected message: "+message.toString());
-				}
+				});
+				
+				context.messageHandler.handle(message);
 
+				// Check if all clients are ready and continue to game if so
 				boolean allReady = true;
 				for (ConnectedClient client : context.clients) {
 					if (client.state != ConnectedClient.ClientState.READY) {
@@ -238,9 +252,17 @@ public class Server implements Runnable {
 		this.seed = seed;
 		context = new Context();
 		context.state = States.WAIT_PLAYERS;
-		context.clients = new ArrayList<ConnectedClient>();
 		context.socket = new DatagramSocket(port);
 		context.socket.setReuseAddress(true);
+
+		context.messageHandler.addHandler(MessageType.PING, (Message msg) -> {
+			Message response = new Message(MessageType.PONG, msg.body);
+			sendMessage(context, response, msg.address, msg.port);
+		});
+
+		context.messageHandler.unexpectedMessage = (Message msg) -> {
+			System.out.println("Server unexpected message: " + msg.toString());
+		};
 	}
 
 	public void run() {
