@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import rtsd2015.tol.pm.enums.Hitbox;
+
 /**
  * Game level, including all static entities
  *
@@ -11,8 +13,9 @@ import java.util.Random;
  */
 public class Level {
 
-	private static List<Object> staticEntities = new ArrayList <Object>();
-	private static boolean[][] boardSpaceOccupied;
+	private List<Object> staticEntities = new ArrayList <Object>();
+	private boolean[][] boardSpaceOccupied;
+	private Hitbox[][] hitboxBoard;
 
 	private long seed;
 	private int area;
@@ -37,7 +40,8 @@ public class Level {
 		this.width = width;
 		this.height = height;
 		this.area = width * height;
-		Level.boardSpaceOccupied = new boolean[height][width];
+		this.boardSpaceOccupied = new boolean[height][width];
+		this.hitboxBoard = new Hitbox[height][width];
 
 		initStaticSpace(density);
 		initSurfaceEntities();
@@ -56,6 +60,7 @@ public class Level {
 				} else {
 					staticEntities.add(new EntityGrass(i, j));
 				}
+				hitboxBoard[i][j] = Hitbox.NONE;
 			}
 		}
 	}
@@ -91,16 +96,19 @@ public class Level {
 				if (treeCount > 0) {
 					treeCount--;
 					staticEntities.add(new EntityTree(x, y));
+					hitboxBoard[x][y] = Hitbox.STATIC;
 					populated = true;
 				}
 				if (smallRockCount > 0 && !populated) {
 					smallRockCount--;
 					staticEntities.add(new EntitySmallRock(x, y));
+					hitboxBoard[x][y] = Hitbox.BREAKABLE;
 					populated = true;
 				}
 				if (bigRockCount > 0 && !populated) {
 					bigRockCount--;
 					staticEntities.add(new EntityBigRock(x, y));
+					hitboxBoard[x][y] = Hitbox.STATIC;
 					populated = true;
 				}
 			}
@@ -113,7 +121,15 @@ public class Level {
 	 * @return
 	 */
 	public List<Object> getStaticEntities() {
-		return Level.staticEntities;
+		return this.staticEntities;
+	}
+
+	public Hitbox getHitbox(int x, int y) {
+		if (x < 0) {x = 0;}
+		if (y < 0) {y = 0;}
+		if (x >= width) {x = width-1;}
+		if (y >= height) {y = height-1;}
+		return this.hitboxBoard[x][y];
 	}
 
 	public int getWidth() { return this.width; }
