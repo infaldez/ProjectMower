@@ -39,7 +39,7 @@ public class Entity {
 	protected long interactionScore = 0;
 	protected Facing dir = Facing.NORTH;
 	protected Hitbox hitbox = Hitbox.NONE;
-	protected Side side;
+	protected Side side = Side.GAIA;
 	protected Tile tile;
 	protected boolean breakable = true;
 	protected boolean alive = true;
@@ -53,7 +53,7 @@ public class Entity {
 		entityCount.set(id + 1);
 		entities.get().add(this);
 	}
-	
+
 	/**
 	 * Get list of all entities.
 	 * @return entities
@@ -272,8 +272,17 @@ public class Entity {
 	 *
 	 * @return
 	 */
-	boolean isAlive() {
+	public boolean isAlive() {
 		return alive;
+	}
+
+	/**
+	 * Makes the Entity either dead or alive
+	 *
+	 * @param state
+	 */
+	public void setAlive(boolean state) {
+		this.alive = state;
 	}
 
 	/**
@@ -299,7 +308,7 @@ public class Entity {
 	 *
 	 * @return
 	 */
-	public long getInteractionScore() {
+	public long getInteractionScore(Side side) {
 		return interactionScore;
 	}
 

@@ -17,13 +17,15 @@ public class Level {
 	private List<Object> staticEntities = new ArrayList <Object>();
 	private List<Object> dynamicEntities = new ArrayList <Object>();
 	private Hitbox[][] hitboxBoard;
+	private Object[][] entityBoard;
 
 	private long seed;
 	private int area;
 	private int width, height;
+	private Object entity;
 
-	private Random randomFillDynamic = new Random();
 	private Random randomFill = new Random();
+	private Random randomFillDynamic = new Random();
 
 	/**
 	 * Initializes a new level based on seed
@@ -38,6 +40,7 @@ public class Level {
 		this.height = height;
 		this.area = width * height;
 		this.hitboxBoard = new Hitbox[height][width];
+		this.entityBoard = new Object[height][width];
 
 		initSurfaceEntities();
 		initMissionEntities();
@@ -52,9 +55,13 @@ public class Level {
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				if (i == 0 || j == 0 || i == width-1 || j == height-1) {
-					staticEntities.add(new EntityDirt(i, j));
+					entity = new EntityDirt(i, j);
+					staticEntities.add(entity);
+					entityBoard[i][j] = entity;
 				} else {
-					staticEntities.add(new EntityGrass(i, j));
+					entity = new EntityGrass(i, j);
+					staticEntities.add(entity);
+					entityBoard[i][j] = entity;
 				}
 				hitboxBoard[i][j] = Hitbox.NONE;
 			}
@@ -75,7 +82,9 @@ public class Level {
 			int x = randomFillDynamic.nextInt(width-2) + 1;
 			int y = randomFillDynamic.nextInt(height-2) + 1;
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
-				dynamicEntities.add(new EntityFlowerBlue(Side.BLUE, x, y));
+				entity = new EntityFlowerBlue(Side.BLUE, x, y);
+				dynamicEntities.add(entity);
+				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
 				toBePlacedB--;
 			}
@@ -86,7 +95,9 @@ public class Level {
 			int x = randomFillDynamic.nextInt(width-2) + 1;
 			int y = randomFillDynamic.nextInt(height-2) + 1;
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
-				dynamicEntities.add(new EntityFlowerRed(Side.RED, x, y));
+				entity = new EntityFlowerRed(Side.RED, x, y);
+				dynamicEntities.add(entity);
+				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
 				toBePlacedR--;
 			}
@@ -112,22 +123,37 @@ public class Level {
 				if (getRandomBoolean(density) && hitboxBoard[i][j] == Hitbox.NONE) {
 					if (!placed && WorldFillProbability.BIGROCK.getWillBePlaced()) {
 						placed = true;
-						staticEntities.add(new EntityBigRock(i,j));
+						entity = new EntityBigRock(i, j);
+						staticEntities.add(entity);
+						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.STATIC;
 					}
 					if (!placed && WorldFillProbability.SMALLROCK.getWillBePlaced()) {
 						placed = true;
-						dynamicEntities.add(new EntitySmallRock(i,j));
+						entity = new EntitySmallRock(i, j);
+						dynamicEntities.add(entity);
+						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.BREAKABLE;
 					}
 					if (!placed && WorldFillProbability.TREE.getWillBePlaced()) {
 						placed = true;
-						staticEntities.add(new EntityTree(i,j));
+						entity = new EntityTree(i, j);
+						staticEntities.add(entity);
+						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.STATIC;
 					}
 				}
 			}
 		}
+	}
+
+	public boolean isInsideBoard(int x, int y) {
+		if (x > 0 && y > 0) {
+			if (x < width-1 && y < height-1) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -171,6 +197,17 @@ public class Level {
 		if (x >= width) {x = width-1;}
 		if (y >= height) {y = height-1;}
 		return this.hitboxBoard[x][y];
+	}
+
+	/**
+	 * Returns an entity of given grid position
+	 *
+	 * @param x grid position
+	 * @param y grid position
+	 * @return Entity
+	 */
+	public Object getEntity(int x, int y) {
+		return this.entityBoard[x][y];
 	}
 
 	public int getWidth() { return this.width; }

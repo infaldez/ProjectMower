@@ -15,7 +15,7 @@ import rtsd2015.tol.pm.enums.Tile;
 public class EntityPlayer extends Entity {
 
 	public static int playerCount;
-	private int score = 0;
+	private long score = 0;
 
 	/**
 	 * Initialize player
@@ -25,7 +25,7 @@ public class EntityPlayer extends Entity {
 	public EntityPlayer(Side s, int x, int y) {
 		side = s;
 		health = 3;
-		speed = 1;
+		speed = 0;
 		setGridPos(x, y);
 		setHitbox(Hitbox.PLAYER);
 		// TODO: Properties file
@@ -48,17 +48,35 @@ public class EntityPlayer extends Entity {
 		playerCount++;
 	}
 
-	public void setScore() {
-		this.score++;
+	public void setScore(long s) {
+		this.score = this.score + s;
 	}
 
-	public int getScore() {
+	public long getScore() {
 		return this.score;
 	}
 
 	public void changePos() {
 		this.gridpos[0] = this.newgridpos[0];
 		this.gridpos[1] = this.newgridpos[1];
+	}
+
+	public void move() {
+		switch(dir)
+		{
+		case NORTH:
+			this.newgridpos[1] = this.gridpos[1] - speed;
+		break;
+		case SOUTH:
+			this.newgridpos[1] = this.gridpos[1] + speed;
+		break;
+		case EAST:
+			this.newgridpos[0] = this.gridpos[0] + speed;
+		break;
+		case WEST:
+			this.newgridpos[0] = this.gridpos[0] - speed;
+		break;
+		}
 	}
 
 }
