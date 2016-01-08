@@ -182,6 +182,8 @@ public class Client implements Runnable {
 					e.printStackTrace(System.err);
 				}
 			});
+			
+			sendMessage(new Message(MessageType.START_GAME));
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
 				if(message != null) {
@@ -190,12 +192,14 @@ public class Client implements Runnable {
 			}
 
 			long lastUpdate = System.currentTimeMillis();
+			long lastSentUpdate = System.currentTimeMillis();
 			int updateDeadline = 20;
 			
 			// GameUpdate handler
 			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
 				try {
 					GameUpdate gameUpdate = GameUpdate.deserialize(msg.body);
+					clientGame.setTick(gameUpdate.tick);
 				
 					// TODO check tick
 					for (EntityUpdate u : gameUpdate.updates) {
@@ -210,18 +214,30 @@ public class Client implements Runnable {
 				state = State.IN_GAME;
 			});
 			
-			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
+			messageHandler.addHandler(MessageType.PAUSE, (Message msg) -> {
 				state = State.PAUSED;
 			});
 
 			while (state == State.IN_GAME || state == State.PAUSED) {
 				// Game loop
 				// Read user input
+				if (System.currentTimeMillis() - lastSentUpdate > 100) {
+					Entity playerEntity = clientGame.getPlayers().get(playerId); 
+					String moveCommit = playerEntity.getDir().ordinal() + " " + playerEntity.getSpeed();
+					sendMessage(new Message(MessageType.COMMIT, moveCommit));
+
+					lastSentUpdate = System.currentTimeMillis();
+				}
+
 
 				// Determine how long socket is allowed to block
 				long tillDeadline = lastUpdate - System.currentTimeMillis() + updateDeadline;
 				try {
-					socket.setSoTimeout(Math.toIntExact(tillDeadline));
+					int timeout = Math.toIntExact(tillDeadline);
+					if (timeout <= 0) {
+						timeout = 1;
+					}
+					socket.setSoTimeout(timeout);
 				}
 				catch (java.lang.ArithmeticException e){
 					// In case something tillDeadline overflows default to full deadline

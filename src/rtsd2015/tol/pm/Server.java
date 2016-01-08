@@ -13,6 +13,7 @@ import rtsd2015.tol.pm.enums.MessageType;
 public class Server implements Runnable {
 	private Context context;
 	private long seed;
+	private long lastUpdate = 0;
 	static protected class ConnectedClient {
 		public enum ClientState {CONNECTED, READY, DISCONNECTED};
 		ClientState state;
@@ -193,7 +194,7 @@ public class Server implements Runnable {
 		GAME_START {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
-				Message message = new Message(packet.getData());
+				Message message = new Message(packet);
 
 				context.messageHandler.addHandler(MessageType.READY, (Message msg) -> {
 					int senderId = getSender(context, msg);
@@ -205,7 +206,9 @@ public class Server implements Runnable {
 					}
 				});
 				
-				context.messageHandler.handle(message);
+				if (message != null) {
+					context.messageHandler.handle(message);
+				}
 
 				// Check if all clients are ready and continue to game if so
 				boolean allReady = true;
@@ -227,8 +230,39 @@ public class Server implements Runnable {
 		},
 		GAME_LOOP {
 			public boolean run(Context context) {
-				broadcastGameState(context);
-				context.state = States.GAME_END;
+				Message message = null;
+				try {
+					DatagramPacket packet = receivePacket(context);
+					 message = new Message(packet);
+				}
+				catch (Exception e) {
+					System.err.println("Server: Error in message handling in game loop.");
+					e.printStackTrace(System.err);
+				}
+				context.messageHandler.addHandler(MessageType.COMMIT, (Message msg) -> {
+					int senderId = getSender(context, msg);
+					String[] parts = msg.body.split(" ");
+					Facing dir = Facing.values[Integer.parseInt(parts[0])];
+					int speed = Integer.parseInt(parts[1]);
+					
+					Entity player = context.game.getPlayers().get(senderId);
+					if (player != null) {
+						player.setDir(dir);
+						player.setSpeed(speed);
+					}
+					else {
+						System.err.println("Commit from invalid id. " + msg.address + ":" + msg.port);
+					}
+				});
+				
+				if (message != null) {
+					context.messageHandler.handle(message);
+				}
+				
+				if(System.currentTimeMillis() - context.server.lastUpdate > 200){
+					doServerTick(context);
+				}
+
 				return true;
 			}
 		},
@@ -246,15 +280,17 @@ public class Server implements Runnable {
 	}
 	
 	static protected void doServerTick(Context context) {
-
+		context.game.doTick();
+		// Hack to hopefully get updates rolling for players
+		context.game.markUpdated(0);
+		context.game.markUpdated(1);
 		
-		broadcastGameState(context);
-	}
-
-	static protected void broadcastGameState(Context context) {
 		GameUpdate gameUpdate = GameUpdate.fromEntities(context.game.increaseTick(), context.game.flushUpdatedEntities());
 		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());
+
 		broadcastMessage(context, gameUpdateMsg);
+
+		context.server.lastUpdate = System.currentTimeMillis();
 	}
 
 	Server(String hostname, int port) throws Exception {

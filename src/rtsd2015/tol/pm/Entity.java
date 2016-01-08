@@ -195,6 +195,10 @@ public class Entity {
 	 * @param Movement
 	 * @param steps
 	 */
+	void move() {
+		move(Movement.FORWARD, speed);
+	}
+	
 	void move(Movement m, int steps) {
 		if (m == Movement.BACKWARD) {
 			steps *= -1;

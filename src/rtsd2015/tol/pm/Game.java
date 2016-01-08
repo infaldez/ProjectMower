@@ -1,6 +1,7 @@
 package rtsd2015.tol.pm;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
@@ -72,6 +73,10 @@ public class Game implements Runnable {
 		return entity;
 	}
 	
+	public void markUpdated(int id) {
+		updatedEntities.add(Entity.getEntities().get(id));
+	}
+	
 	/**
 	 * Get and clear the list of updated entitites
 	 * @return entity list
@@ -87,6 +92,22 @@ public class Game implements Runnable {
 	}
 	
 	public int getTick() {
+		return tick;
+	}
+	
+	public void setTick(int tock) {
+		tick = tock;
+	}
+	
+	public int doTick() {
+		tick++;
+		
+		Iterator<Entity> entityIterator = Entity.getEntities().iterator();
+		while (entityIterator.hasNext()) {
+			Entity entity = entityIterator.next();
+			entity.move();
+		}
+
 		return tick;
 	}
 
