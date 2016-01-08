@@ -54,6 +54,10 @@ public class Client implements Runnable {
 		return clientGame;
 	}
 
+	public ClientRenderer getRenderer() {
+		return renderer;
+	}
+
 	public int getPlayerId() {
 		return playerId;
 	}
@@ -78,6 +82,7 @@ public class Client implements Runnable {
 	}
 
 	public void startGame() {
+		renderer.flush(false);
 		if (state == State.CONNECTED) {
 			try {
 				sendMessage(new Message(MessageType.START_GAME));

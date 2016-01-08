@@ -36,6 +36,9 @@ public class KeyboardInput {
 					client.startGame();
 					game.setInGame(true);
 					break;
+				case F:
+					client.getRenderer().flush(true);
+					break;
 				default:
 					break;
 				}
