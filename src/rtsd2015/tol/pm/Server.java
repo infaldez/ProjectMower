@@ -14,6 +14,7 @@ public class Server implements Runnable {
 	private Context context;
 	private long seed;
 	private long lastUpdate = 0;
+	private int ticksPerSecond = 10;
 	static protected class ConnectedClient {
 		public enum ClientState {CONNECTED, READY, DISCONNECTED};
 		ClientState state;
@@ -259,7 +260,8 @@ public class Server implements Runnable {
 					context.messageHandler.handle(message);
 				}
 				
-				if(System.currentTimeMillis() - context.server.lastUpdate > 200){
+				long sinceLastUpdate = System.currentTimeMillis() - context.server.lastUpdate;
+				if( sinceLastUpdate > 1000/context.server.ticksPerSecond){
 					doServerTick(context);
 				}
 

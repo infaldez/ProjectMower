@@ -19,6 +19,8 @@ public class Client implements Runnable {
 	private int playerId = -1;
 	private State state = State.DISCONNECTED;
 	private Game clientGame;
+	
+	private int outgoingTickCount = 20;
 
 	private InetAddress serverAddress;
 	private int serverPort;
@@ -241,7 +243,7 @@ public class Client implements Runnable {
 			while (state == State.IN_GAME || state == State.PAUSED) {
 				// Game loop
 				// Read user input
-				if (System.currentTimeMillis() - lastSentUpdate > 100) {
+				if (System.currentTimeMillis() - lastSentUpdate > 1000/outgoingTickCount) {
 					Entity playerEntity = clientGame.getPlayers().get(playerId);
 					String moveCommit = playerEntity.getDir().ordinal() + " " + playerEntity.getSpeed();
 					sendMessage(new Message(MessageType.COMMIT, moveCommit));
