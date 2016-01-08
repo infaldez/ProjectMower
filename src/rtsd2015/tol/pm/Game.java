@@ -14,7 +14,7 @@ public class Game implements Runnable {
 	private List<EntityPlayer> players = new ArrayList<>();
 	private List<InterfaceText> interfaceTexts = new ArrayList<>();
 	private Timer timer = new Timer();
-	private boolean run = true;
+	private volatile boolean run = true;
 
 	private List<Entity> updatedEntities;
 
@@ -23,6 +23,9 @@ public class Game implements Runnable {
 	 *
 	 */
 	Game(long sd) {
+		System.out.println("seed " + sd);
+		Entity.resetEntities();
+		EntityPlayer.resetPlayers();
 		tick = 0;
 		gameGrid[0] = 16;
 		gameGrid[1] = 16;
@@ -78,16 +81,19 @@ public class Game implements Runnable {
 	}
 
 	public void markUpdated(int id) {
-		updatedEntities.add(Entity.getEntities().get(id));
+		Entity entity = Entity.getEntity(id);
+		if(entity != null) { 
+			updatedEntities.add(entity);
+		}
 	}
 	
 	/**
 	 * Get and clear the list of updated entitites
 	 * @return entity list
 	 */
-	public List<Entity> flushUpdatedEntities() {
-		List<Entity> copy = new ArrayList<Entity>(updatedEntities);
-		updatedEntities.clear();
+	public ArrayList<Entity> flushUpdatedEntities() {
+		ArrayList<Entity> copy = new ArrayList<Entity>(updatedEntities);
+		updatedEntities = new ArrayList<Entity>();
 		return copy;
 	}
 
@@ -111,8 +117,14 @@ public class Game implements Runnable {
 			Entity entity = entityIterator.next();
 			entity.move();
 		}
+		players.get(0).changePos();
+		players.get(1).changePos();
 
 		return tick;
+	}
+	
+	public void stop() {
+		run = false;
 	}
 
 	/**

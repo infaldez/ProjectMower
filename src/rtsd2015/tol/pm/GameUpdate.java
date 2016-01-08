@@ -25,8 +25,8 @@ public class GameUpdate implements Serializable {
 
 	static public GameUpdate fromEntities(int t, List<Entity> u) {
 		GameUpdate gameUpdate = new GameUpdate(t);
-		for (Entity e : u) {
-			gameUpdate.updates.add(new EntityUpdate(e));
+		for (int i = 0; i < u.size() ; i++) {
+			gameUpdate.updates.add(new EntityUpdate(u.get(i)));
 		}
 		return gameUpdate;
 	}
