@@ -69,10 +69,23 @@ public class Client implements Runnable {
 			playerId = Integer.parseInt(msg.body);
 			controller.setStatus("Connection accepted with id: " + playerId);
 			state = State.CONNECTED;
+			controller.switchBtnStart();
 		});
 
 		sendMessage(new Message(MessageType.JOIN, nickname));
 		state = State.CONNECTING;
+	}
+	
+	public void startGame() {
+		if (state == State.CONNECTED) {
+			controller.switchBtnStart();
+			try {
+				sendMessage(new Message(MessageType.START_GAME));
+			}
+			catch (IOException e){
+				e.printStackTrace(System.err);
+			}
+		}
 	}
 
 	public void disconnect() {
@@ -183,7 +196,7 @@ public class Client implements Runnable {
 				}
 			});
 			
-			sendMessage(new Message(MessageType.START_GAME));
+			
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
 				if(message != null) {

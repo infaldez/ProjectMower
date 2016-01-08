@@ -20,7 +20,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Play">
             <items>
-              <MenuItem fx:id="btnHost" mnemonicParsing="false" onAction="#handleNewHost" text="Create a New Host" />
+              <MenuItem fx:id="btnStart" disable="true" mnemonicParsing="false" onAction="#handleStartGame" text="Start " />
+                  <MenuItem fx:id="btnHost" mnemonicParsing="false" onAction="#handleNewHost" text="Create a New Host" />
                   <MenuItem fx:id="btnJoin" mnemonicParsing="false" onAction="#handleConnect" text="Join an Existing Host" />
                   <MenuItem fx:id="btnDisconnect" mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" />
             </items>

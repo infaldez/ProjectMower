@@ -185,6 +185,12 @@ public class Launcher extends Application {
 	}
 
 	/**
+	 * Client start game.
+	 */
+	public void clientStartGame() {
+		controller.client.startGame();
+	}
+	/**
 	 * Setups a new client
 	 *
 	 * @param name
