@@ -74,6 +74,11 @@ public class EntityPlayer extends Entity {
 		this.gridpos[1] = this.newgridpos[1];
 	}
 
+	public void resetPos() {
+		this.newgridpos[0] = this.gridpos[0];
+		this.newgridpos[1] = this.gridpos[1];
+	}
+
 	public void move() {
 		switch(dir)
 		{
