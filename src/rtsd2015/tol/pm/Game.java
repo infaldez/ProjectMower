@@ -162,11 +162,16 @@ public class Game implements Runnable {
 			interfaceTexts.add(txt_gameState);
 			txt_gameState.setTextString("Press Start To Begin");
 
-			// Wait until everything gets ready
-			while (!inGame && !Launcher.getAppSandbox()) {
+			while (!inGame) {
+				for (EntityPlayer player : players) {
+					if (player.getReadyState()) {
+						inGame = true;
+					}
+				}
 				Thread.sleep(500);
 			}
 
+			System.out.println("je");
 			txt_gameState.setTextString("");
 			timer.start();
 
@@ -178,8 +183,8 @@ public class Game implements Runnable {
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 				time.setTextString("Time Left: ");
-
 				players.get(0).move();
+
 
 				switch(level.getHitbox(players.get(0).getNewGridPos()[0], players.get(0).getNewGridPos()[1])){
 				case NONE:

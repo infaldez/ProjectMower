@@ -94,7 +94,6 @@ public class Client implements Runnable {
 	public void startGame() {
 		if (state == State.CONNECTED) {
 			try {
-				clientGame.setInGame(true);
 				sendMessage(new Message(MessageType.START_GAME));
 			}
 			catch (IOException e){
