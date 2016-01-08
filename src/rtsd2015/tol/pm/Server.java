@@ -282,10 +282,11 @@ public class Server implements Runnable {
 	static protected void doServerTick(Context context) {
 		context.game.doTick();
 		// Hack to hopefully get updates rolling for players
-		context.game.markUpdated(0);
-		context.game.markUpdated(1);
+		context.game.markUpdated(context.game.getPlayers().get(0).getId());
+		context.game.markUpdated(context.game.getPlayers().get(1).getId());
 		
-		GameUpdate gameUpdate = GameUpdate.fromEntities(context.game.increaseTick(), context.game.flushUpdatedEntities());
+		GameUpdate gameUpdate = GameUpdate.fromEntities(context.game.getTick(), context.game.flushUpdatedEntities());
+
 		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());
 
 		broadcastMessage(context, gameUpdateMsg);

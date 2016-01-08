@@ -11,10 +11,16 @@ import javafx.scene.layout.BorderPane;
 
 import java.io.*;
 import java.lang.*;
+import java.util.*;
+import java.util.concurrent.*;
+
 import rtsd2015.tol.pm.enums.MessageType;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
 public class Client implements Runnable {
+	ClientRenderer renderer;
+	Thread gameThread;
+	Thread renderThread;
 	public enum State {
 		DISCONNECTED, CONNECTING, CONNECTED, IN_GAME, PAUSED
 	}
@@ -22,6 +28,7 @@ public class Client implements Runnable {
 	private String nickname;
 	private int playerId = -1;
 	private State state = State.DISCONNECTED;
+	Game clientGame;
 
 	private InetAddress serverAddress;
 	private int serverPort;
@@ -56,6 +63,14 @@ public class Client implements Runnable {
 			System.out.println("Client unexpected message: " + msg.toString());
 		};
 	}
+	
+	public Game getGame() {
+		return clientGame;
+	}
+
+	public int getPlayerId() {
+		return playerId;
+	}
 
 	public void joinServer(InetAddress address) throws SocketException, IOException {
 		if (socket == null) {
@@ -70,6 +85,7 @@ public class Client implements Runnable {
 			controller.setStatus("Connection accepted with id: " + playerId);
 			state = State.CONNECTED;
 			controller.switchBtnStart();
+			controller.switchBtnDisconnect();
 		});
 
 		sendMessage(new Message(MessageType.JOIN, nickname));
@@ -137,31 +153,27 @@ public class Client implements Runnable {
 
 	public void run() {
 		try {
-			Game clientGame;
-			ClientRenderer renderer;
-			Thread gameThread;
-			Thread renderThread;
+			joinServer(InetAddress.getByName("localhost"));
 			KeyboardInput input;
 			StopWatch pingTimer = new StopWatch();
-			joinServer(InetAddress.getByName("localhost"));
 			Message pingMessage = new Message(MessageType.PING, "test");
-			sendMessage(pingMessage);
-			pingTimer.start();
 
 			messageHandler.addHandler(MessageType.PONG, (Message msg) -> {
-				double time = pingTimer.msLap();
+				double time = pingTimer.msStop();
 				Platform.runLater(() -> {
 					controller.setPing(String.format("%.1f",time));
-					controller.switchBtnDisconnect();
 				});
-				try {
-					sendMessage(pingMessage);
-				}
-				catch (IOException e) {
-					System.err.println("Client sending ping failed.");
-					e.printStackTrace(System.err);
-				}
 			});
+			
+			ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+			executor.scheduleAtFixedRate(() -> {
+					pingTimer.start();
+					try {
+						sendMessage(pingMessage);
+					}
+					catch (IOException e) { }
+				}, 0, 1, TimeUnit.SECONDS);
+
 
 
 			while(state == State.CONNECTING) {
@@ -175,17 +187,30 @@ public class Client implements Runnable {
 			clientGame = new Game(seed);
 			gameThread = new Thread(clientGame);
 			gameThread.start();
-			renderer = new ClientRenderer(mainApp, clientGame, 24, 24);
+			renderer = new ClientRenderer(mainApp, this, 24, 24);
 			renderThread = new Thread(renderer);
 			renderThread.start();
-			input = new KeyboardInput(mainApp, clientGame, playerId);
+			input = new KeyboardInput(mainApp, this);
 
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");
 				seed = Long.valueOf(parts[0]);
 				int width = Integer.valueOf(parts[1]);
 				int height = Integer.valueOf(parts[2]);
-				//client = new Game(mainApp, seed, true);
+
+				clientGame.stop();
+				try {
+					gameThread.join(); // Wait thread to finish
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace(System.err);
+				}
+
+				clientGame = new Game(seed);
+				renderer.updateGameReference();
+				gameThread = new Thread(clientGame);
+				gameThread.start();
+
 				try {
 					sendMessage(new Message(MessageType.READY));
 					state = State.IN_GAME;
@@ -214,7 +239,6 @@ public class Client implements Runnable {
 					GameUpdate gameUpdate = GameUpdate.deserialize(msg.body);
 					clientGame.setTick(gameUpdate.tick);
 				
-					// TODO check tick
 					for (EntityUpdate u : gameUpdate.updates) {
 						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health); 
 					}
