@@ -139,7 +139,6 @@ public class Client implements Runnable {
 				double time = pingTimer.msLap();
 				Platform.runLater(() -> {
 					controller.setPing(String.format("%.1f",time));
-					controller.switchBtnDisconnect();
 				});
 				try {
 					sendMessage(pingMessage);
@@ -191,17 +190,17 @@ public class Client implements Runnable {
 
 			long lastUpdate = System.currentTimeMillis();
 			int updateDeadline = 20;
-			
+
 			// GameUpdate handler
 			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
 				try {
 					GameUpdate gameUpdate = GameUpdate.deserialize(msg.body);
-				
+
 					// TODO check tick
 					for (EntityUpdate u : gameUpdate.updates) {
-						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health); 
+						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health);
 					}
-				
+
 				}
 				catch(Exception e) {
 					System.err.println("Client: Error in parsing GameUpdate!");
@@ -209,7 +208,7 @@ public class Client implements Runnable {
 				}
 				state = State.IN_GAME;
 			});
-			
+
 			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
 				state = State.PAUSED;
 			});
