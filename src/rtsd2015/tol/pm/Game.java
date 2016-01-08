@@ -34,7 +34,7 @@ public class Game implements Runnable {
 		gameGrid[1] = 16;
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
-		players.add(new EntityPlayer(Side.RED, gameGrid[0], gameGrid[1]));
+		players.add(new EntityPlayer(Side.RED, gameGrid[0]-1, gameGrid[1]-1));
 
 		updatedEntities = new ArrayList<Entity>();
 	}
@@ -115,13 +115,14 @@ public class Game implements Runnable {
 	public int doTick() {
 		tick++;
 
+		checkedMove(players.get(0));
+		checkedMove(players.get(1));
+
 		Iterator<Entity> entityIterator = Entity.getEntities().iterator();
 		while (entityIterator.hasNext()) {
 			Entity entity = entityIterator.next();
 			entity.move();
 		}
-		players.get(0).changePos();
-		players.get(1).changePos();
 
 		return tick;
 	}
@@ -138,6 +139,41 @@ public class Game implements Runnable {
 		return this.inGame;
 	}
 
+	/**
+	 * Do move and determine consequences.
+	 * @param player
+	 * @return
+	 */
+	public void checkedMove(EntityPlayer player) {
+		int[] newGridPos = player.getNewGridPos();
+		int x = newGridPos[0];
+		int y = newGridPos[1];
+		
+		// Prevent players from leaving the game area
+		if (x < 0 || y < 0 || x > gameGrid[0] - 1 || y > gameGrid[1] - 1) {
+			player.resetPos();
+		}
+
+		switch(level.getHitbox(newGridPos)){
+		case NONE:
+			player.changePos();
+			break;
+		case BREAKABLE:
+			player.changePos();
+			// If hit entity is breakable kill it and adjust score accordingly
+			if(level.getEntity(player.getGridPos()).isAlive()){
+				player.setScore(level.getEntity(player.getGridPos()).getInteractionScore(player.getSide()));
+				level.getEntity(player.getGridPos()).setAlive(false);
+			}
+			break;
+		case PLAYER:
+			player.resetPos();
+			break;
+		case STATIC:
+			player.resetPos();
+			break;
+		}
+	}
 	/**
 	 * Independent thread for the game logic
 	 *
@@ -177,41 +213,6 @@ public class Game implements Runnable {
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 				time.setTextString("Time Left: ");
-				players.get(0).move();
-
-
-				switch(level.getHitbox(players.get(0).getNewGridPos()[0], players.get(0).getNewGridPos()[1])){
-				case NONE:
-					players.get(0).changePos();
-					break;
-				case BREAKABLE:
-					players.get(0).changePos();
-					if(((Entity) level.getEntity(players.get(0).getGridPos()[0], players.get(0).getGridPos()[1])).isAlive()){
-						players.get(0).setScore(((Entity) level.getEntity(players.get(0).getGridPos()[0], players.get(0).getGridPos()[1])).getInteractionScore(players.get(0).getSide()));
-						((Entity) level.getEntity(players.get(0).getGridPos()[0], players.get(0).getGridPos()[1])).setAlive(false);
-					}
-					break;
-				case PLAYER:
-					break;
-				case STATIC:
-					break;
-				}
-
-				// Prevent players from leaving the game area
-				for (EntityPlayer entity : players) {
-					if (entity.getGridPos()[0] < 0) {
-						entity.setGridPosX(0);
-					}
-					if (entity.getGridPos()[1] < 0) {
-						entity.setGridPosY(0);
-					}
-					if (entity.getGridPos()[0] > gameGrid[0]-1) {
-						entity.setGridPosX(gameGrid[0]-1);
-					}
-					if (entity.getGridPos()[1] > gameGrid[1]-1) {
-						entity.setGridPosY(gameGrid[1]-1);
-					}
-				}
 
 				// Wait for the next cycle if we are ahead
 				long sleepTime = (lastLoopTime + OPTIMAL_TIME - System.nanoTime()) / 1000000;
