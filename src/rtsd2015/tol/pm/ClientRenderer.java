@@ -12,6 +12,7 @@ import rtsd2015.tol.pm.enums.Tile;
 public class ClientRenderer implements Runnable {
 
 	protected Launcher mainApp;
+	protected Client client;
 	protected Game game;
 	protected Level level;
 	protected List<Object> staticEntities;
@@ -38,9 +39,14 @@ public class ClientRenderer implements Runnable {
 
 	private EnumMap<Tile, Image> tileImages;
 
-	ClientRenderer(Launcher mainApp, Game game, int x, int y) {
+	ClientRenderer(Launcher mainApp, Client client, int x, int y) {
 		this.mainApp = mainApp;
-		this.game = game;
+		this.client = client;
+		updateGameReference();
+	}
+	
+	public void updateGameReference(){
+		this.game = client.getGame();
 		this.grid = game.getGrid();
 		gc_dynamic = mainApp.getCanvas(0).getGraphicsContext2D();
 		gc_static = mainApp.getCanvas(1).getGraphicsContext2D();
