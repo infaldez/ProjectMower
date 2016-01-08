@@ -3,6 +3,9 @@ package rtsd2015.tol.pm;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
 
@@ -82,11 +85,11 @@ public class Game implements Runnable {
 
 	public void markUpdated(int id) {
 		Entity entity = Entity.getEntity(id);
-		if(entity != null) { 
+		if(entity != null) {
 			updatedEntities.add(entity);
 		}
 	}
-	
+
 	/**
 	 * Get and clear the list of updated entitites
 	 * @return entity list
@@ -104,14 +107,14 @@ public class Game implements Runnable {
 	public int getTick() {
 		return tick;
 	}
-	
+
 	public void setTick(int tock) {
 		tick = tock;
 	}
-	
+
 	public int doTick() {
 		tick++;
-		
+
 		Iterator<Entity> entityIterator = Entity.getEntities().iterator();
 		while (entityIterator.hasNext()) {
 			Entity entity = entityIterator.next();
@@ -122,7 +125,7 @@ public class Game implements Runnable {
 
 		return tick;
 	}
-	
+
 	public void stop() {
 		run = false;
 	}
@@ -140,12 +143,15 @@ public class Game implements Runnable {
 			EntityPlayer pl1 = players.get(0);
 			EntityPlayer pl2 = players.get(1);
 
-			InterfaceText p1_score = new InterfaceText(16,32);
+			// Initialize in-game UI texts
+			InterfaceText p1_score = new InterfaceText(16,32, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(p1_score);
-			InterfaceText p2_score = new InterfaceText(16,96);
+			InterfaceText p2_score = new InterfaceText(16,96, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(p2_score);
-			InterfaceText time = new InterfaceText(16,160);
+			InterfaceText time = new InterfaceText(16,160, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(time);
+			InterfaceText txt_gameState = new InterfaceText(16,192, Font.font("Verdana",24), Color.RED);
+			interfaceTexts.add(txt_gameState);
 
 			timer.start();
 
@@ -153,9 +159,11 @@ public class Game implements Runnable {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
 
+				// Update UI text strings
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 				time.setTextString("Time Left: ");
+				txt_gameState.setTextString("Press Start To Begin");
 
 				players.get(0).move();
 
@@ -193,7 +201,7 @@ public class Game implements Runnable {
 				}
 
 				// Wait for the next cycle if we are ahead
-				long sleepTime = (lastLoopTime + OPTIMAL_TIME - System.nanoTime()) / 1000000; 
+				long sleepTime = (lastLoopTime + OPTIMAL_TIME - System.nanoTime()) / 1000000;
 				if (sleepTime > 0) {
 					Thread.sleep(sleepTime);
 				}

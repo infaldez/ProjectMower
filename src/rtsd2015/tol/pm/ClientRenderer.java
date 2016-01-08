@@ -64,7 +64,7 @@ public class ClientRenderer implements Runnable {
 	private void init() throws InterruptedException {
 		try {
 			gc_ui.setFill(Color.WHITE);
-			gc_ui.setFont(new Font("Arial", 14));
+			gc_ui.setFont(new Font("Verdana", 14));
 			gc_ui.fillText("Initializing ...", 16, 16);
 			buildTextures();
 			Thread.sleep(500);
@@ -133,16 +133,18 @@ public class ClientRenderer implements Runnable {
 	 */
 	private void drawUI() {
 		for (InterfaceText itext : interfaceTexts) {
-			int interfaceTextsOffsetX = itext.getSpacingX();
-			int interfaceTextsOffsetY = itext.getSpacingY();
-			drawText(gc_ui, itext.getTextString(), interfaceTextsOffsetX, interfaceTextsOffsetY);
+			int interfaceTextsOffsetX = itext.getPosX();
+			int interfaceTextsOffsetY = itext.getPosY();
+			drawText(gc_ui, itext.getTextString(), itext.getTextFont(), itext.getTextColor(), interfaceTextsOffsetX, interfaceTextsOffsetY);
 		}
 		if (Launcher.getAppDebug()) {
 			debug();
 		}
 	}
 
-	private void drawText(GraphicsContext gc, String str, int x, int y) {
+	private void drawText(GraphicsContext gc, String str, Font font, Color color, int x, int y) {
+		gc.setFill(color);
+		gc.setFont(font);
 		gc.fillText(str, x, y);
 	}
 
@@ -159,12 +161,12 @@ public class ClientRenderer implements Runnable {
 		int p1_posY = game.getPlayers().get(0).getGridPos()[1];
 		int p2_posX = game.getPlayers().get(1).getGridPos()[0];
 		int p2_posY = game.getPlayers().get(1).getGridPos()[1];
-		drawText(gc_ui, "PL1 Pos: (" + p1_posX + "." + p1_posY + ")", 16, render_y - 80);
-		drawText(gc_ui, "PL2 Pos: (" + p2_posX + "." + p2_posY + ")", 16, render_y - 64);
-		drawText(gc_ui, "PL1 HBox: " + level.getHitbox(p1_posX, p1_posY), 16, render_y - 48);
-		drawText(gc_ui, "PL2 HBox: " + level.getHitbox(p2_posX, p2_posY), 16, render_y - 32);
-		drawText(gc_ui, "FPS: " + Math.round(TARGET_FPS * delta), 16, render_y - 16);
-		drawText(gc_ui, "Tick: " + Math.round(game.getTick()), 70, render_y - 16);
+		drawText(gc_ui, "PL1 Pos: (" + p1_posX + "." + p1_posY + ")", Font.font("Verdana", 14), Color.WHITE, 16, render_y - 80);
+		drawText(gc_ui, "PL2 Pos: (" + p2_posX + "." + p2_posY + ")", Font.font("Verdana", 14), Color.WHITE,16, render_y - 64);
+		drawText(gc_ui, "PL1 HBox: " + level.getHitbox(p1_posX, p1_posY), Font.font("Verdana", 14), Color.WHITE,16, render_y - 48);
+		drawText(gc_ui, "PL2 HBox: " + level.getHitbox(p2_posX, p2_posY), Font.font("Verdana", 14), Color.WHITE,16, render_y - 32);
+		drawText(gc_ui, "FPS: " + Math.round(TARGET_FPS * delta), Font.font("Verdana", 14), Color.WHITE,16, render_y - 16);
+		drawText(gc_ui, "Tick: " + Math.round(game.getTick()), Font.font("Verdana", 14), Color.WHITE,70, render_y - 16);
 	}
 
 	/**
