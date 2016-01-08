@@ -69,13 +69,6 @@ public class Launcher extends Application {
 		}
 	}
 
-	public int[] getContentSpace() {
-		int[] space = new int[2];
-		space[0] = (int) rootLayout.getWidth();
-		space[1] = (int) rootLayout.getHeight()-48;
-		return space;
-	}
-
 	/**
 	 * Displays a dialog for creating a new host
 	 *
@@ -130,11 +123,18 @@ public class Launcher extends Application {
 		}
 	}
 
+	public static int[] getContentSpace() {
+		int[] space = new int[2];
+		space[0] = (int) rootLayout.getWidth();
+		space[1] = (int) rootLayout.getHeight()-48;
+		return space;
+	}
+
 	/**
 	 * Initializes the rendering space
 	 *
 	 */
-	public void setViewport() {
+	public static void setAppViewport() {
 		Pane gfx = new Pane();
 		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
 		canvases.add(new Canvas(getContentSpace()[0], getContentSpace()[1]));
@@ -152,7 +152,7 @@ public class Launcher extends Application {
 	 * Update size of the canvases to correspond the new screen dimensions
 	 *
 	 */
-	public void updateViewPortSize() {
+	public static void updateAppViewPortSize() {
 		canvases.get(0).setWidth(getContentSpace()[0]);
 		canvases.get(0).setHeight(getContentSpace()[1]);
 		canvases.get(1).setWidth(getContentSpace()[0]);
@@ -168,19 +168,19 @@ public class Launcher extends Application {
 	 * @param c
 	 * @return
 	 */
-	public Canvas getCanvas(int c) {
+	public static Canvas getAppCanvas(int c) {
 		return Launcher.canvases.get(c);
 	}
 
-	public void setDebug(boolean b) {
+	public static void setAppDebug(boolean b) {
 		debug = b;
 	}
 
-	public boolean getDebug() {
+	public static boolean getAppDebug() {
 		return debug;
 	}
 
-	public Scene getScene(){
+	public static Scene getAppScene(){
 		return scene;
 	}
 
@@ -197,7 +197,7 @@ public class Launcher extends Application {
 	 */
 	public void setClient(String name, int port, long seed) {
 		controller.switchBtnClient();
-		setViewport();
+		setAppViewport();
 		Client client = new Client(this, controller, name, port, seed);
 		controller.client = client;
 		clientThread = new Thread(client);

@@ -11,7 +11,6 @@ import rtsd2015.tol.pm.enums.Tile;
 
 public class ClientRenderer implements Runnable {
 
-	protected Launcher mainApp;
 	protected Client client;
 	protected Game game;
 	protected Level level;
@@ -39,18 +38,17 @@ public class ClientRenderer implements Runnable {
 
 	private EnumMap<Tile, Image> tileImages;
 
-	ClientRenderer(Launcher mainApp, Client client, int x, int y) {
-		this.mainApp = mainApp;
+	ClientRenderer(Client client) {
 		this.client = client;
 		updateGameReference();
 	}
-	
+
 	public void updateGameReference(){
 		this.game = client.getGame();
 		this.grid = game.getGrid();
-		gc_dynamic = mainApp.getCanvas(0).getGraphicsContext2D();
-		gc_static = mainApp.getCanvas(1).getGraphicsContext2D();
-		gc_ui = mainApp.getCanvas(2).getGraphicsContext2D();
+		gc_dynamic = Launcher.getAppCanvas(0).getGraphicsContext2D();
+		gc_static = Launcher.getAppCanvas(1).getGraphicsContext2D();
+		gc_ui = Launcher.getAppCanvas(2).getGraphicsContext2D();
 		this.level = game.getLevel();
 		this.staticEntities = level.getStaticEntities();
 		this.dynamicEntities = level.getDynamicEntities();
@@ -75,19 +73,19 @@ public class ClientRenderer implements Runnable {
 	 *
 	 */
 	private void updateViewPortDimensions() throws InterruptedException {
-		int new_w = mainApp.getContentSpace()[0];
-		int new_y = mainApp.getContentSpace()[1];
+		int new_w = Launcher.getContentSpace()[0];
+		int new_y = Launcher.getContentSpace()[1];
 		if (render_w != new_w || render_y != new_y) {
 			try {
 				Thread.sleep(100);
-				mainApp.updateViewPortSize();
+				Launcher.updateAppViewPortSize();
 				gc_static.clearRect(0, 0, render_w, render_y);
 				render_w = new_w;
 				render_y = new_y;
 				initTileDimensions();
 				drawStaticResources();
 			} catch (Exception e) {
-				System.out.println("Renderer Exception!");
+				System.out.println("Renderer ViewPort update Exception!");
 				e.printStackTrace(System.err);
 			}
 		}
@@ -132,7 +130,7 @@ public class ClientRenderer implements Runnable {
 			int interfaceTextsOffsetY = itext.getSpacingY();
 			drawText(gc_ui, itext.getTextString(), interfaceTextsOffsetX, interfaceTextsOffsetY);
 		}
-		if (mainApp.getDebug()) {
+		if (Launcher.getAppDebug()) {
 			debug();
 		}
 	}

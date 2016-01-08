@@ -108,9 +108,9 @@ public class RootLayoutController {
 
 	@FXML void handleDebug() {
 		if (btnDebug.isSelected()) {
-			mainApp.setDebug(true);
+			Launcher.setAppDebug(true);
 		} else {
-			mainApp.setDebug(false);
+			Launcher.setAppDebug(false);
 		}
 	}
 

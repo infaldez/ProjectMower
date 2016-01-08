@@ -8,10 +8,10 @@ import javafx.scene.input.KeyEvent;
 
 public class KeyboardInput {
 
-	public KeyboardInput(Launcher mainApp, Client client) {
+	public KeyboardInput(Client client) {
 
 		// Key Pressed increase speed
-		mainApp.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
+		Launcher.getAppScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				Game game = client.getGame();
@@ -33,12 +33,14 @@ public class KeyboardInput {
 					game.getPlayers().get(clientId).setSpeed(1);
 					game.getPlayers().get(clientId).setDir(Facing.EAST);
 					break;
+				default:
+					break;
 				}
 			}
 		});
 
 		// Key Released reset speed
-		mainApp.getScene().setOnKeyReleased(new EventHandler<KeyEvent>() {
+		Launcher.getAppScene().setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
 				Game game = client.getGame();

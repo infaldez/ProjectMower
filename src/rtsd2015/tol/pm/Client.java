@@ -91,7 +91,7 @@ public class Client implements Runnable {
 		sendMessage(new Message(MessageType.JOIN, nickname));
 		state = State.CONNECTING;
 	}
-	
+
 	public void startGame() {
 		if (state == State.CONNECTED) {
 			controller.switchBtnStart();
@@ -185,10 +185,10 @@ public class Client implements Runnable {
 			clientGame = new Game(seed);
 			gameThread = new Thread(clientGame);
 			gameThread.start();
-			renderer = new ClientRenderer(mainApp, this, 24, 24);
+			renderer = new ClientRenderer(this);
 			renderThread = new Thread(renderer);
 			renderThread.start();
-			input = new KeyboardInput(mainApp, this);
+			input = new KeyboardInput(this);
 
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");
@@ -219,7 +219,7 @@ public class Client implements Runnable {
 				}
 			});
 
-			
+
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
 				if(message != null) {
