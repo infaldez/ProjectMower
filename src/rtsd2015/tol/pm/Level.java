@@ -14,15 +14,14 @@ import rtsd2015.tol.pm.enums.WorldFillProbability;
  */
 public class Level {
 
-	private List<Object> staticEntities = new ArrayList <Object>();
-	private List<Object> dynamicEntities = new ArrayList <Object>();
+	private List<Entity> staticEntities = new ArrayList <Entity>();
+	private List<Entity> dynamicEntities = new ArrayList <Entity>();
 	private Hitbox[][] hitboxBoard;
-	private Object[][] entityBoard;
+	private Entity[][] entityBoard;
 
 	private long seed;
 	private int area;
 	private int width, height;
-	private Object entity;
 
 	private Random random;
 
@@ -40,7 +39,7 @@ public class Level {
 		this.height = height;
 		this.area = width * height;
 		this.hitboxBoard = new Hitbox[height][width];
-		this.entityBoard = new Object[height][width];
+		this.entityBoard = new Entity[height][width];
 
 		initSurfaceEntities();
 		initMissionEntities();
@@ -52,6 +51,7 @@ public class Level {
 	 *
 	 */
 	private void initSurfaceEntities() {
+		Entity entity;
 		for (int i = 0; i < height; i++) {
 			for (int j = 0; j < width; j++) {
 				if (i == 0 || j == 0 || i == width-1 || j == height-1) {
@@ -73,6 +73,7 @@ public class Level {
 	 *
 	 */
 	private void initMissionEntities() {
+		Entity entity;
 		double toBePlacedB = Math.floor(area / 16);
 		double toBePlacedR = Math.floor(area / 16);
 		int count = 0;
@@ -110,6 +111,7 @@ public class Level {
 	 * @param density the density orders how filled the final board will be
 	 */
 	private void initWorldEntities(double density) {
+		Entity entity;
 		boolean placed = false;
 		if (density >= 1) {
 			density = density / 100;
@@ -171,7 +173,7 @@ public class Level {
 	 *
 	 * @return
 	 */
-	public List<Object> getStaticEntities() {
+	public List<Entity> getStaticEntities() {
 		return this.staticEntities;
 	}
 
@@ -180,7 +182,7 @@ public class Level {
 	 *
 	 * @return
 	 */
-	public List<Object> getDynamicEntities() {
+	public List<Entity> getDynamicEntities() {
 		return this.dynamicEntities;
 	}
 
@@ -191,6 +193,10 @@ public class Level {
 	 * @param y
 	 * @return Hitbox
 	 */
+	public Hitbox getHitbox(int[] pos) {
+		return getHitbox(pos[0], pos[1]);
+	}
+
 	public Hitbox getHitbox(int x, int y) {
 		if (x < 0) {x = 0;}
 		if (y < 0) {y = 0;}
@@ -206,7 +212,10 @@ public class Level {
 	 * @param y grid position
 	 * @return Entity
 	 */
-	public Object getEntity(int x, int y) {
+	public Entity getEntity(int[] pos) {
+		return getEntity(pos[0], pos[1]);
+	}
+	public Entity getEntity(int x, int y) {
 		return this.entityBoard[x][y];
 	}
 
