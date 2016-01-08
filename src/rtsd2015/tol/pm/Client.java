@@ -1,26 +1,16 @@
 package rtsd2015.tol.pm;
 
 import java.net.*;
-
-import javafx.animation.Animation.Status;
-import javafx.application.Platform;
-import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-
 import java.io.*;
-import java.lang.*;
-import java.util.*;
 import java.util.concurrent.*;
-
+import javafx.application.Platform;
 import rtsd2015.tol.pm.enums.MessageType;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
 public class Client implements Runnable {
-	ClientRenderer renderer;
-	Thread gameThread;
-	Thread renderThread;
+	private ClientRenderer renderer;
+	private Thread gameThread;
+	private Thread renderThread;
 	public enum State {
 		DISCONNECTED, CONNECTING, CONNECTED, IN_GAME, PAUSED
 	}
@@ -28,20 +18,16 @@ public class Client implements Runnable {
 	private String nickname;
 	private int playerId = -1;
 	private State state = State.DISCONNECTED;
-	Game clientGame;
+	private Game clientGame;
 
 	private InetAddress serverAddress;
 	private int serverPort;
-	private int serverPing;
 	private long seed = 128;
 
-	private Launcher mainApp;
 	private RootLayoutController controller;
-
 	private MessageHandler messageHandler;
 
-	Client(Launcher mainApp, RootLayoutController controller, String nickname, int port, long seed) {
-		this.mainApp = mainApp;
+	Client(RootLayoutController controller, String nickname, int port, long seed) {
 		this.controller = controller;
 		this.nickname = nickname;
 		this.serverPort = port;

@@ -3,7 +3,6 @@ package rtsd2015.tol.pm;
 import rtsd2015.tol.pm.enums.Facing;
 
 import javafx.event.EventHandler;
-import javafx.scene.*;
 import javafx.scene.input.KeyEvent;
 
 public class KeyboardInput {
@@ -34,8 +33,8 @@ public class KeyboardInput {
 					game.getPlayers().get(clientId).setDir(Facing.EAST);
 					break;
 				case ENTER:
-					game.getPlayers().get(clientId).setReadyState(true);
 					client.startGame();
+					game.setInGame(true);
 					break;
 				default:
 					break;
@@ -61,6 +60,8 @@ public class KeyboardInput {
 					break;
 				case RIGHT:
 					game.getPlayers().get(clientId).setSpeed(0);
+					break;
+				default:
 					break;
 				}
 			}

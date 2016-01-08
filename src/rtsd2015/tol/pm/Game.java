@@ -162,12 +162,7 @@ public class Game implements Runnable {
 			interfaceTexts.add(txt_gameState);
 			txt_gameState.setTextString("Press Start To Begin");
 
-			while (!inGame) {
-				for (EntityPlayer player : players) {
-					if (player.getReadyState()) {
-						inGame = true;
-					}
-				}
+			while (!inGame && !Launcher.getAppSandbox()) {
 				Thread.sleep(500);
 			}
 

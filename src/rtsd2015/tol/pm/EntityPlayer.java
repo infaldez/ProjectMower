@@ -1,7 +1,5 @@
 package rtsd2015.tol.pm;
 
-import java.util.ArrayList;
-
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Hitbox;
 import rtsd2015.tol.pm.enums.Side;
@@ -21,7 +19,6 @@ public class EntityPlayer extends Entity {
 	};
 
 	private long score = 0;
-	private boolean readyState = false;
 
 	/**
 	 * Initialize player
@@ -94,13 +91,4 @@ public class EntityPlayer extends Entity {
 		break;
 		}
 	}
-
-	public void setReadyState(boolean state) {
-		this.readyState = state;
-	}
-
-	public boolean getReadyState() {
-		return this.readyState;
-	}
-
 }

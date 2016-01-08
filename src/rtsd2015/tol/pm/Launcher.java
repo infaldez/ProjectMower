@@ -201,7 +201,7 @@ public class Launcher extends Application {
 	public void setClient(String name, int port, long seed) {
 		controller.switchBtnClient();
 		setAppViewport();
-		Client client = new Client(this, controller, name, port, seed);
+		Client client = new Client(controller, name, port, seed);
 		controller.client = client;
 		clientThread = new Thread(client);
 		clientThread.start();
