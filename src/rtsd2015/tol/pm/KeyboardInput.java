@@ -8,12 +8,14 @@ import javafx.scene.input.KeyEvent;
 
 public class KeyboardInput {
 
-	public KeyboardInput(Launcher mainApp, Game game, int clientId) {
+	public KeyboardInput(Launcher mainApp, Client client) {
 
 		// Key Pressed increase speed
 		mainApp.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
+				Game game = client.getGame();
+				int clientId = client.getPlayerId();
 				switch (event.getCode()) {
 				case UP:
 					game.getPlayers().get(clientId).setSpeed(1);
@@ -39,6 +41,8 @@ public class KeyboardInput {
 		mainApp.getScene().setOnKeyReleased(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent event) {
+				Game game = client.getGame();
+				int clientId = client.getPlayerId();
 				switch (event.getCode()) {
 				case UP:
 					game.getPlayers().get(clientId).setSpeed(0);
