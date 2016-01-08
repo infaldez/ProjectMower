@@ -148,7 +148,7 @@ public class Game implements Runnable {
 		int[] newGridPos = player.getNewGridPos();
 		int x = newGridPos[0];
 		int y = newGridPos[1];
-		
+
 		// Prevent players from leaving the game area
 		if (x < 0 || y < 0 || x > gameGrid[0] - 1 || y > gameGrid[1] - 1) {
 			player.resetPos();

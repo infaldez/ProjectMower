@@ -74,6 +74,18 @@ public class ClientRenderer implements Runnable {
 		}
 	}
 
+	public void flush(boolean all) {
+		gc_static.clearRect(0, 0, render_w, render_y);
+		gc_dynamic.clearRect(0, 0, render_w, render_y);
+		gc_ui.clearRect(0, 0, render_w, render_y);
+		if (all) {
+			tileImages.clear();
+			buildTextures();
+		}
+		initTileDimensions();
+		drawStaticResources();
+	}
+
 	/**
 	 * Makes sure the content fills out the entire screen space
 	 * @throws InterruptedException
