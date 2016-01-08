@@ -14,8 +14,8 @@ public class ClientRenderer implements Runnable {
 	protected Client client;
 	protected Game game;
 	protected Level level;
-	protected List<Object> staticEntities;
-	protected List<Object> dynamicEntities;
+	protected List<Entity> staticEntities;
+	protected List<Entity> dynamicEntities;
 	protected List<InterfaceText> interfaceTexts;
 	protected List<EntityPlayer> playerEntities;
 
@@ -215,8 +215,7 @@ public class ClientRenderer implements Runnable {
 	}
 
 	private void drawStaticResources() {
-		for (Object obj : staticEntities) {
-			Entity entity = (Entity) obj;
+		for (Entity entity : staticEntities) {
 			drawImage(false, true, tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
 		}
 	}
@@ -238,15 +237,13 @@ public class ClientRenderer implements Runnable {
 				updateViewPortDimensions();
 
 				// Draw dynamic resources
-				for (Object obj : dynamicEntities) {
-					Entity entity = (Entity) obj;
+				for (Entity entity : dynamicEntities) {
 					if (entity.isAlive()) {
 						drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
 					}
 				}
 
-				for (EntityPlayer obj : playerEntities) {
-					Entity entity = (Entity) obj;
+				for (Entity entity : playerEntities) {
 					if (entity.isAlive()) {
 						drawImage(true, true, tileImages.get(entity.getTile()), entity.getDir().getDirections(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
 					}
