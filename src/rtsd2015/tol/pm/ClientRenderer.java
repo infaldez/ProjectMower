@@ -58,13 +58,20 @@ public class ClientRenderer implements Runnable {
 
 	/**
 	 * Initializes the renderer
+	 * @throws InterruptedException
 	 *
 	 */
-	private void init() {
-		gc_ui.setFill(Color.WHITE);
-		gc_ui.setFont(new Font("Arial", 14));
-		gc_ui.fillText("Initializing ...", 16, 16);
-		buildTextures();
+	private void init() throws InterruptedException {
+		try {
+			gc_ui.setFill(Color.WHITE);
+			gc_ui.setFont(new Font("Arial", 14));
+			gc_ui.fillText("Initializing ...", 16, 16);
+			buildTextures();
+			Thread.sleep(500);
+		} catch (Exception e) {
+			System.out.println("Renderer initalization Exception!");
+			e.printStackTrace(System.err);
+		}
 	}
 
 	/**
@@ -142,7 +149,6 @@ public class ClientRenderer implements Runnable {
 	/**
 	 * Draws debug information
 	 *
-	 * @param delta
 	 */
 	private void debug() {
 		now = System.nanoTime();
