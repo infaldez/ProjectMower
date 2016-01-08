@@ -34,7 +34,6 @@ public class KeyboardInput {
 					break;
 				case ENTER:
 					client.startGame();
-					game.setInGame(true);
 					break;
 				default:
 					break;

@@ -195,15 +195,17 @@ public class Client implements Runnable {
 				renderer.updateGameReference();
 				gameThread = new Thread(clientGame);
 				gameThread.start();
+				clientGame.setInGame(true);
 
 				try {
 					sendMessage(new Message(MessageType.READY));
-					state = State.IN_GAME;
 				}
 				catch (IOException e) {
 					System.out.println("Client Exception!");
 					e.printStackTrace(System.err);
 				}
+
+				state = State.IN_GAME;
 			});
 
 
