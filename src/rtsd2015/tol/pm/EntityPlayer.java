@@ -14,7 +14,12 @@ import rtsd2015.tol.pm.enums.Tile;
  */
 public class EntityPlayer extends Entity {
 
-	public static int playerCount;
+	private static ThreadLocal<Integer> playerCount = new ThreadLocal<Integer>() {
+		@Override protected Integer initialValue() {
+			return new Integer(0);
+		}
+	};
+
 	private long score = 0;
 
 	/**
@@ -23,6 +28,7 @@ public class EntityPlayer extends Entity {
 	 * @param side
 	 */
 	public EntityPlayer(Side s, int x, int y) {
+		super();
 		side = s;
 		health = 3;
 		speed = 0;
@@ -45,7 +51,16 @@ public class EntityPlayer extends Entity {
 			setTile(Tile.PLAYER1);
 			break;
 		}
-		playerCount++;
+
+		playerCount.set(playerCount.get() + 1);
+	}
+	
+	public static void resetPlayers(){
+		playerCount.set(0);
+	}
+	
+	public static int getPlayerCount() {
+		return playerCount.get();
 	}
 
 	public void setScore(long s) {
