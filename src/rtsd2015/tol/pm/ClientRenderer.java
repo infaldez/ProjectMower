@@ -16,10 +16,12 @@ public class ClientRenderer implements Runnable {
 	protected Level level;
 	protected List<Object> staticEntities;
 	protected List<Object> dynamicEntities;
+	protected List<InterfaceText> interfaceTexts;
 	protected List<EntityPlayer> playerEntities;
 
 	private static GraphicsContext gc_dynamic;
 	private static GraphicsContext gc_static;
+	private static GraphicsContext gc_ui;
 	private static String resources = "file:src/rtsd2015/tol/pm/resources/";
 	private static int render_w = 0;
 	private static int render_y = 0;
@@ -42,10 +44,12 @@ public class ClientRenderer implements Runnable {
 		this.grid = game.getGrid();
 		gc_dynamic = mainApp.getCanvas(0).getGraphicsContext2D();
 		gc_static = mainApp.getCanvas(1).getGraphicsContext2D();
+		gc_ui = mainApp.getCanvas(2).getGraphicsContext2D();
 		this.level = game.getLevel();
 		this.staticEntities = level.getStaticEntities();
 		this.dynamicEntities = level.getDynamicEntities();
 		this.playerEntities = game.getPlayers();
+		this.interfaceTexts = game.getInterfaceTexts();
 	}
 
 	/**
@@ -53,9 +57,9 @@ public class ClientRenderer implements Runnable {
 	 *
 	 */
 	private void init() {
-		gc_dynamic.setFill(Color.WHITE);
-		gc_dynamic.setFont(new Font("Consolas", 12));
-		gc_dynamic.fillText("Initializing ...", 16, 16);
+		gc_ui.setFill(Color.WHITE);
+		gc_ui.setFont(new Font("Arial", 14));
+		gc_ui.fillText("Initializing ...", 16, 16);
 		buildTextures();
 	}
 
@@ -117,11 +121,18 @@ public class ClientRenderer implements Runnable {
 	 *
 	 */
 	private void drawUI() {
-		gc_dynamic.fillText("Player 1: " + playerEntities.get(0).getScore(), 16, 16);
-		gc_dynamic.fillText("Player 2: " + playerEntities.get(1).getScore(), 16, 32);
+		for (InterfaceText itext : interfaceTexts) {
+			int interfaceTextsOffsetX = itext.getSpacingX();
+			int interfaceTextsOffsetY = itext.getSpacingY();
+			drawText(gc_ui, itext.getTextString(), interfaceTextsOffsetX, interfaceTextsOffsetY);
+		}
 		if (mainApp.getDebug()) {
 			debug();
 		}
+	}
+
+	private void drawText(GraphicsContext gc, String str, int x, int y) {
+		gc.fillText(str, x, y);
 	}
 
 	/**
@@ -134,10 +145,15 @@ public class ClientRenderer implements Runnable {
 		updateLength = now - lastLoopTime;
 		lastLoopTime = now;
 		delta = updateLength / ((double) OPTIMAL_TIME);
-		gc_dynamic.fillText("PL1 HBox: " + level.getHitbox(game.getPlayers().get(0).getGridPos()[0], game.getPlayers().get(0).getGridPos()[1]), 16, render_y - 48);
-		gc_dynamic.fillText("PL2 HBox: " + level.getHitbox(game.getPlayers().get(1).getGridPos()[0], game.getPlayers().get(1).getGridPos()[1]), 16, render_y - 32);
-		gc_dynamic.fillText("FPS: " + Math.round(TARGET_FPS * delta), 16, render_y - 16);
-		gc_dynamic.fillText("Tick: " + Math.round(game.getTick()), 65, render_y - 16);
+		int p1_posX = game.getPlayers().get(0).getGridPos()[0];
+		int p1_posY = game.getPlayers().get(0).getGridPos()[1];
+		int p2_posX = game.getPlayers().get(1).getGridPos()[0];
+		int p2_posY = game.getPlayers().get(1).getGridPos()[1];
+		drawText(gc_ui, "PL1 Pos: (" + p1_posX + "." + p1_posY + ")", 16, render_y - 80);
+		drawText(gc_ui, "PL2 Pos: (" + p2_posX + "." + p2_posY + ")", 16, render_y - 64);
+		drawText(gc_ui, "PL1 HBox: " + level.getHitbox(p1_posX, p1_posY), 16, render_y - 48);
+		drawText(gc_ui, "PL2 HBox: " + level.getHitbox(p2_posX, p2_posY), 16, render_y - 32);
+		drawText(gc_ui, "FPS: " + Math.round(TARGET_FPS * delta), 16, render_y - 16);
 	}
 
 	/**
@@ -204,6 +220,7 @@ public class ClientRenderer implements Runnable {
 				// Save the following attributes onto a stack and clear the frame
 				gc_dynamic.save();
 				gc_dynamic.clearRect(0, 0, render_w, render_y);
+				gc_ui.clearRect(0, 0, render_w, render_y);
 
 				updateViewPortDimensions();
 

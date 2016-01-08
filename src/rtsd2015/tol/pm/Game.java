@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.Side;
-import rtsd2015.tol.pm.enums.Hitbox;
 
 public class Game implements Runnable {
 
@@ -13,9 +12,10 @@ public class Game implements Runnable {
 	private int tick;
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
+	private List<InterfaceText> interfaceTexts = new ArrayList<>();
 	private Timer timer = new Timer();
 	private boolean run = true;
-	
+
 	private List<Entity> updatedEntities;
 
 	/**
@@ -29,7 +29,7 @@ public class Game implements Runnable {
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
 		players.add(new EntityPlayer(Side.RED, gameGrid[0], gameGrid[1]));
-		
+
 		updatedEntities = new ArrayList<Entity>();
 	}
 
@@ -55,6 +55,10 @@ public class Game implements Runnable {
 		return players;
 	}
 
+	public List<InterfaceText> getInterfaceTexts() {
+		return this.interfaceTexts;
+	}
+
 	/**
 	 * Update entity defined by id.
 	 *
@@ -69,10 +73,10 @@ public class Game implements Runnable {
 			entity.setSpeed(speed);
 			entity.setHealth(health);
 		}
-		
+
 		return entity;
 	}
-	
+
 	public void markUpdated(int id) {
 		updatedEntities.add(Entity.getEntities().get(id));
 	}
@@ -86,11 +90,11 @@ public class Game implements Runnable {
 		updatedEntities.clear();
 		return copy;
 	}
-	
+
 	public int increaseTick() {
 		return ++tick;
 	}
-	
+
 	public int getTick() {
 		return tick;
 	}
@@ -121,11 +125,25 @@ public class Game implements Runnable {
 			final int TARGET_FPS = 30;
 			final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
 
+			EntityPlayer pl1 = players.get(0);
+			EntityPlayer pl2 = players.get(1);
+
+			InterfaceText p1_score = new InterfaceText(16,32);
+			interfaceTexts.add(p1_score);
+			InterfaceText p2_score = new InterfaceText(16,96);
+			interfaceTexts.add(p2_score);
+			InterfaceText time = new InterfaceText(16,160);
+			interfaceTexts.add(time);
+
 			timer.start();
 
 			while (run) {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
+
+				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
+				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
+				time.setTextString("Time Left: ");
 
 				players.get(0).move();
 
@@ -145,8 +163,6 @@ public class Game implements Runnable {
 				case STATIC:
 					break;
 				}
-
-
 
 				// Prevent players from leaving the game area
 				for (EntityPlayer entity : players) {
