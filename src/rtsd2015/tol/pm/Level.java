@@ -24,8 +24,7 @@ public class Level {
 	private int width, height;
 	private Object entity;
 
-	private Random randomFill = new Random();
-	private Random randomFillDynamic = new Random();
+	private Random random;
 
 	/**
 	 * Initializes a new level based on seed
@@ -36,6 +35,7 @@ public class Level {
 	 */
 	Level(long seed, int width, int height, double density) {
 		this.seed = seed;
+		this.random = new Random(seed);
 		this.width = width;
 		this.height = height;
 		this.area = width * height;
@@ -79,8 +79,8 @@ public class Level {
 		int limit = area * 2;
 		while (toBePlacedB > 0 && count < limit) {
 			count++;
-			int x = randomFillDynamic.nextInt(width-2) + 1;
-			int y = randomFillDynamic.nextInt(height-2) + 1;
+			int x = random.nextInt(width-2) + 1;
+			int y = random.nextInt(height-2) + 1;
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerBlue(Side.BLUE, x, y);
 				dynamicEntities.add(entity);
@@ -92,8 +92,8 @@ public class Level {
 		count = 0;
 		while (toBePlacedR > 0 && count < limit) {
 			count++;
-			int x = randomFillDynamic.nextInt(width-2) + 1;
-			int y = randomFillDynamic.nextInt(height-2) + 1;
+			int x = random.nextInt(width-2) + 1;
+			int y = random.nextInt(height-2) + 1;
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerRed(Side.RED, x, y);
 				dynamicEntities.add(entity);
@@ -163,7 +163,7 @@ public class Level {
 	 * @return boolean
 	 */
 	private boolean getRandomBoolean(double propability) {
-		return 0 + (1 - 0) * randomFill.nextDouble() < propability;
+		return 0 + (1 - 0) * random.nextDouble() < propability;
 	}
 
 	/**
