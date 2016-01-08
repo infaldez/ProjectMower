@@ -35,7 +35,7 @@ public class KeyboardInput {
 					break;
 				case ENTER:
 					game.getPlayers().get(clientId).setReadyState(true);
-					Launcher.clientStartGame();
+					client.startGame();
 					break;
 				default:
 					break;

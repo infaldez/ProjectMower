@@ -194,21 +194,6 @@ public class Launcher extends Application {
 	}
 
 	/**
-	 * Client start game.
-	 */
-	public static void clientStartGame() {
-		boolean ready = true;
-		for (EntityPlayer player : controller.client.clientGame.getPlayers()) {
-			if (!player.getReadyState()) {
-				ready = false;
-			}
-		}
-		if (ready) {
-			controller.client.startGame();
-		}
-	}
-
-	/**
 	 * Setups a new client
 	 *
 	 * @param name

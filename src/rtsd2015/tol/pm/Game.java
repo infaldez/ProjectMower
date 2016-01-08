@@ -160,16 +160,14 @@ public class Game implements Runnable {
 			interfaceTexts.add(time);
 			InterfaceText txt_gameState = new InterfaceText(16,16, Font.font("Verdana",12), Color.RED);
 			interfaceTexts.add(txt_gameState);
+			txt_gameState.setTextString("Press Start To Begin");
 
 			// Wait until everything gets ready
 			while (!inGame && !Launcher.getAppSandbox()) {
-				lastLoopTime = System.nanoTime();
-				txt_gameState.setTextString("Press Start To Begin");
 				Thread.sleep(500);
 			}
 
 			txt_gameState.setTextString("");
-
 			timer.start();
 
 			while (run) {
