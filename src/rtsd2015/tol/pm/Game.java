@@ -160,7 +160,7 @@ public class Game implements Runnable {
 			interfaceTexts.add(time);
 			InterfaceText txt_gameState = new InterfaceText(16,16, Font.font("Verdana",12), Color.RED);
 			interfaceTexts.add(txt_gameState);
-			txt_gameState.setTextString("Press Start To Begin");
+			txt_gameState.setTextString("Press ENTER To Begin");
 
 			while (!inGame && !Launcher.getAppSandbox()) {
 				Thread.sleep(500);
