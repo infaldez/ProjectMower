@@ -171,7 +171,6 @@ public class Game implements Runnable {
 				Thread.sleep(500);
 			}
 
-			System.out.println("je");
 			txt_gameState.setTextString("");
 			timer.start();
 
