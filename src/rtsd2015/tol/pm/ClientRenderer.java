@@ -166,7 +166,7 @@ public class ClientRenderer implements Runnable {
 		drawText(gc_ui, "PL1 HBox: " + level.getHitbox(p1_posX, p1_posY), Font.font("Verdana", 14), Color.WHITE,16, render_y - 48);
 		drawText(gc_ui, "PL2 HBox: " + level.getHitbox(p2_posX, p2_posY), Font.font("Verdana", 14), Color.WHITE,16, render_y - 32);
 		drawText(gc_ui, "FPS: " + Math.round(TARGET_FPS * delta), Font.font("Verdana", 14), Color.WHITE,16, render_y - 16);
-		drawText(gc_ui, "Tick: " + Math.round(game.getTick()), Font.font("Verdana", 14), Color.WHITE,70, render_y - 16);
+		drawText(gc_ui, " Tick: " + Math.round(game.getTick()), Font.font("Verdana", 14), Color.WHITE,70, render_y - 16);
 	}
 
 	/**
