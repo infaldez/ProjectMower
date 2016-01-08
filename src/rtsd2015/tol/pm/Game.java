@@ -20,13 +20,13 @@ public class Game implements Runnable {
 	private volatile boolean run = true;
 
 	private List<Entity> updatedEntities;
+	boolean inGame = false;
 
 	/**
 	 * Initializes a new game for both clients and a server
 	 *
 	 */
 	Game(long sd) {
-		System.out.println("seed " + sd);
 		Entity.resetEntities();
 		EntityPlayer.resetPlayers();
 		tick = 0;
@@ -130,6 +130,14 @@ public class Game implements Runnable {
 		run = false;
 	}
 
+	public void setInGame(boolean state) {
+		this.inGame = state;
+	}
+
+	public boolean getInGame() {
+		return this.inGame;
+	}
+
 	/**
 	 * Independent thread for the game logic
 	 *
@@ -144,14 +152,23 @@ public class Game implements Runnable {
 			EntityPlayer pl2 = players.get(1);
 
 			// Initialize in-game UI texts
-			InterfaceText p1_score = new InterfaceText(16,32, Font.font("Verdana",14), Color.WHITE);
+			InterfaceText p1_score = new InterfaceText(16,16, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(p1_score);
-			InterfaceText p2_score = new InterfaceText(16,96, Font.font("Verdana",14), Color.WHITE);
+			InterfaceText p2_score = new InterfaceText(16,80, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(p2_score);
-			InterfaceText time = new InterfaceText(16,160, Font.font("Verdana",14), Color.WHITE);
+			InterfaceText time = new InterfaceText(16,144, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(time);
-			InterfaceText txt_gameState = new InterfaceText(16,192, Font.font("Verdana",24), Color.RED);
+			InterfaceText txt_gameState = new InterfaceText(16,16, Font.font("Verdana",12), Color.RED);
 			interfaceTexts.add(txt_gameState);
+
+			// Wait until everything gets ready
+			while (!inGame && !Launcher.getAppSandbox()) {
+				lastLoopTime = System.nanoTime();
+				txt_gameState.setTextString("Press Start To Begin");
+				Thread.sleep(500);
+			}
+
+			txt_gameState.setTextString("");
 
 			timer.start();
 
@@ -163,7 +180,6 @@ public class Game implements Runnable {
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 				time.setTextString("Time Left: ");
-				txt_gameState.setTextString("Press Start To Begin");
 
 				players.get(0).move();
 

@@ -84,7 +84,6 @@ public class Client implements Runnable {
 			playerId = Integer.parseInt(msg.body);
 			controller.setStatus("Connection accepted with id: " + playerId);
 			state = State.CONNECTED;
-			controller.switchBtnStart();
 			controller.switchBtnDisconnect();
 		});
 
@@ -94,8 +93,8 @@ public class Client implements Runnable {
 
 	public void startGame() {
 		if (state == State.CONNECTED) {
-			controller.switchBtnStart();
 			try {
+				clientGame.setInGame(true);
 				sendMessage(new Message(MessageType.START_GAME));
 			}
 			catch (IOException e){
@@ -182,6 +181,7 @@ public class Client implements Runnable {
 			}
 			// FIXME init game here to get graphics rolling, to be removed once graphics remade
 			// not to run forever
+			controller.switchBtnDisconnect();
 			clientGame = new Game(seed);
 			gameThread = new Thread(clientGame);
 			gameThread.start();

@@ -28,9 +28,6 @@ public class RootLayoutController {
 	private MenuItem btnJoin;
 
 	@FXML
-	private MenuItem btnStart;
-
-	@FXML
 	private MenuItem btnDisconnect;
 
 	@FXML
@@ -59,14 +56,6 @@ public class RootLayoutController {
 		mainApp.showNewJoinDialog();
 	}
 
-	/**
-	 * Start game
-	 *
-	 */
-	@FXML
-	private void handleStartGame() {
-		mainApp.clientStartGame();
-	}
 	/**
 	 * Disconnect from the server
 	 *
@@ -130,18 +119,6 @@ public class RootLayoutController {
 	 */
 	public void setPing(String msg) {
 		lblPing.setText(msg);
-	}
-
-	/**
-	 * Enable/disable Start button
-	 *
-	 */
-	public void switchBtnStart() {
-		if (btnStart.isDisable()) {
-			btnStart.setDisable(false);
-		} else {
-			btnStart.setDisable(true);
-		}
 	}
 
 	/**

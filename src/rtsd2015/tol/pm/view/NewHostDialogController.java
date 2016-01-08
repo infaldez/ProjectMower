@@ -20,7 +20,7 @@ public class NewHostDialogController {
 	private Button cancel;
 
 	@FXML
-	private CheckBox dedicated;
+	private CheckBox sandbox;
 
 	@FXML
 	private TextField port;
@@ -61,6 +61,7 @@ public class NewHostDialogController {
 	@FXML
 	public void handleStart() throws NumberFormatException, Exception {
 		if (isInputValid()) {
+			mainApp.setAppSandbox(isSandbox());
 			mainApp.setHost(Integer.valueOf(port.getText()), Long.valueOf(seed.getText()));
 			dialogStage.close();
 		}
@@ -73,6 +74,13 @@ public class NewHostDialogController {
 	@FXML
 	public void handleCancel() {
 		dialogStage.close();
+	}
+
+	private boolean isSandbox() {
+		if (sandbox.isSelected()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**

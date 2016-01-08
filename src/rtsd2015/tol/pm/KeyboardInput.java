@@ -33,6 +33,10 @@ public class KeyboardInput {
 					game.getPlayers().get(clientId).setSpeed(1);
 					game.getPlayers().get(clientId).setDir(Facing.EAST);
 					break;
+				case ENTER:
+					game.getPlayers().get(clientId).setReadyState(true);
+					Launcher.clientStartGame();
+					break;
 				default:
 					break;
 				}

@@ -21,6 +21,7 @@ public class EntityPlayer extends Entity {
 	};
 
 	private long score = 0;
+	private boolean readyState = false;
 
 	/**
 	 * Initialize player
@@ -54,11 +55,11 @@ public class EntityPlayer extends Entity {
 
 		playerCount.set(playerCount.get() + 1);
 	}
-	
+
 	public static void resetPlayers(){
 		playerCount.set(0);
 	}
-	
+
 	public static int getPlayerCount() {
 		return playerCount.get();
 	}
@@ -92,6 +93,14 @@ public class EntityPlayer extends Entity {
 			this.newgridpos[0] = this.gridpos[0] - speed;
 		break;
 		}
+	}
+
+	public void setReadyState(boolean state) {
+		this.readyState = state;
+	}
+
+	public boolean getReadyState() {
+		return this.readyState;
 	}
 
 }

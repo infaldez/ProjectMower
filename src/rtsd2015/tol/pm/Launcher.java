@@ -29,6 +29,7 @@ public class Launcher extends Application {
 	private static List<Canvas> canvases = new ArrayList <Canvas>();
 	private static boolean debug = false;
 	private static Scene scene;
+	private static boolean isSandbox = false;
 	/**
 	 * Begin to construct the stage
 	 *
@@ -184,12 +185,29 @@ public class Launcher extends Application {
 		return scene;
 	}
 
+	public static void setAppSandbox(boolean state) {
+		isSandbox = state;
+	}
+
+	public static boolean getAppSandbox() {
+		return isSandbox;
+	}
+
 	/**
 	 * Client start game.
 	 */
-	public void clientStartGame() {
-		controller.client.startGame();
+	public static void clientStartGame() {
+		boolean ready = true;
+		for (EntityPlayer player : controller.client.clientGame.getPlayers()) {
+			if (!player.getReadyState()) {
+				ready = false;
+			}
+		}
+		if (ready) {
+			controller.client.startGame();
+		}
 	}
+
 	/**
 	 * Setups a new client
 	 *
