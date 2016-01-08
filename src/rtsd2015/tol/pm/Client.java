@@ -178,7 +178,7 @@ public class Client implements Runnable {
 			renderer = new ClientRenderer(mainApp, clientGame, 24, 24);
 			renderThread = new Thread(renderer);
 			renderThread.start();
-			input = new KeyboardInput(mainApp, clientGame);
+			input = new KeyboardInput(mainApp, clientGame, playerId);
 
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");

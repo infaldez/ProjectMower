@@ -8,7 +8,7 @@ import javafx.scene.input.KeyEvent;
 
 public class KeyboardInput {
 
-	public KeyboardInput(Launcher mainApp, Game game) {
+	public KeyboardInput(Launcher mainApp, Game game, int clientId) {
 
 		// Key Pressed increase speed
 		mainApp.getScene().setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -16,20 +16,20 @@ public class KeyboardInput {
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case UP:
-					game.getPlayers().get(0).setSpeed(1);
-					game.getPlayers().get(0).setDir(Facing.NORTH);
+					game.getPlayers().get(clientId).setSpeed(1);
+					game.getPlayers().get(clientId).setDir(Facing.NORTH);
 					break;
 				case DOWN:
-					game.getPlayers().get(0).setSpeed(1);
-					game.getPlayers().get(0).setDir(Facing.SOUTH);
+					game.getPlayers().get(clientId).setSpeed(1);
+					game.getPlayers().get(clientId).setDir(Facing.SOUTH);
 					break;
 				case LEFT:
-					game.getPlayers().get(0).setSpeed(1);
-					game.getPlayers().get(0).setDir(Facing.WEST);
+					game.getPlayers().get(clientId).setSpeed(1);
+					game.getPlayers().get(clientId).setDir(Facing.WEST);
 					break;
 				case RIGHT:
-					game.getPlayers().get(0).setSpeed(1);
-					game.getPlayers().get(0).setDir(Facing.EAST);
+					game.getPlayers().get(clientId).setSpeed(1);
+					game.getPlayers().get(clientId).setDir(Facing.EAST);
 					break;
 				}
 			}
@@ -41,16 +41,16 @@ public class KeyboardInput {
 			public void handle(KeyEvent event) {
 				switch (event.getCode()) {
 				case UP:
-					game.getPlayers().get(0).setSpeed(0);
+					game.getPlayers().get(clientId).setSpeed(0);
 					break;
 				case DOWN:
-					game.getPlayers().get(0).setSpeed(0);
+					game.getPlayers().get(clientId).setSpeed(0);
 					break;
 				case LEFT:
-					game.getPlayers().get(0).setSpeed(0);
+					game.getPlayers().get(clientId).setSpeed(0);
 					break;
 				case RIGHT:
-					game.getPlayers().get(0).setSpeed(0);
+					game.getPlayers().get(clientId).setSpeed(0);
 					break;
 				}
 			}
