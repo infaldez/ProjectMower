@@ -180,8 +180,11 @@ public class Game implements Runnable {
 					}
 				}
 
-				// Wait for the next cycle
-				Thread.sleep((lastLoopTime - System.nanoTime() + OPTIMAL_TIME) / 1000000);
+				// Wait for the next cycle if we are ahead
+				long sleepTime = (lastLoopTime + OPTIMAL_TIME - System.nanoTime()) / 1000000; 
+				if (sleepTime > 0) {
+					Thread.sleep(sleepTime);
+				}
 			}
 		} catch (InterruptedException e) {
 			System.out.println("Game Exception!");
