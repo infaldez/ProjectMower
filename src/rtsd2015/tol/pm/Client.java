@@ -198,6 +198,7 @@ public class Client implements Runnable {
 
 				clientGame = new Game(seed);
 				renderer.updateGameReference();
+				renderer.flush(true);
 				gameThread = new Thread(clientGame);
 				gameThread.start();
 				clientGame.setInGame(true);
