@@ -1,20 +1,22 @@
 package rtsd2015.tol.pm;
 
-import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class InterfaceText {
 
 	private Text text = new Text();
-	private TextField textField = new TextField();
-	private int spacingX = 16;
-	private int spacingY = 16;
+	private Font font;
+	private Color color;
+	private int posX = 16;
+	private int posY = 16;
 
-	public InterfaceText() {}
-
-	public InterfaceText(int x, int y) {
-		this.spacingX = x;
-		this.spacingY = y;
+	public InterfaceText(int x, int y, Font font, Color color) {
+		this.posX = x;
+		this.posY = y;
+		this.font = font;
+		this.color = color;
 	}
 
 	public void setTextString(String str) {
@@ -25,27 +27,39 @@ public class InterfaceText {
 		return this.text.getText();
 	}
 
+	public void setTextFont(Font font) {
+		this.font = font;
+	}
+
+	public Font getTextFont() {
+		return this.font;
+	}
+
+	public void setTextColor(Color color) {
+		this.color = color;
+	}
+
+	public Color getTextColor() {
+		return this.color;
+	}
+
 	public Text getText() {
 		return this.text;
 	}
 
-	public TextField getTextField() {
-		return this.textField;
+	public void setPosX(int s) {
+		this.posX = s;
 	}
 
-	public void setSpacingX(int s) {
-		this.spacingX = s;
+	public int getPosX() {
+		return this.posX;
 	}
 
-	public int getSpacingX() {
-		return this.spacingX;
+	public void setPosY(int s) {
+		this.posY = s;
 	}
 
-	public void setSpacingY(int s) {
-		this.spacingY = s;
-	}
-
-	public int getSpacingY() {
-		return this.spacingY;
+	public int getPosY() {
+		return this.posY;
 	}
 }
