@@ -63,7 +63,7 @@ public class Client implements Runnable {
 			System.out.println("Client unexpected message: " + msg.toString());
 		};
 	}
-	
+
 	public Game getGame() {
 		return clientGame;
 	}
@@ -164,7 +164,7 @@ public class Client implements Runnable {
 					controller.setPing(String.format("%.1f",time));
 				});
 			});
-			
+
 			ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 			executor.scheduleAtFixedRate(() -> {
 					pingTimer.start();
@@ -173,8 +173,6 @@ public class Client implements Runnable {
 					}
 					catch (IOException e) { }
 				}, 0, 1, TimeUnit.SECONDS);
-
-
 
 			while(state == State.CONNECTING) {
 				Message message = receiveMessage();
@@ -220,7 +218,7 @@ public class Client implements Runnable {
 					e.printStackTrace(System.err);
 				}
 			});
-			
+
 			
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
@@ -232,17 +230,17 @@ public class Client implements Runnable {
 			long lastUpdate = System.currentTimeMillis();
 			long lastSentUpdate = System.currentTimeMillis();
 			int updateDeadline = 20;
-			
+
 			// GameUpdate handler
 			messageHandler.addHandler(MessageType.GAME_UPDATE, (Message msg) -> {
 				try {
 					GameUpdate gameUpdate = GameUpdate.deserialize(msg.body);
 					clientGame.setTick(gameUpdate.tick);
-				
+
 					for (EntityUpdate u : gameUpdate.updates) {
-						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health); 
+						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health);
 					}
-				
+
 				}
 				catch(Exception e) {
 					System.err.println("Client: Error in parsing GameUpdate!");
@@ -250,7 +248,7 @@ public class Client implements Runnable {
 				}
 				state = State.IN_GAME;
 			});
-			
+
 			messageHandler.addHandler(MessageType.PAUSE, (Message msg) -> {
 				state = State.PAUSED;
 			});
@@ -259,7 +257,7 @@ public class Client implements Runnable {
 				// Game loop
 				// Read user input
 				if (System.currentTimeMillis() - lastSentUpdate > 100) {
-					Entity playerEntity = clientGame.getPlayers().get(playerId); 
+					Entity playerEntity = clientGame.getPlayers().get(playerId);
 					String moveCommit = playerEntity.getDir().ordinal() + " " + playerEntity.getSpeed();
 					sendMessage(new Message(MessageType.COMMIT, moveCommit));
 

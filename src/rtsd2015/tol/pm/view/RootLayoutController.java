@@ -163,8 +163,10 @@ public class RootLayoutController {
 	public void switchBtnClient() {
 		if (btnJoin.isDisable()) {
 			btnJoin.setDisable(false);
+			btnDisconnect.setDisable(true);
 		} else {
 			btnJoin.setDisable(true);
+			btnDisconnect.setDisable(false);
 		}
 	}
 
