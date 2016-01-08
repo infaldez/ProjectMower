@@ -61,6 +61,11 @@ public class Entity {
 	static List<Entity> getEntities() {
 		return entities.get();
 	}
+	
+	static void resetEntities() {
+		entityCount.set(0);
+		entities.remove();
+	}
 
 	/**
 	 * Get entity corresponding to id or null.
