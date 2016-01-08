@@ -134,7 +134,7 @@ public class ClientRenderer implements Runnable {
 	private void drawUI() {
 		for (InterfaceText itext : interfaceTexts) {
 			int interfaceTextsOffsetX = itext.getPosX();
-			int interfaceTextsOffsetY = itext.getPosY();
+			int interfaceTextsOffsetY = itext.getPosY() + 16;
 			drawText(gc_ui, itext.getTextString(), itext.getTextFont(), itext.getTextColor(), interfaceTextsOffsetX, interfaceTextsOffsetY);
 		}
 		if (Launcher.getAppDebug()) {
