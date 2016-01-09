@@ -23,7 +23,7 @@ public class Game implements Runnable {
 
 	private List<Entity> updatedEntities;
 	private List<Integer> killedEntities; //Ids of killed entities
-	boolean inGame = false;
+	boolean inGame = true;
 
 	private Side winner = Side.GAIA;
 
@@ -218,16 +218,22 @@ public class Game implements Runnable {
 		checkedMove(player1);
 		checkedMove(player2);
 
-		// Game state
-		if (getWinner() != Side.GAIA) {
-			// The race has ended
-		} else {
-			//  The race is still going on
+		if (inGame) {
 			if (!level.hasTargetsLeft(player1.getSide())) {
-				setWinner(player1.getSide());
+				setInGame(false);
 			}
 			if (!level.hasTargetsLeft(player2.getSide())) {
-				setWinner(player2.getSide());
+				setInGame(false);
+			}
+		} else {
+			if (getWinner() == Side.GAIA) {
+				if (player1.getScore() > player2.getScore()) {
+					// Player1 wins
+					setWinner(player1.getSide());
+				} else {
+					// Player2 wins
+					setWinner(player2.getSide());
+				}
 			}
 		}
 
