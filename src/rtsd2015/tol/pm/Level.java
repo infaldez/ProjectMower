@@ -22,8 +22,9 @@ public class Level {
 	private long seed;
 	private int area;
 	private int width, height;
+	private int areaWidth, areaHeight;
 
-	private Random random;
+	private Random random = new Random();
 
 	/**
 	 * Initializes a new level based on seed
@@ -34,9 +35,11 @@ public class Level {
 	 */
 	Level(long seed, int width, int height, double density) {
 		this.seed = seed;
-		this.random = new Random(seed);
+		this.random.setSeed(seed);
 		this.width = width;
+		this.areaWidth = width - 2;
 		this.height = height;
+		this.areaHeight = height - 2;
 		this.area = width * height;
 		this.hitboxBoard = new Hitbox[height][width];
 		this.entityBoard = new Entity[height][width];
@@ -80,8 +83,8 @@ public class Level {
 		int limit = area * 2;
 		while (toBePlacedB > 0 && count < limit) {
 			count++;
-			int x = random.nextInt(width-2) + 1;
-			int y = random.nextInt(height-2) + 1;
+			int x = getRandomInt(areaWidth, 2);
+			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerBlue(Side.BLUE, x, y);
 				dynamicEntities.add(entity);
@@ -93,8 +96,8 @@ public class Level {
 		count = 0;
 		while (toBePlacedR > 0 && count < limit) {
 			count++;
-			int x = random.nextInt(width-2) + 1;
-			int y = random.nextInt(height-2) + 1;
+			int x = getRandomInt(areaWidth, 2);
+			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerRed(Side.RED, x, y);
 				dynamicEntities.add(entity);
@@ -103,6 +106,10 @@ public class Level {
 				toBePlacedR--;
 			}
 		}
+	}
+
+	private int getRandomInt(int max, int min) {
+		return random.nextInt((max-min) + min) + 1;
 	}
 
 	/**

@@ -8,7 +8,7 @@ public enum WorldFillProbability {
 	BIGROCK(10);
 
 	private double probability;
-	private Random random = new Random();
+	private Random random = new Random(120);
 
 	private WorldFillProbability(double p) {
 		this.probability = p;
@@ -19,7 +19,7 @@ public enum WorldFillProbability {
 	}
 
 	public boolean getWillBePlaced() {
-		int number = random.nextInt(100);
+		int number = random.nextInt((100-0) + 0) + 1;
 		if (number < getPropability()) {
 			return true;
 		} else {
