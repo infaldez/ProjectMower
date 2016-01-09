@@ -333,7 +333,6 @@ public class Server implements Runnable {
 	}
 
 	public void run() {
-		System.out.println("Server running!");
 		Boolean running = true;
 		try {
 			while(running){

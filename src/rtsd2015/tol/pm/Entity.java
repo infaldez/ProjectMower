@@ -318,7 +318,6 @@ public class Entity {
 	 * @return
 	 */
 	public long getInteractionScore(Side side) {
-		System.out.println(interactionScore);
 		return interactionScore;
 	}
 
