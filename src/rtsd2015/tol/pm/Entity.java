@@ -13,7 +13,6 @@ import rtsd2015.tol.pm.enums.Tile;
 /**
  * Base class for all entities
  *
- * @author Ari
  */
 public class Entity {
 
@@ -43,6 +42,7 @@ public class Entity {
 	protected Tile tile;
 	protected boolean breakable = true;
 	protected boolean alive = true;
+	protected boolean isTarget = false;
 
 	/**
 	 * Initialize entity
@@ -319,6 +319,10 @@ public class Entity {
 	 */
 	public long getInteractionScore(Side side) {
 		return interactionScore;
+	}
+
+	public boolean isTarget() {
+		return isTarget;
 	}
 
 }

@@ -8,6 +8,7 @@ public class EntityFlowerBlue extends Entity {
 		side = s;
 		breakable = true;
 		interactionScore = 1;
+		isTarget = true;
 		setGridPos(x, y);
 		setTile(Tile.FLOWER_BLUE);
 	}

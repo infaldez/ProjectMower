@@ -16,12 +16,16 @@ public class Game implements Runnable {
 	private Level level;
 	private List<EntityPlayer> players = new ArrayList<>();
 	private List<InterfaceText> interfaceTexts = new ArrayList<>();
-	private Timer timer = new Timer();
 	private volatile boolean run = true;
+
+	private EntityPlayer player1;
+	private EntityPlayer player2;
 
 	private List<Entity> updatedEntities;
 	private List<Integer> killedEntities; //Ids of killed entities
 	boolean inGame = false;
+
+	private Side winner = Side.GAIA;
 
 	/**
 	 * Initializes a new game for both clients and a server
@@ -36,6 +40,8 @@ public class Game implements Runnable {
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
 		players.add(new EntityPlayer(Side.RED, gameGrid[0]-1, gameGrid[1]-1));
+		player1 = players.get(0);
+		player2 = players.get(1);
 
 		updatedEntities = new ArrayList<Entity>();
 		killedEntities = new ArrayList<Integer>();
@@ -59,12 +65,40 @@ public class Game implements Runnable {
 		return level;
 	}
 
+	/**
+	 * Returns a list of players
+	 *
+	 * @return List
+	 */
 	public List<EntityPlayer> getPlayers() {
 		return players;
 	}
 
+	/**
+	 * Returns a list of InterfaceText objects
+	 *
+	 * @return List
+	 */
 	public List<InterfaceText> getInterfaceTexts() {
 		return this.interfaceTexts;
+	}
+
+	/**
+	 * Returns the winner of the game, GAIA if nobody
+	 *
+	 * @return Side
+	 */
+	public Side getWinner() {
+		return this.winner;
+	}
+
+	/**
+	 * Sets winner for the game
+	 *
+	 * @param side
+	 */
+	public void setWinner(Side side) {
+		this.winner = side;
 	}
 
 	/**
@@ -81,10 +115,14 @@ public class Game implements Runnable {
 			entity.setSpeed(speed);
 			entity.setHealth(health);
 		}
-
 		return entity;
 	}
 
+	/**
+	 * Marks as updated
+	 *
+	 * @param id
+	 */
 	public void markUpdated(int id) {
 		Entity entity = Entity.getEntity(id);
 		if(entity != null) {
@@ -93,7 +131,8 @@ public class Game implements Runnable {
 	}
 
 	/**
-	 * Get and clear the list of updated entitites
+	 * Get and clear the list of updated entities
+	 *
 	 * @return entity list
 	 */
 	public ArrayList<Entity> flushUpdatedEntities() {
@@ -104,6 +143,7 @@ public class Game implements Runnable {
 
 	/**
 	 * Get and clear the list of killed entity ids
+	 *
 	 * @return entity list
 	 */
 	public ArrayList<Integer> flushKilled() {
@@ -112,6 +152,11 @@ public class Game implements Runnable {
 		return copy;
 	}
 
+	/**
+	 * Returns a list of scores
+	 *
+	 * @return List
+	 */
 	public List<Long> getScores(){
 		List<Long> scores = new ArrayList<Long>();
 		for (EntityPlayer player : players) {
@@ -120,23 +165,71 @@ public class Game implements Runnable {
 		return scores;
 	}
 
+	/**
+	 * Add a tick
+	 *
+	 * @return
+	 */
 	public int increaseTick() {
 		return ++tick;
 	}
 
+	/**
+	 * Get the current tick
+	 *
+	 * @return
+	 */
 	public int getTick() {
 		return tick;
 	}
 
+	/**
+	 * Set the current tick
+	 *
+	 * @param tock
+	 */
 	public void setTick(int tock) {
 		tick = tock;
 	}
 
+	/**
+	 * Returns whether given side is the winner or not
+	 *
+	 * @param player
+	 * @return boolean true to yes
+	 */
+	public boolean isWinner(EntityPlayer player) {
+		if (getWinner() == player.getSide()) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Performs a tick
+	 *
+	 * @return (int) tick
+	 */
 	public int doTick() {
 		tick++;
 
-		checkedMove(players.get(0));
-		checkedMove(players.get(1));
+		// Decide whether the player can move
+		checkedMove(player1);
+		checkedMove(player2);
+
+		// Game state
+		if (getWinner() != Side.GAIA) {
+			// The race has ended
+
+		} else {
+			//  The race is still going on
+			if (!level.isTargetsLeft(player1.getSide())) {
+				setWinner(player1.getSide());
+			}
+			if (!level.isTargetsLeft(player2.getSide())) {
+				setWinner(player2.getSide());
+			}
+		}
 
 		Iterator<Entity> entityIterator = Entity.getEntities().iterator();
 		while (entityIterator.hasNext()) {
@@ -147,20 +240,35 @@ public class Game implements Runnable {
 		return tick;
 	}
 
+	/**
+	 * Stops the game
+	 *
+	 */
 	public void stop() {
 		run = false;
 	}
 
+	/**
+	 * Sets the inGame state
+	 *
+	 * @param state
+	 */
 	public void setInGame(boolean state) {
 		this.inGame = state;
 	}
 
+	/**
+	 * Returns the inGame state
+	 *
+	 * @return
+	 */
 	public boolean getInGame() {
 		return this.inGame;
 	}
 
 	/**
 	 * Do move and determine consequences.
+	 *
 	 * @param player
 	 * @return
 	 */
@@ -184,6 +292,9 @@ public class Game implements Runnable {
 			Entity hitEntity = level.getEntity(player.getGridPos());
 			if(hitEntity.isAlive()){
 				hitEntity.setAlive(false);
+				if (hitEntity.isTarget()) {
+					level.updateTargetCount(hitEntity.getSide(), -1);
+				}
 				killedEntities.add(hitEntity.getId());
 				player.setScore(hitEntity.getInteractionScore(player.getSide()));
 			}
@@ -196,6 +307,7 @@ public class Game implements Runnable {
 			break;
 		}
 	}
+
 	/**
 	 * Independent thread for the game logic
 	 *
@@ -214,19 +326,12 @@ public class Game implements Runnable {
 			interfaceTexts.add(p1_score);
 			InterfaceText p2_score = new InterfaceText(16,80, Font.font("Verdana",14), Color.WHITE);
 			interfaceTexts.add(p2_score);
-			InterfaceText time = new InterfaceText(16,144, Font.font("Verdana",14), Color.WHITE);
-			interfaceTexts.add(time);
-			InterfaceText txt_gameState = new InterfaceText(16,16, Font.font("Verdana",12), Color.RED);
+			InterfaceText txt_gameState = new InterfaceText(16,144, Font.font("Verdana",12), Color.RED);
 			interfaceTexts.add(txt_gameState);
 			txt_gameState.setTextString("Press ENTER To Begin");
 
 			while (run && !inGame && !Launcher.getAppSandbox()) {
 				Thread.sleep(500);
-			}
-
-			if (run) {
-				txt_gameState.setTextString("");
-				timer.start();
 			}
 
 			while (run) {
@@ -235,7 +340,21 @@ public class Game implements Runnable {
 				// Update UI text strings
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
-				time.setTextString("Time Left: ");
+
+				if (getWinner() != Side.GAIA) {
+					switch(getWinner()) {
+						case BLUE:
+							txt_gameState.setTextString("Winner: Abel Blue!");
+						break;
+						case RED:
+							txt_gameState.setTextString("Winner: Cain Red!");
+						break;
+						default:
+						break;
+					}
+				} else {
+					txt_gameState.setTextString("Mow competitor's flowers!");
+				}
 
 				// Wait for the next cycle if we are ahead
 				long sleepTime = (lastLoopTime + OPTIMAL_TIME - System.nanoTime()) / 1000000;

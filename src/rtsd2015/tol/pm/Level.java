@@ -24,6 +24,8 @@ public class Level {
 	private int area;
 	private int width, height;
 	private int areaWidth, areaHeight;
+	private double targetB = 0;
+	private double targetR = 0;
 
 	private Random random = new Random();
 
@@ -101,6 +103,7 @@ public class Level {
 			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerBlue(Side.BLUE, x, y);
+				targetR++;
 				dynamicEntities.add(entity);
 				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
@@ -114,6 +117,7 @@ public class Level {
 			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerRed(Side.RED, x, y);
+				targetB++;
 				dynamicEntities.add(entity);
 				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
@@ -269,6 +273,35 @@ public class Level {
 	 */
 	public Entity getEntity(int[] pos) {
 		return this.entityBoard[pos[0]][pos[1]];
+	}
+
+	/**
+	 * Updates target count of the certain Side
+	 *
+	 * @param side
+	 * @param count
+	 */
+	public void updateTargetCount(Side side, double count) {
+		if (side == Side.BLUE) {targetB = targetB + count;}
+		if (side == Side.RED) {targetR = targetR + count;}
+	}
+
+	public double getTargetCount(Side side) {
+		if (side == Side.BLUE) {return targetB;}
+		if (side == Side.RED) {return targetR;}
+		return 0;
+	}
+
+	/**
+	 * Returns whether there are more targets left of the certain Side
+	 *
+	 * @param side
+	 * @return boolean
+	 */
+	public boolean isTargetsLeft(Side side) {
+		if (side == Side.BLUE && targetB < 1) {return true;}
+		if (side == Side.BLUE && targetR < 1) {return true;}
+		return false;
 	}
 
 	public int getWidth() { return this.width; }
