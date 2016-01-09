@@ -99,6 +99,7 @@ public class Game implements Runnable {
 	 */
 	public void setWinner(Side side) {
 		this.winner = side;
+		System.out.println("Winner: " + side);
 	}
 
 	/**
@@ -220,13 +221,12 @@ public class Game implements Runnable {
 		// Game state
 		if (getWinner() != Side.GAIA) {
 			// The race has ended
-
 		} else {
 			//  The race is still going on
-			if (!level.isTargetsLeft(player1.getSide())) {
+			if (!level.hasTargetsLeft(player1.getSide())) {
 				setWinner(player1.getSide());
 			}
-			if (!level.isTargetsLeft(player2.getSide())) {
+			if (!level.hasTargetsLeft(player2.getSide())) {
 				setWinner(player2.getSide());
 			}
 		}

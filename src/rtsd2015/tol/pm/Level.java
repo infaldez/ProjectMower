@@ -103,7 +103,7 @@ public class Level {
 			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerBlue(Side.BLUE, x, y);
-				targetR++;
+				targetB++;
 				dynamicEntities.add(entity);
 				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
@@ -117,7 +117,7 @@ public class Level {
 			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerRed(Side.RED, x, y);
-				targetB++;
+				targetR++;
 				dynamicEntities.add(entity);
 				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
@@ -298,10 +298,10 @@ public class Level {
 	 * @param side
 	 * @return boolean
 	 */
-	public boolean isTargetsLeft(Side side) {
-		if (side == Side.BLUE && targetB < 1) {return true;}
-		if (side == Side.BLUE && targetR < 1) {return true;}
-		return false;
+	public boolean hasTargetsLeft(Side side) {
+		if (side == Side.BLUE && targetB < 1) {return false;}
+		if (side == Side.RED && targetR < 1) {return false;}
+		return true;
 	}
 
 	public int getWidth() { return this.width; }
