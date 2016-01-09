@@ -233,7 +233,7 @@ public class ClientRenderer implements Runnable {
 
 	private void drawStaticResources() {
 		for (Entity entity : staticEntities) {
-			drawImage(false, true, tileImages.get(entity.getTile()), 0, entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
+			drawImage(false, true, tileImages.get(entity.getTile()), entity.getRenderAngle(), entity.getGridPos()[0], entity.getGridPos()[1], tileSize, tileSize);
 		}
 	}
 

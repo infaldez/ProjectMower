@@ -43,6 +43,7 @@ public class Entity {
 	protected boolean breakable = true;
 	protected boolean alive = true;
 	protected boolean isTarget = false;
+	protected int renderAngle = 0;
 
 	/**
 	 * Initialize entity
@@ -323,6 +324,14 @@ public class Entity {
 
 	public boolean isTarget() {
 		return isTarget;
+	}
+
+	public void setRenderAngle(int angle) {
+		this.renderAngle = angle;
+	}
+
+	public int getRenderAngle() {
+		return this.renderAngle;
 	}
 
 }

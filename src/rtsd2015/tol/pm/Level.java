@@ -158,6 +158,7 @@ public class Level {
 					if (!placed && getWillBePlaced(WorldFillProbability.BIGROCK)) {
 						placed = true;
 						entity = new EntityBigRock(i, j);
+						setRandomRenderAngle(entity);
 						staticEntities.add(entity);
 						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.STATIC;
@@ -165,6 +166,7 @@ public class Level {
 					if (!placed && getWillBePlaced(WorldFillProbability.SMALLROCK)) {
 						placed = true;
 						entity = new EntitySmallRock(i, j);
+						setRandomRenderAngle(entity);
 						dynamicEntities.add(entity);
 						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.BREAKABLE;
@@ -172,6 +174,7 @@ public class Level {
 					if (!placed && getWillBePlaced(WorldFillProbability.TREE)) {
 						placed = true;
 						entity = new EntityTree(i, j);
+						setRandomRenderAngle(entity);
 						staticEntities.add(entity);
 						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.STATIC;
@@ -286,10 +289,25 @@ public class Level {
 		if (side == Side.RED) {targetR = targetR + count;}
 	}
 
+	/**
+	 * The exact count of targets left
+	 *
+	 * @param side
+	 * @return
+	 */
 	public double getTargetCount(Side side) {
 		if (side == Side.BLUE) {return targetB;}
 		if (side == Side.RED) {return targetR;}
 		return 0;
+	}
+
+	/**
+	 * Randomize entity's render angle (local)
+	 *
+	 * @param entity
+	 */
+	public void setRandomRenderAngle(Entity entity) {
+		entity.setRenderAngle(getRandomInt(360, 0));
 	}
 
 	/**
