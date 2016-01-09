@@ -8,29 +8,27 @@ import java.util.Base64;
 public class GameUpdate implements Serializable {
 	public int tick;
 	public List<EntityUpdate> updates;
+	public List<Integer> kill;
+	public List<Long> scores;
 	
 	GameUpdate(GameUpdate other) {
 		tick = other.tick;
 		updates = other.updates;
+		kill = other.kill;
 	}
 	
-	GameUpdate(int t) {
-		this(t, new ArrayList<EntityUpdate> ());
-	}
 	
-	GameUpdate(int t, List<EntityUpdate> u) {
-		tick = t;
-		updates = u;
+	GameUpdate(Game game) {
+		tick = game.getTick(); 
+		updates = new ArrayList<EntityUpdate>();
+		List<Entity> updatedEntities = game.flushUpdatedEntities(); 
+		for (int i = 0; i < updatedEntities.size() ; i++) {
+			updates.add(new EntityUpdate(updatedEntities.get(i)));
+		}
+		kill = game.flushKilled();
+		scores = game.getScores();
 	}
 
-	static public GameUpdate fromEntities(int t, List<Entity> u) {
-		GameUpdate gameUpdate = new GameUpdate(t);
-		for (int i = 0; i < u.size() ; i++) {
-			gameUpdate.updates.add(new EntityUpdate(u.get(i)));
-		}
-		return gameUpdate;
-	}
-	
 	public static GameUpdate deserialize(String s) throws IOException, ClassNotFoundException {
 		byte[] data = Base64.getDecoder().decode(s);
 		ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(data));
