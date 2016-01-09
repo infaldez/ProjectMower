@@ -37,13 +37,13 @@ public class Server implements Runnable {
 		public int clientCounter = 0;
 		public State state;
 		public MessageHandler messageHandler;
-		
+
 		Context(Server owner) {
 			server = owner;
 			messageHandler = new MessageHandler();
 			clients = new ArrayList<ConnectedClient>();
 		}
-		
+
 	}
 
 	protected interface State {
@@ -169,7 +169,7 @@ public class Server implements Runnable {
 					}
 					sendMessage(context, reply, packet.getAddress(), packet.getPort());
 				});
-				
+
 				context.messageHandler.addHandler(MessageType.START_GAME, (Message msg) -> {
 					int senderId = getSender(context, msg);
 
@@ -189,13 +189,12 @@ public class Server implements Runnable {
 					if (allStarting) {
 					// Create game
 					context.game = new Game(context.server.seed);
-					
 					Message prepareMessage = new Message(MessageType.PREPARE,
 							context.game.getLevel().getSeed() + " " +
 							context.game.getLevel().getWidth() + " " +
 							context.game.getLevel().getHeight()); // seed + width + height
 					broadcastMessage(context, prepareMessage);
-					
+
 					// Remove handlers not needed in next state
 					context.messageHandler.removeHandler(MessageType.START_GAME);
 					context.messageHandler.removeHandler(MessageType.JOIN);
@@ -222,7 +221,7 @@ public class Server implements Runnable {
 						System.out.println("Server: Unexpected READY from: " + msg.address + ":" + msg.port);
 					}
 				});
-				
+
 				if (message != null) {
 					context.messageHandler.handle(message);
 				}
@@ -261,7 +260,7 @@ public class Server implements Runnable {
 					String[] parts = msg.body.split(" ");
 					Facing dir = Facing.values[Integer.parseInt(parts[0])];
 					int speed = Integer.parseInt(parts[1]);
-					
+
 					Entity player = context.game.getPlayers().get(senderId);
 					if (player != null) {
 						player.setDir(dir);
@@ -271,11 +270,11 @@ public class Server implements Runnable {
 						System.err.println("Commit from invalid id. " + msg.address + ":" + msg.port);
 					}
 				});
-				
+
 				if (message != null) {
 					context.messageHandler.handle(message);
 				}
-				
+
 				long sinceLastUpdate = System.currentTimeMillis() - context.server.lastUpdate;
 				if( sinceLastUpdate > 1000/context.server.ticksPerSecond){
 					doServerTick(context);
@@ -296,13 +295,13 @@ public class Server implements Runnable {
 			}
 		}
 	}
-	
+
 	static protected void doServerTick(Context context) {
 		context.game.doTick();
 		// Hack to hopefully get updates rolling for players
 		context.game.markUpdated(context.game.getPlayers().get(0).getId());
 		context.game.markUpdated(context.game.getPlayers().get(1).getId());
-		
+
 		GameUpdate gameUpdate = new GameUpdate(context.game);
 
 		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());

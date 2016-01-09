@@ -49,7 +49,9 @@ public class NewHostDialogController {
 		this.dialogStage = dialogStage;
 		this.mainApp = mainApp;
 		port.setText(Integer.toString(3330));
-		seed.setText(Long.toString(new Random().nextLong()));
+		Random random = new Random();
+		long randomValue = 16 + (long)(random.nextDouble()*(96 - 16));
+		seed.setText(Long.toString(randomValue));
 	}
 
 	/**
