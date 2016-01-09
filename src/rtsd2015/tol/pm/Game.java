@@ -183,9 +183,9 @@ public class Game implements Runnable {
 			// If hit entity is breakable kill it and adjust score accordingly
 			Entity hitEntity = level.getEntity(player.getGridPos());
 			if(hitEntity.isAlive()){
-				player.setScore(hitEntity.getInteractionScore(player.getSide()));
 				hitEntity.setAlive(false);
 				killedEntities.add(hitEntity.getId());
+				player.setScore(hitEntity.getInteractionScore(player.getSide()));
 			}
 			break;
 		case PLAYER:

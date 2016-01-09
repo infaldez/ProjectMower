@@ -61,7 +61,7 @@ public class Entity {
 	static List<Entity> getEntities() {
 		return entities.get();
 	}
-	
+
 	static void resetEntities() {
 		entityCount.set(0);
 		entities.remove();
@@ -203,7 +203,7 @@ public class Entity {
 	void move() {
 		move(Movement.FORWARD, speed);
 	}
-	
+
 	void move(Movement m, int steps) {
 		if (m == Movement.BACKWARD) {
 			steps *= -1;
@@ -318,6 +318,7 @@ public class Entity {
 	 * @return
 	 */
 	public long getInteractionScore(Side side) {
+		System.out.println(interactionScore);
 		return interactionScore;
 	}
 

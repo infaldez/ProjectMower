@@ -240,6 +240,7 @@ public class Client implements Runnable {
 						Entity.getEntity(id).setAlive(false);
 					}
 
+					// TODO: tämä aiheuttaa scorespämmin
 					for (int i = 0; i < gameUpdate.scores.size(); i++) {
 						clientGame.getPlayers().get(i).setScore(gameUpdate.scores.get(i));
 					}
