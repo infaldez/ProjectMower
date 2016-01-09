@@ -303,7 +303,7 @@ public class Server implements Runnable {
 		context.game.markUpdated(context.game.getPlayers().get(0).getId());
 		context.game.markUpdated(context.game.getPlayers().get(1).getId());
 		
-		GameUpdate gameUpdate = GameUpdate.fromEntities(context.game.getTick(), context.game.flushUpdatedEntities());
+		GameUpdate gameUpdate = new GameUpdate(context.game);
 
 		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());
 

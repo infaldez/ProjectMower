@@ -106,7 +106,7 @@ public class Client implements Runnable {
 	}
 
 	private DatagramPacket receivePacket() throws IOException {
-		byte[] data = new byte[1024];
+		byte[] data = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
 		try {
 			socket.receive(packet);
@@ -234,6 +234,14 @@ public class Client implements Runnable {
 
 					for (EntityUpdate u : gameUpdate.updates) {
 						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health);
+					}
+					
+					for (Integer id : gameUpdate.kill) {
+						Entity.getEntity(id).setAlive(false);
+					}
+					
+					for (int i = 0; i < gameUpdate.scores.size(); i++) {
+						clientGame.getPlayers().get(i).setScore(gameUpdate.scores.get(i));
 					}
 
 				}
