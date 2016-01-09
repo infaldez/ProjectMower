@@ -101,7 +101,7 @@ public class Game implements Runnable {
 		updatedEntities = new ArrayList<Entity>();
 		return copy;
 	}
-	
+
 	/**
 	 * Get and clear the list of killed entity ids
 	 * @return entity list
@@ -111,7 +111,7 @@ public class Game implements Runnable {
 		killedEntities = new ArrayList<Integer>();
 		return copy;
 	}
-	
+
 	public List<Long> getScores(){
 		List<Long> scores = new ArrayList<Long>();
 		for (EntityPlayer player : players) {
@@ -232,7 +232,6 @@ public class Game implements Runnable {
 			while (run) {
 				// Prepare a new cycle
 				lastLoopTime = System.nanoTime();
-
 				// Update UI text strings
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());

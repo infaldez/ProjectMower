@@ -8,23 +8,14 @@ public enum WorldFillProbability {
 	BIGROCK(10);
 
 	private double probability;
-	private Random random = new Random(120);
+	Random random = new Random(128);
 
 	private WorldFillProbability(double p) {
 		this.probability = p;
 	}
 
-	private double getPropability() {
+	public double getPropability() {
 		return probability;
-	}
-
-	public boolean getWillBePlaced() {
-		int number = random.nextInt((100-0) + 0) + 1;
-		if (number < getPropability()) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 
 	public static final WorldFillProbability values[] = values();

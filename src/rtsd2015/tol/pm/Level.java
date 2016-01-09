@@ -151,21 +151,21 @@ public class Level {
 			for (int j = 1; j < width-1; j++) {
 				placed = false;
 				if (getRandomBoolean(density) && hitboxBoard[i][j] == Hitbox.NONE) {
-					if (!placed && WorldFillProbability.BIGROCK.getWillBePlaced()) {
+					if (!placed && getWillBePlaced(WorldFillProbability.BIGROCK)) {
 						placed = true;
 						entity = new EntityBigRock(i, j);
 						staticEntities.add(entity);
 						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.STATIC;
 					}
-					if (!placed && WorldFillProbability.SMALLROCK.getWillBePlaced()) {
+					if (!placed && getWillBePlaced(WorldFillProbability.SMALLROCK)) {
 						placed = true;
 						entity = new EntitySmallRock(i, j);
 						dynamicEntities.add(entity);
 						entityBoard[i][j] = entity;
 						hitboxBoard[i][j] = Hitbox.BREAKABLE;
 					}
-					if (!placed && WorldFillProbability.TREE.getWillBePlaced()) {
+					if (!placed && getWillBePlaced(WorldFillProbability.TREE)) {
 						placed = true;
 						entity = new EntityTree(i, j);
 						staticEntities.add(entity);
@@ -175,6 +175,19 @@ public class Level {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns whether the given WorldFillProbability entity will be placed
+	 *
+	 * @param WorldFillProbability
+	 * @return true to yes
+	 */
+	private boolean getWillBePlaced(WorldFillProbability probability) {
+		if (getRandomInt(100,0) < probability.getPropability()) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
