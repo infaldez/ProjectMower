@@ -19,6 +19,8 @@ public class Client implements Runnable {
 	private int playerId = -1;
 	private State state = State.DISCONNECTED;
 	private Game clientGame;
+	
+	private int outgoingTickCount = 20;
 
 	private InetAddress serverAddress;
 	private int serverPort;
@@ -104,7 +106,7 @@ public class Client implements Runnable {
 	}
 
 	private DatagramPacket receivePacket() throws IOException {
-		byte[] data = new byte[1024];
+		byte[] data = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
 		try {
 			socket.receive(packet);
@@ -196,17 +198,20 @@ public class Client implements Runnable {
 
 				clientGame = new Game(seed);
 				renderer.updateGameReference();
+				renderer.flush(true);
 				gameThread = new Thread(clientGame);
 				gameThread.start();
+				clientGame.setInGame(true);
 
 				try {
 					sendMessage(new Message(MessageType.READY));
-					state = State.IN_GAME;
 				}
 				catch (IOException e) {
 					System.out.println("Client Exception!");
 					e.printStackTrace(System.err);
 				}
+
+				state = State.IN_GAME;
 			});
 
 
@@ -230,6 +235,14 @@ public class Client implements Runnable {
 					for (EntityUpdate u : gameUpdate.updates) {
 						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health);
 					}
+					
+					for (Integer id : gameUpdate.kill) {
+						Entity.getEntity(id).setAlive(false);
+					}
+					
+					for (int i = 0; i < gameUpdate.scores.size(); i++) {
+						clientGame.getPlayers().get(i).setScore(gameUpdate.scores.get(i));
+					}
 
 				}
 				catch(Exception e) {
@@ -246,7 +259,7 @@ public class Client implements Runnable {
 			while (state == State.IN_GAME || state == State.PAUSED) {
 				// Game loop
 				// Read user input
-				if (System.currentTimeMillis() - lastSentUpdate > 100) {
+				if (System.currentTimeMillis() - lastSentUpdate > 1000/outgoingTickCount) {
 					Entity playerEntity = clientGame.getPlayers().get(playerId);
 					String moveCommit = playerEntity.getDir().ordinal() + " " + playerEntity.getSpeed();
 					sendMessage(new Message(MessageType.COMMIT, moveCommit));

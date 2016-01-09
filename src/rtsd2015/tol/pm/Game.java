@@ -20,6 +20,7 @@ public class Game implements Runnable {
 	private volatile boolean run = true;
 
 	private List<Entity> updatedEntities;
+	private List<Integer> killedEntities; //Ids of killed entities
 	boolean inGame = false;
 
 	/**
@@ -37,6 +38,7 @@ public class Game implements Runnable {
 		players.add(new EntityPlayer(Side.RED, gameGrid[0]-1, gameGrid[1]-1));
 
 		updatedEntities = new ArrayList<Entity>();
+		killedEntities = new ArrayList<Integer>();
 	}
 
 	/**
@@ -98,6 +100,24 @@ public class Game implements Runnable {
 		ArrayList<Entity> copy = new ArrayList<Entity>(updatedEntities);
 		updatedEntities = new ArrayList<Entity>();
 		return copy;
+	}
+	
+	/**
+	 * Get and clear the list of killed entity ids
+	 * @return entity list
+	 */
+	public ArrayList<Integer> flushKilled() {
+		ArrayList<Integer> copy = new ArrayList<Integer>(killedEntities);
+		killedEntities = new ArrayList<Integer>();
+		return copy;
+	}
+	
+	public List<Long> getScores(){
+		List<Long> scores = new ArrayList<Long>();
+		for (EntityPlayer player : players) {
+			scores.add(player.getScore());
+		}
+		return scores;
 	}
 
 	public int increaseTick() {
@@ -161,9 +181,11 @@ public class Game implements Runnable {
 		case BREAKABLE:
 			player.changePos();
 			// If hit entity is breakable kill it and adjust score accordingly
-			if(level.getEntity(player.getGridPos()).isAlive()){
-				player.setScore(level.getEntity(player.getGridPos()).getInteractionScore(player.getSide()));
-				level.getEntity(player.getGridPos()).setAlive(false);
+			Entity hitEntity = level.getEntity(player.getGridPos());
+			if(hitEntity.isAlive()){
+				player.setScore(hitEntity.getInteractionScore(player.getSide()));
+				hitEntity.setAlive(false);
+				killedEntities.add(hitEntity.getId());
 			}
 			break;
 		case PLAYER:
@@ -198,12 +220,14 @@ public class Game implements Runnable {
 			interfaceTexts.add(txt_gameState);
 			txt_gameState.setTextString("Press ENTER To Begin");
 
-			while (!inGame && !Launcher.getAppSandbox()) {
+			while (run && !inGame && !Launcher.getAppSandbox()) {
 				Thread.sleep(500);
 			}
 
-			txt_gameState.setTextString("");
-			timer.start();
+			if (run) {
+				txt_gameState.setTextString("");
+				timer.start();
+			}
 
 			while (run) {
 				// Prepare a new cycle

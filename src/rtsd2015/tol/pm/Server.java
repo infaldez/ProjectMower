@@ -14,8 +14,9 @@ public class Server implements Runnable {
 	private Context context;
 	private long seed;
 	private long lastUpdate = 0;
+	private int ticksPerSecond = 10;
 	static protected class ConnectedClient {
-		public enum ClientState {CONNECTED, READY, DISCONNECTED};
+		public enum ClientState {CONNECTED, STARTING, READY, DISCONNECTED};
 		ClientState state;
 		String nickname;
 		InetAddress address;
@@ -170,6 +171,22 @@ public class Server implements Runnable {
 				});
 				
 				context.messageHandler.addHandler(MessageType.START_GAME, (Message msg) -> {
+					int senderId = getSender(context, msg);
+
+					if (0 <= senderId && senderId < context.clients.size()) {
+						context.clients.get(senderId).state = ConnectedClient.ClientState.STARTING;
+					}
+					else {
+						System.out.println("Server: Unexpected READY from: " + msg.address + ":" + msg.port);
+					}
+					// Check if all clients are ready and continue to game if so
+					boolean allStarting = true;
+					for (ConnectedClient client : context.clients) {
+						if (client.state != ConnectedClient.ClientState.STARTING) {
+							allStarting = false;
+						}
+					}
+					if (allStarting) {
 					// Create game
 					context.game = new Game(context.server.seed);
 					
@@ -182,8 +199,8 @@ public class Server implements Runnable {
 					// Remove handlers not needed in next state
 					context.messageHandler.removeHandler(MessageType.START_GAME);
 					context.messageHandler.removeHandler(MessageType.JOIN);
-
 					context.state = States.GAME_START;
+					}
 				});
 
 				context.messageHandler.handle(message);
@@ -259,7 +276,8 @@ public class Server implements Runnable {
 					context.messageHandler.handle(message);
 				}
 				
-				if(System.currentTimeMillis() - context.server.lastUpdate > 200){
+				long sinceLastUpdate = System.currentTimeMillis() - context.server.lastUpdate;
+				if( sinceLastUpdate > 1000/context.server.ticksPerSecond){
 					doServerTick(context);
 				}
 
@@ -285,7 +303,7 @@ public class Server implements Runnable {
 		context.game.markUpdated(context.game.getPlayers().get(0).getId());
 		context.game.markUpdated(context.game.getPlayers().get(1).getId());
 		
-		GameUpdate gameUpdate = GameUpdate.fromEntities(context.game.getTick(), context.game.flushUpdatedEntities());
+		GameUpdate gameUpdate = new GameUpdate(context.game);
 
 		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());
 
