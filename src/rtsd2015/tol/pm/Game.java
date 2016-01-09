@@ -302,7 +302,7 @@ public class Game implements Runnable {
 					level.updateTargetCount(hitEntity.getSide(), -1);
 				}
 				killedEntities.add(hitEntity.getId());
-				player.setScore(hitEntity.getInteractionScore(player.getSide()));
+				player.addScore(hitEntity.getInteractionScore(player.getSide()));
 			}
 			break;
 		case PLAYER:

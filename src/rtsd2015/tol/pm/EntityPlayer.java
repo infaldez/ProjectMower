@@ -61,8 +61,12 @@ public class EntityPlayer extends Entity {
 		return playerCount.get();
 	}
 
-	public void setScore(long s) {
+	public void addScore(long s) {
 		this.score = this.score + s;
+	}
+
+	public void setScore(long s) {
+		this.score = s;
 	}
 
 	public long getScore() {
