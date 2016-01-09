@@ -20,6 +20,7 @@ public class Level {
 	private Entity[][] entityBoard;
 
 	private long seed;
+	private double density;
 	private int area;
 	private int width, height;
 	private int areaWidth, areaHeight;
@@ -41,9 +42,22 @@ public class Level {
 		this.height = height;
 		this.areaHeight = height - 2;
 		this.area = width * height;
+		this.density = density;
 		this.hitboxBoard = new Hitbox[height][width];
 		this.entityBoard = new Entity[height][width];
 
+		initSurfaceEntities();
+		initMissionEntities();
+		initWorldEntities(density);
+	}
+
+	/**
+	 * Rebuilds (refreshes) the entire level
+	 *
+	 */
+	public void rebuild() {
+		staticEntities.clear();
+		dynamicEntities.clear();
 		initSurfaceEntities();
 		initMissionEntities();
 		initWorldEntities(density);
@@ -108,6 +122,13 @@ public class Level {
 		}
 	}
 
+	/**
+	 * Returns a random integer based on a seed value
+	 *
+	 * @param max
+	 * @param min
+	 * @return integer
+	 */
 	private int getRandomInt(int max, int min) {
 		return random.nextInt((max-min) + min) + 1;
 	}
@@ -156,6 +177,13 @@ public class Level {
 		}
 	}
 
+	/**
+	 * Returns whether the given coordinate is inside the level
+	 *
+	 * @param x horizontal grid coordinate
+	 * @param y vertical grid coordinate
+	 * @return true to is inside
+	 */
 	public boolean isInsideBoard(int x, int y) {
 		if (x > 0 && y > 0) {
 			if (x < width-1 && y < height-1) {
@@ -204,6 +232,13 @@ public class Level {
 		return getHitbox(pos[0], pos[1]);
 	}
 
+	/**
+	 * Returns hitbox of the given coordinate
+	 *
+	 * @param x
+	 * @param y
+	 * @return
+	 */
 	public Hitbox getHitbox(int x, int y) {
 		if (x < 0) {x = 0;}
 		if (y < 0) {y = 0;}
@@ -220,10 +255,7 @@ public class Level {
 	 * @return Entity
 	 */
 	public Entity getEntity(int[] pos) {
-		return getEntity(pos[0], pos[1]);
-	}
-	public Entity getEntity(int x, int y) {
-		return this.entityBoard[x][y];
+		return this.entityBoard[pos[0]][pos[1]];
 	}
 
 	public int getWidth() { return this.width; }

@@ -19,7 +19,7 @@ public class Client implements Runnable {
 	private int playerId = -1;
 	private State state = State.DISCONNECTED;
 	private Game clientGame;
-	
+
 	private int outgoingTickCount = 20;
 
 	private InetAddress serverAddress;
@@ -235,11 +235,11 @@ public class Client implements Runnable {
 					for (EntityUpdate u : gameUpdate.updates) {
 						clientGame.updateEntity(u.id, u.x, u.y, u.dir, u.speed, u.health);
 					}
-					
+
 					for (Integer id : gameUpdate.kill) {
 						Entity.getEntity(id).setAlive(false);
 					}
-					
+
 					for (int i = 0; i < gameUpdate.scores.size(); i++) {
 						clientGame.getPlayers().get(i).setScore(gameUpdate.scores.get(i));
 					}
