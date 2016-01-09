@@ -79,6 +79,11 @@ public class ClientRenderer implements Runnable {
 		gc_dynamic.clearRect(0, 0, render_w, render_y);
 		gc_ui.clearRect(0, 0, render_w, render_y);
 		if (all) {
+			this.level = game.getLevel();
+			this.staticEntities = level.getStaticEntities();
+			this.dynamicEntities = level.getDynamicEntities();
+			this.playerEntities = game.getPlayers();
+			this.interfaceTexts = game.getInterfaceTexts();
 			tileImages.clear();
 			buildTextures();
 		}
