@@ -29,13 +29,12 @@ public class Client implements Runnable {
 	private RootLayoutController controller;
 	private MessageHandler messageHandler;
 
-	Client(RootLayoutController controller, String nickname, int port, long seed) {
+	Client(RootLayoutController controller, String nickname, long seed) {
 		this.controller = controller;
 		this.nickname = nickname;
-		this.serverPort = port;
 		this.seed = seed;
 		this.messageHandler = new MessageHandler();
-
+		
 		this.messageHandler.addHandler(MessageType.PING, (Message msg) -> {
 			Message response = new Message(MessageType.PONG, msg.body);
 			try {
@@ -64,9 +63,10 @@ public class Client implements Runnable {
 		return playerId;
 	}
 
-	public void joinServer(InetAddress address) throws SocketException, IOException {
+	public void joinServer(InetAddress address, int port) throws SocketException, IOException {
 		if (socket == null) {
 			serverAddress = address;
+			serverPort = port;
 			socket = new DatagramSocket();
 			socket.setSoTimeout(100);
 		}
@@ -106,6 +106,9 @@ public class Client implements Runnable {
 	}
 
 	private DatagramPacket receivePacket() throws IOException {
+		if (socket == null) {
+			return null;
+		}
 		byte[] data = new byte[2048];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
 		try {
@@ -144,7 +147,16 @@ public class Client implements Runnable {
 
 	public void run() {
 		try {
-			joinServer(InetAddress.getByName("localhost"));
+			while (state.equals(State.DISCONNECTED)) {
+				Thread.sleep(200);
+			}
+			while (state.equals(State.CONNECTING)) {
+				Message msg = receiveMessage();
+				if (msg != null) {
+					messageHandler.handle(msg);
+				}
+			}
+			
 			KeyboardInput input;
 			StopWatch pingTimer = new StopWatch();
 			Message pingMessage = new Message(MessageType.PING, "test");

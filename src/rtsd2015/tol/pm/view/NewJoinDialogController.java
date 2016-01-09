@@ -1,5 +1,8 @@
 package rtsd2015.tol.pm.view;
 
+import java.net.InetAddress;
+import java.rmi.UnknownHostException;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -36,7 +39,14 @@ public class NewJoinDialogController {
 	@FXML
 	public void handleJoin() {
 		dialogStage.close();
-		mainApp.setClient("player2", Integer.valueOf(port.getText()), 128);
+		InetAddress address;
+		try {
+			address = InetAddress.getByName(ip.getText());
+			mainApp.setClient("player2", address, Integer.valueOf(port.getText()), 128);
+		}
+		catch (java.net.UnknownHostException e) {
+			e.printStackTrace(System.err);
+		}
 	}
 
 	@FXML

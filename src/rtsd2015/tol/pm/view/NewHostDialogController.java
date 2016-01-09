@@ -1,5 +1,6 @@
 package rtsd2015.tol.pm.view;
 
+import java.net.InetAddress;
 import java.util.Random;
 import javafx.fxml.FXML;
 
@@ -63,9 +64,19 @@ public class NewHostDialogController {
 	@FXML
 	public void handleStart() throws NumberFormatException, Exception {
 		if (isInputValid()) {
+			Integer p = Integer.valueOf(port.getText());
+			Long sd = Long.valueOf(seed.getText());
 			mainApp.setAppSandbox(isSandbox());
-			mainApp.setHost(Integer.valueOf(port.getText()), Long.valueOf(seed.getText()));
+			mainApp.setHost(p, sd);
 			dialogStage.close();
+
+			try {
+				InetAddress address = InetAddress.getByName("localhost");
+				mainApp.setClient("player1", address, p, sd);
+			}
+			catch (java.net.UnknownHostException e) {
+				e.printStackTrace(System.err);
+			}
 		}
 	}
 

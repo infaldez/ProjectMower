@@ -311,11 +311,11 @@ public class Server implements Runnable {
 		context.server.lastUpdate = System.currentTimeMillis();
 	}
 
-	Server(String hostname, int port) throws Exception {
-		this(hostname, port, new Random().nextInt()); // Random seed if none given
+	Server(int port) throws Exception {
+		this(port, new Random().nextInt()); // Random seed if none given
 	}
 
-	Server(String hostname, int port, long seed) throws Exception {
+	Server(int port, long seed) throws Exception {
 		this.seed = seed;
 		context = new Context(this);
 		context.state = States.WAIT_PLAYERS;

@@ -1,6 +1,7 @@
 package rtsd2015.tol.pm;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -198,10 +199,16 @@ public class Launcher extends Application {
 	 *
 	 * @param name
 	 */
-	public void setClient(String name, int port, long seed) {
+	public void setClient(String name, InetAddress address, int port, long seed) {
 		controller.switchBtnClient();
 		setAppViewport();
-		Client client = new Client(controller, name, port, seed);
+		Client client = new Client(controller, name, seed);
+		try {
+			client.joinServer(address, port);
+		}
+		catch (IOException e) {
+			e.printStackTrace(System.err);
+		}
 		controller.client = client;
 		clientThread = new Thread(client);
 		clientThread.start();
@@ -215,11 +222,10 @@ public class Launcher extends Application {
 	 */
 	public void setHost(int port, long seed) throws Exception {
 		controller.switchBtnHost();
-		Server server = new Server("localhost", port, seed);
+		Server server = new Server(port, seed);
 		controller.server = server;
 		serverThread = new Thread(server);
 		serverThread.start();
-		setClient("player1", port, seed);
 	}
 
 	public static void main(String[] args) throws Exception {
