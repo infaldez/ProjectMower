@@ -186,12 +186,15 @@ public class Client implements Runnable {
 			renderer = new ClientRenderer(this);
 			renderThread = new Thread(renderer);
 			renderThread.start();
+			@SuppressWarnings("unused")
 			KeyboardInput input = new KeyboardInput(this);
 
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");
 				seed = Long.valueOf(parts[0]);
+				@SuppressWarnings("unused")
 				int width = Integer.valueOf(parts[1]);
+				@SuppressWarnings("unused")
 				int height = Integer.valueOf(parts[2]);
 
 				clientGame.stop();

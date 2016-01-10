@@ -2,7 +2,6 @@ package rtsd2015.tol.pm;
 
 import java.net.*;
 import java.io.*;
-import java.lang.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -75,6 +74,7 @@ public class Server implements Runnable {
 		return getSender(context, msg.address, msg.port);
 	}
 
+	@SuppressWarnings("unused")
 	static private int getSender(Context context, DatagramPacket packet) {
 		// Return senders id or -1
 		return getSender(context, packet.getAddress(), packet.getPort());
@@ -136,18 +136,18 @@ public class Server implements Runnable {
 		if (parts.length != 6) {
 			throw(new java.lang.IllegalArgumentException("status string must contain 6 fields"));
 		}
-
+		@SuppressWarnings("unused")
 		int id = Integer.parseInt(parts[0]);
-
-		// TODO get entity by id and set attributes
-
+		@SuppressWarnings("unused")
 		int x = Integer.parseInt(parts[1]);
+		@SuppressWarnings("unused")
 		int y = Integer.parseInt(parts[2]);
-		// TODO: FIX!
+		@SuppressWarnings("unused")
 		Facing dir = Facing.values[Integer.parseInt(parts[3])];
+		@SuppressWarnings("unused")
 		int speed = Integer.parseInt(parts[4]);
+		@SuppressWarnings("unused")
 		int health = Integer.parseInt(parts[5]);
-
 	}
 
 	protected enum States implements State {

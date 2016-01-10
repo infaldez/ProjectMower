@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import rtsd2015.tol.pm.enums.Facing;
 
+@SuppressWarnings("serial")
 public class EntityUpdate implements Serializable {
 	public int id;
 	public int x;
@@ -11,7 +12,7 @@ public class EntityUpdate implements Serializable {
 	public Facing dir;
 	public int speed;
 	public int health;
-	
+
 	EntityUpdate(int id, int x, int y, Facing dir, int speed, int health) {
 		this.id = id;
 		this.x = x;

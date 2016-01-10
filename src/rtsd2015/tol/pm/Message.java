@@ -5,12 +5,13 @@ import java.net.DatagramPacket;
 
 import rtsd2015.tol.pm.enums.MessageType;
 
+@SuppressWarnings("serial")
 public class Message implements Serializable {
 	MessageType type;
 	String body;
 	InetAddress address;
 	int port;
-	
+
 	public Message(){
 		this(MessageType.MISC, "");
 	}
@@ -18,12 +19,12 @@ public class Message implements Serializable {
 	public Message(MessageType t) {
 		this(t, "");
 	}
-	
+
 	public Message(MessageType t, String b) {
 		type = t;
 		body = b;
 	}
-	
+
 	public Message(Message message) {
 		this(message.type, message.body);
 	}
@@ -31,22 +32,22 @@ public class Message implements Serializable {
 	public Message(byte[] data) throws IOException, ClassNotFoundException {
 		this(parseMessage(data));
 	}
-	
+
 	public Message(DatagramPacket packet) throws IOException, ClassNotFoundException  {
 		this(packet.getData());
 		address = packet.getAddress();
 		port = packet.getPort();
 	}
-	
+
 	static public Message parseMessage(byte[] data) throws IOException, ClassNotFoundException {
 		ByteArrayInputStream inStream = new ByteArrayInputStream(data);
 		ObjectInputStream objInStream = new ObjectInputStream(inStream);
-		
+
 		Message message = (Message) objInStream.readObject();
-		
+
 		return message;
 	}
-	
+
 	public byte[] getData() {
 		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 		try {
@@ -60,7 +61,7 @@ public class Message implements Serializable {
 		byte[] data = outStream.toByteArray();
 		return data;
 	}
-	
+
 	public String toString() {
 		return "type: " + type.name() + " body: " + body;
 	}

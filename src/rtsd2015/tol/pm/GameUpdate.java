@@ -5,23 +5,24 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Base64;
 
+@SuppressWarnings("serial")
 public class GameUpdate implements Serializable {
 	public int tick;
 	public List<EntityUpdate> updates;
 	public List<Integer> kill;
 	public List<Long> scores;
-	
+
 	GameUpdate(GameUpdate other) {
 		tick = other.tick;
 		updates = other.updates;
 		kill = other.kill;
 	}
-	
-	
+
+
 	GameUpdate(Game game) {
-		tick = game.getTick(); 
+		tick = game.getTick();
 		updates = new ArrayList<EntityUpdate>();
-		List<Entity> updatedEntities = game.flushUpdatedEntities(); 
+		List<Entity> updatedEntities = game.flushUpdatedEntities();
 		for (int i = 0; i < updatedEntities.size() ; i++) {
 			updates.add(new EntityUpdate(updatedEntities.get(i)));
 		}
@@ -36,7 +37,7 @@ public class GameUpdate implements Serializable {
 		objectInputStream.close();
 		return object;
 	}
-	
+
 	public String serialize() {
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		try {
@@ -47,7 +48,7 @@ public class GameUpdate implements Serializable {
 		catch (IOException e) {
 			e.printStackTrace(System.err);
 		}
-		
+
 		return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
 	}
 }
