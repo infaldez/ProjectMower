@@ -155,7 +155,6 @@ public class Client implements Runnable {
 				}
 			}
 
-			KeyboardInput input;
 			StopWatch pingTimer = new StopWatch();
 			Message pingMessage = new Message(MessageType.PING, "test");
 
@@ -187,7 +186,7 @@ public class Client implements Runnable {
 			renderer = new ClientRenderer(this);
 			renderThread = new Thread(renderer);
 			renderThread.start();
-			input = new KeyboardInput(this);
+			KeyboardInput input = new KeyboardInput(this);
 
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");
@@ -247,7 +246,6 @@ public class Client implements Runnable {
 						Entity.getEntity(id).setAlive(false);
 					}
 
-					// TODO: tämä aiheuttaa scorespämmin
 					for (int i = 0; i < gameUpdate.scores.size(); i++) {
 						clientGame.getPlayers().get(i).setScore(gameUpdate.scores.get(i));
 					}
