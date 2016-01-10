@@ -30,7 +30,6 @@ public class Launcher extends Application {
 	private static List<Canvas> canvases = new ArrayList <Canvas>();
 	private static boolean debug = false;
 	private static Scene scene;
-	private static boolean isSandbox = false;
 	/**
 	 * Begin to construct the stage
 	 *
@@ -174,6 +173,11 @@ public class Launcher extends Application {
 		return Launcher.canvases.get(c);
 	}
 
+	/**
+	 * Set the App into a debug mode
+	 *
+	 * @param b
+	 */
 	public static void setAppDebug(boolean b) {
 		debug = b;
 	}
@@ -184,14 +188,6 @@ public class Launcher extends Application {
 
 	public static Scene getAppScene(){
 		return scene;
-	}
-
-	public static void setAppSandbox(boolean state) {
-		isSandbox = state;
-	}
-
-	public static boolean getAppSandbox() {
-		return isSandbox;
 	}
 
 	/**

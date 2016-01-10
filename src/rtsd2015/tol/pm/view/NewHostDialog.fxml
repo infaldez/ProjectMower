@@ -27,6 +27,5 @@
          </padding>
       </Label>
       <TextField fx:id="seed" layoutX="14.0" layoutY="81.0" />
-      <CheckBox fx:id="sandbox" layoutX="14.0" layoutY="120.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="149.0" text="Singleplayer SandBox" />
    </children>
 </AnchorPane>

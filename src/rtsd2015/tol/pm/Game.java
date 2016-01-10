@@ -336,7 +336,7 @@ public class Game implements Runnable {
 			interfaceTexts.add(txt_gameState);
 			txt_gameState.setTextString("Press ENTER To Begin");
 
-			while (run && !inGame && !Launcher.getAppSandbox()) {
+			while (run && !inGame) {
 				Thread.sleep(500);
 			}
 
