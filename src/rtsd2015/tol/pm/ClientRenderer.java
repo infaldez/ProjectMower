@@ -178,6 +178,7 @@ public class ClientRenderer implements Runnable {
 		int p1_posY = game.getPlayers().get(0).getGridPos()[1];
 		int p2_posX = game.getPlayers().get(1).getGridPos()[0];
 		int p2_posY = game.getPlayers().get(1).getGridPos()[1];
+		drawText(gc_ui, resources, Font.font("Verdana", 14), Color.WHITE, 16, render_y - 96);
 		drawText(gc_ui, "PL1 Pos: (" + p1_posX + "." + p1_posY + ")", Font.font("Verdana", 14), Color.WHITE, 16, render_y - 80);
 		drawText(gc_ui, "PL2 Pos: (" + p2_posX + "." + p2_posY + ")", Font.font("Verdana", 14), Color.WHITE,16, render_y - 64);
 		drawText(gc_ui, "PL1 HBox: " + level.getHitbox(p1_posX, p1_posY), Font.font("Verdana", 14), Color.WHITE,16, render_y - 48);
