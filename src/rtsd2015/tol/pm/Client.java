@@ -5,14 +5,20 @@ import java.io.*;
 import java.util.concurrent.*;
 import javafx.application.Platform;
 import rtsd2015.tol.pm.enums.MessageType;
+import rtsd2015.tol.pm.enums.Side;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
 public class Client implements Runnable {
 	private ClientRenderer renderer;
 	private Thread gameThread;
 	private Thread renderThread;
+	/**
+	 * Client states
+	 * @author Daniel
+	 *
+	 */
 	public enum State {
-		DISCONNECTED, CONNECTING, CONNECTED, IN_GAME, PAUSED
+		DISCONNECTED, CONNECTING, CONNECTED, IN_GAME, PAUSED, END_GAME
 	}
 	private DatagramSocket socket = null;
 	private String nickname;
@@ -63,6 +69,13 @@ public class Client implements Runnable {
 		return playerId;
 	}
 
+	/**
+	 * Send join request to game server and create socket if not yet created.
+	 * @param address
+	 * @param port
+	 * @throws SocketException
+	 * @throws IOException
+	 */
 	public void joinServer(InetAddress address, int port) throws SocketException, IOException {
 		if (socket == null) {
 			serverAddress = address;
@@ -82,6 +95,9 @@ public class Client implements Runnable {
 		state = State.CONNECTING;
 	}
 
+	/**
+	 * Send game start request to the game server.
+	 */
 	public void startGame() {
 		renderer.flush(false);
 		if (state == State.CONNECTED) {
@@ -94,6 +110,9 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Disconnect from the server.
+	 */
 	public void disconnect() {
 		socket.close();
 		if (socket.isClosed()) {
@@ -103,6 +122,11 @@ public class Client implements Runnable {
 		}
 	}
 
+	/**
+	 * Receive packet from the game server.
+	 * @return
+	 * @throws IOException
+	 */
 	private DatagramPacket receivePacket() throws IOException {
 		if (socket == null) {
 			return null;
@@ -120,6 +144,12 @@ public class Client implements Runnable {
 		return packet;
 	}
 
+	/**
+	 * Receive message from the game server.
+	 * @return
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	private Message receiveMessage() throws IOException, ClassNotFoundException {
 		DatagramPacket packet = receivePacket();
 		Message message;
@@ -133,6 +163,11 @@ public class Client implements Runnable {
 		return message;
 	}
 
+	/**
+	 * Send message to the game server.
+	 * @param message
+	 * @throws IOException
+	 */
 	private void sendMessage(Message message) throws IOException {
 		sendMessage(message, serverAddress, serverPort);
 	}
@@ -143,11 +178,17 @@ public class Client implements Runnable {
 		socket.send(packet);
 	}
 
+	/**
+	 * Client thread implementation.
+	 */
 	public void run() {
 		try {
+			// Wait for joinServer to be invoked.
 			while (state.equals(State.DISCONNECTED)) {
 				Thread.sleep(200);
 			}
+
+			// Wait for server to accept join
 			while (state.equals(State.CONNECTING)) {
 				Message msg = receiveMessage();
 				if (msg != null) {
@@ -158,6 +199,7 @@ public class Client implements Runnable {
 			StopWatch pingTimer = new StopWatch();
 			Message pingMessage = new Message(MessageType.PING, "test");
 
+			// Ping response handler
 			messageHandler.addHandler(MessageType.PONG, (Message msg) -> {
 				double time = pingTimer.msStop();
 				Platform.runLater(() -> {
@@ -165,6 +207,7 @@ public class Client implements Runnable {
 				});
 			});
 
+			// Ping request executor to ping server once a second
 			ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 			executor.scheduleAtFixedRate(() -> {
 					pingTimer.start();
@@ -174,12 +217,6 @@ public class Client implements Runnable {
 					catch (IOException e) { }
 				}, 0, 1, TimeUnit.SECONDS);
 
-			while(state == State.CONNECTING) {
-				Message message = receiveMessage();
-				if (message != null) {
-					messageHandler.handle(message);
-				}
-			}
 			clientGame = new Game(seed);
 			gameThread = new Thread(clientGame);
 			gameThread.start();
@@ -189,6 +226,7 @@ public class Client implements Runnable {
 			@SuppressWarnings("unused")
 			KeyboardInput input = new KeyboardInput(this);
 
+			// Handler to setup a game when server requests so
 			messageHandler.addHandler(MessageType.PREPARE, (Message msg) -> {
 				String[] parts = msg.body.split(" ");
 				seed = Long.valueOf(parts[0]);
@@ -224,6 +262,7 @@ public class Client implements Runnable {
 			});
 
 
+			// Wait for server to start a game
 			while(state == State.CONNECTED) {
 				Message message = receiveMessage();
 				if(message != null) {
@@ -265,8 +304,13 @@ public class Client implements Runnable {
 				state = State.PAUSED;
 			});
 
+			messageHandler.addHandler(MessageType.GAME_END, (Message msg) -> {
+				clientGame.setWinner(Side.valueOf(msg.body));
+				state = State.END_GAME;
+			});
+
+			// Client main game loop
 			while (state == State.IN_GAME || state == State.PAUSED) {
-				// Game loop
 				// Read user input
 				if (System.currentTimeMillis() - lastSentUpdate > 1000/outgoingTickCount) {
 					Entity playerEntity = clientGame.getPlayers().get(playerId);
@@ -297,6 +341,10 @@ public class Client implements Runnable {
 				}
 
 				lastUpdate = System.currentTimeMillis();
+			}
+			
+			while (state == State.END_GAME) {
+				Thread.sleep(200);
 			}
 		}
 		catch (Exception e) {
