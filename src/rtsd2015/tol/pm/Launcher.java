@@ -174,7 +174,7 @@ public class Launcher extends Application {
 	}
 
 	/**
-	 * Set the App into a debug mode
+	 * Set the application into a debug mode
 	 *
 	 * @param b
 	 */
@@ -182,10 +182,20 @@ public class Launcher extends Application {
 		debug = b;
 	}
 
+	/**
+	 * Returns the debug mode state
+	 *
+	 * @return boolean
+	 */
 	public static boolean getAppDebug() {
 		return debug;
 	}
 
+	/**
+	 * Returns active scene
+	 *
+	 * @return static scene
+	 */
 	public static Scene getAppScene(){
 		return scene;
 	}
