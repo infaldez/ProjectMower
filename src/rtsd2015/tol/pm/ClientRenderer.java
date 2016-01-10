@@ -43,6 +43,10 @@ public class ClientRenderer implements Runnable {
 		updateGameReference();
 	}
 
+	/**
+	 * Updates the game reference, meant to reload everything
+	 *
+	 */
 	public void updateGameReference(){
 		this.game = client.getGame();
 		this.grid = game.getGrid();
@@ -74,6 +78,11 @@ public class ClientRenderer implements Runnable {
 		}
 	}
 
+	/**
+	 * Flushes the rendering (reloads)
+	 *
+	 * @param all
+	 */
 	public void flush(boolean all) {
 		gc_static.clearRect(0, 0, render_w, render_y);
 		gc_dynamic.clearRect(0, 0, render_w, render_y);
@@ -93,8 +102,8 @@ public class ClientRenderer implements Runnable {
 
 	/**
 	 * Makes sure the content fills out the entire screen space
-	 * @throws InterruptedException
 	 *
+	 * @throws InterruptedException
 	 */
 	private void updateViewPortDimensions() throws InterruptedException {
 		int new_w = Launcher.getContentSpace()[0];
@@ -159,6 +168,16 @@ public class ClientRenderer implements Runnable {
 		}
 	}
 
+	/**
+	 * Draws text to the given graphics context
+	 *
+	 * @param gc
+	 * @param str
+	 * @param font
+	 * @param color
+	 * @param x horizontal position
+	 * @param y vertical position
+	 */
 	private void drawText(GraphicsContext gc, String str, Font font, Color color, int x, int y) {
 		gc.setFill(color);
 		gc.setFont(font);
