@@ -40,8 +40,8 @@ public class Game implements Runnable {
 		this.level = new Level(sd, gameGrid[0], gameGrid[1], 40);
 		players.add(new EntityPlayer(Side.BLUE, 0, 0));
 		players.add(new EntityPlayer(Side.RED, gameGrid[0]-1, gameGrid[1]-1));
-		player1 = players.get(0);
-		player2 = players.get(1);
+		player1 = players.get(1);
+		player2 = players.get(0);
 
 		updatedEntities = new ArrayList<Entity>();
 		killedEntities = new ArrayList<Integer>();

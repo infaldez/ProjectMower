@@ -103,7 +103,7 @@ public class Level {
 			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerBlue(Side.BLUE, x, y);
-				targetB++;
+				targetR++;
 				dynamicEntities.add(entity);
 				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
@@ -117,7 +117,7 @@ public class Level {
 			int y = getRandomInt(areaHeight, 2);
 			if (hitboxBoard[x][y] == Hitbox.NONE) {
 				entity = new EntityFlowerRed(Side.RED, x, y);
-				targetR++;
+				targetB++;
 				dynamicEntities.add(entity);
 				entityBoard[x][y] = entity;
 				hitboxBoard[x][y] = Hitbox.BREAKABLE;
