@@ -28,14 +28,10 @@ public class RootLayoutController {
 	private MenuItem btnJoin;
 
 	@FXML
-	private MenuItem btnDisconnect;
-
-	@FXML
 	private RadioMenuItem btnDebug;
 
 	public void setMainApp(Launcher mainApp) {
 		this.mainApp = mainApp;
-		btnDisconnect.setDisable(true);
 	}
 
 	/**
@@ -54,21 +50,6 @@ public class RootLayoutController {
 	@FXML
 	private void handleConnect() {
 		mainApp.showNewJoinDialog();
-	}
-
-	/**
-	 * Disconnect from the server
-	 *
-	 * @throws Exception
-	 */
-	@FXML
-	private void handleDisconnect() {
-		if (server == null) {
-			client.disconnect();
-		} else {
-			client.disconnect();
-			server.close();
-		}
 	}
 
 	/**
@@ -140,26 +121,8 @@ public class RootLayoutController {
 	public void switchBtnClient() {
 		if (btnJoin.isDisable()) {
 			btnJoin.setDisable(false);
-			btnDisconnect.setDisable(true);
 		} else {
 			btnJoin.setDisable(true);
-			btnDisconnect.setDisable(false);
-		}
-	}
-
-	/**
-	 * Enable/disable Disconnect button
-	 *
-	 */
-	public void switchBtnDisconnect() {
-		if (btnDisconnect.isDisable()) {
-			btnDisconnect.setDisable(false);
-			btnHost.setDisable(true);
-			btnJoin.setDisable(true);
-		} else {
-			btnDisconnect.setDisable(true);
-			btnHost.setDisable(false);
-			btnJoin.setDisable(false);
 		}
 	}
 }

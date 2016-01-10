@@ -22,7 +22,6 @@
             <items>
                   <MenuItem fx:id="btnHost" mnemonicParsing="false" onAction="#handleNewHost" text="Create a New Host" />
                   <MenuItem fx:id="btnJoin" mnemonicParsing="false" onAction="#handleConnect" text="Join an Existing Host" />
-                  <MenuItem fx:id="btnDisconnect" mnemonicParsing="false" onAction="#handleDisconnect" text="Disconnect" />
             </items>
           </Menu>
         </menus>

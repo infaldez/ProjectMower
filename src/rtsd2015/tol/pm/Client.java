@@ -34,7 +34,7 @@ public class Client implements Runnable {
 		this.nickname = nickname;
 		this.seed = seed;
 		this.messageHandler = new MessageHandler();
-		
+
 		this.messageHandler.addHandler(MessageType.PING, (Message msg) -> {
 			Message response = new Message(MessageType.PONG, msg.body);
 			try {
@@ -76,7 +76,6 @@ public class Client implements Runnable {
 			playerId = Integer.parseInt(msg.body);
 			controller.setStatus("Connection accepted with id: " + playerId);
 			state = State.CONNECTED;
-			controller.switchBtnDisconnect();
 		});
 
 		sendMessage(new Message(MessageType.JOIN, nickname));
@@ -98,7 +97,6 @@ public class Client implements Runnable {
 	public void disconnect() {
 		socket.close();
 		if (socket.isClosed()) {
-			controller.switchBtnDisconnect();
 			controller.setStatus("Disconnected");
 		} else {
 			controller.setStatus("Could not disconnect!");
@@ -156,7 +154,7 @@ public class Client implements Runnable {
 					messageHandler.handle(msg);
 				}
 			}
-			
+
 			KeyboardInput input;
 			StopWatch pingTimer = new StopWatch();
 			Message pingMessage = new Message(MessageType.PING, "test");
@@ -183,9 +181,6 @@ public class Client implements Runnable {
 					messageHandler.handle(message);
 				}
 			}
-			// FIXME init game here to get graphics rolling, to be removed once graphics remade
-			// not to run forever
-			controller.switchBtnDisconnect();
 			clientGame = new Game(seed);
 			gameThread = new Thread(clientGame);
 			gameThread.start();
