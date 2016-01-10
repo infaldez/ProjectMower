@@ -1,13 +1,9 @@
 package rtsd2015.tol.pm.view;
 
 import java.net.InetAddress;
-import java.rmi.UnknownHostException;
-
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
 import javafx.stage.Stage;
 import rtsd2015.tol.pm.Launcher;
 
@@ -31,11 +27,21 @@ public class NewJoinDialogController {
 	@FXML
 	private void initialize() {}
 
+	/**
+	 * Links the controller and the main application together
+	 *
+	 * @param dialogStage
+	 * @param mainApp
+	 */
 	public void setMainApp(Stage dialogStage, Launcher mainApp) {
 		this.dialogStage = dialogStage;
 		this.mainApp = mainApp;
 	}
 
+	/**
+	 * Handles the join button
+	 *
+	 */
 	@FXML
 	public void handleJoin() {
 		dialogStage.close();
@@ -49,24 +55,12 @@ public class NewJoinDialogController {
 		}
 	}
 
+	/**
+	 * Handles the cancel button
+	 *
+	 */
 	@FXML
 	public void handleCancel() {
 		dialogStage.close();
-	}
-
-	private boolean isInputValid() {
-		String errMsg = "";
-		if (errMsg.length() == 0) {
-			return true;
-		} else {
-			// Show the error message.
-			Alert alert = new Alert(AlertType.ERROR);
-			alert.initOwner(dialogStage);
-			alert.setTitle("Invalid Fields");
-			alert.setHeaderText("Please correct invalid fields");
-			alert.setContentText(errMsg);
-			alert.showAndWait();
-			return false;
-		}
 	}
 }

@@ -42,6 +42,12 @@ public class NewHostDialogController {
 	private void initialize() {
 	}
 
+	/**
+	 * Links the controller and the main application together
+	 *
+	 * @param dialogStage
+	 * @param mainApp
+	 */
 	public void setMainApp(Stage dialogStage, Launcher mainApp) {
 		this.dialogStage = dialogStage;
 		this.mainApp = mainApp;
