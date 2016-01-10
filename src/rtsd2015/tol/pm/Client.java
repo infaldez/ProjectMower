@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.concurrent.*;
 import javafx.application.Platform;
 import rtsd2015.tol.pm.enums.MessageType;
+import rtsd2015.tol.pm.enums.Side;
 import rtsd2015.tol.pm.view.RootLayoutController;
 
 public class Client implements Runnable {
@@ -12,7 +13,7 @@ public class Client implements Runnable {
 	private Thread gameThread;
 	private Thread renderThread;
 	public enum State {
-		DISCONNECTED, CONNECTING, CONNECTED, IN_GAME, PAUSED
+		DISCONNECTED, CONNECTING, CONNECTED, IN_GAME, PAUSED, END_GAME
 	}
 	private DatagramSocket socket = null;
 	private String nickname;
@@ -265,6 +266,11 @@ public class Client implements Runnable {
 				state = State.PAUSED;
 			});
 
+			messageHandler.addHandler(MessageType.GAME_END, (Message msg) -> {
+				clientGame.setWinner(Side.valueOf(msg.body));
+				state = State.END_GAME;
+			});
+
 			while (state == State.IN_GAME || state == State.PAUSED) {
 				// Game loop
 				// Read user input
@@ -297,6 +303,10 @@ public class Client implements Runnable {
 				}
 
 				lastUpdate = System.currentTimeMillis();
+			}
+			
+			while (state == State.END_GAME) {
+				Thread.sleep(200);
 			}
 		}
 		catch (Exception e) {

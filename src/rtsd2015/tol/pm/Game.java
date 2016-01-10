@@ -99,7 +99,6 @@ public class Game implements Runnable {
 	 */
 	public void setWinner(Side side) {
 		this.winner = side;
-		System.out.println("Winner: " + side);
 	}
 
 	/**
@@ -347,19 +346,16 @@ public class Game implements Runnable {
 				p1_score.setTextString("[ Player 1 ]\nscore:" + pl1.getScore() + "\nhealth: " + pl1.getHealth());
 				p2_score.setTextString("[ Player 2 ]\nscore:" + pl2.getScore() + "\nhealth: " + pl2.getHealth());
 
-				if (getWinner() != Side.GAIA) {
-					switch(getWinner()) {
-						case BLUE:
-							txt_gameState.setTextString("Winner: Abel Blue!");
-						break;
-						case RED:
-							txt_gameState.setTextString("Winner: Cain Red!");
-						break;
-						default:
-						break;
-					}
-				} else {
-					txt_gameState.setTextString("Mow competitor's flowers!");
+				switch(getWinner()) {
+					case BLUE:
+						txt_gameState.setTextString("Winner: Abel Blue!");
+					break;
+					case RED:
+						txt_gameState.setTextString("Winner: Cain Red!");
+					break;
+					default:
+						txt_gameState.setTextString("Mow competitor's flowers!");
+					break;
 				}
 
 				// Wait for the next cycle if we are ahead

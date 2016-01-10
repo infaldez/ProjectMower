@@ -7,6 +7,7 @@ import java.util.Random;
 
 import rtsd2015.tol.pm.enums.Facing;
 import rtsd2015.tol.pm.enums.MessageType;
+import rtsd2015.tol.pm.enums.Side;
 
 
 public class Server implements Runnable {
@@ -298,7 +299,7 @@ public class Server implements Runnable {
 
 	static protected void doServerTick(Context context) {
 		context.game.doTick();
-		// Hack to hopefully get updates rolling for players
+		// Mark players updated so their state gets broad casted
 		context.game.markUpdated(context.game.getPlayers().get(0).getId());
 		context.game.markUpdated(context.game.getPlayers().get(1).getId());
 
@@ -307,6 +308,12 @@ public class Server implements Runnable {
 		Message gameUpdateMsg = new Message(MessageType.GAME_UPDATE, gameUpdate.serialize());
 
 		broadcastMessage(context, gameUpdateMsg);
+		
+		if(context.game.getWinner() != Side.GAIA) {
+			Message gameEndMessage = new Message(MessageType.GAME_END, context.game.getWinner().name());
+			broadcastMessage(context, gameEndMessage);
+			context.state = States.GAME_END;
+		}
 
 		context.server.lastUpdate = System.currentTimeMillis();
 	}
