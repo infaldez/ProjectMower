@@ -22,7 +22,7 @@ public class ClientRenderer implements Runnable {
 	private static GraphicsContext gc_dynamic;
 	private static GraphicsContext gc_static;
 	private static GraphicsContext gc_ui;
-	private static String resources = "file:src/rtsd2015/tol/pm/resources/";
+	private static String resources = "/resources/";
 	private static int render_w = 0;
 	private static int render_y = 0;
 	private static boolean render = true;
