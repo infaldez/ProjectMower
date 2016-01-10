@@ -15,6 +15,12 @@ public class Server implements Runnable {
 	private long seed;
 	private long lastUpdate = 0;
 	private int ticksPerSecond = 10;
+	
+	/**
+	 * Container to hold data of connected clients.
+	 * @author Daniel
+	 *
+	 */
 	static protected class ConnectedClient {
 		public enum ClientState {CONNECTED, STARTING, READY, DISCONNECTED};
 		ClientState state;
@@ -29,6 +35,11 @@ public class Server implements Runnable {
 		}
 	}
 
+	/**
+	 * Server context to hold server state.
+	 * @author Daniel
+	 *
+	 */
 	protected class Context {
 		public Server server;
 		public Game game;
@@ -45,11 +56,23 @@ public class Server implements Runnable {
 		}
 
 	}
-
+	
+	/**
+	 * Interface for state machine implementation of the server
+	 * @author Daniel
+	 *
+	 */
 	protected interface State {
 		// run returns true for server loop to continue
 		public boolean run(Context context) throws Exception;
 	}
+	
+	/**
+	 * Try to add new client and return its id.
+	 * @param context
+	 * @param newClient
+	 * @return newClientId
+	 */
 
 	static private int addClient(Context context, ConnectedClient newClient) {
 		// Returns clients id if succesful, otherwise returns -1
@@ -71,6 +94,12 @@ public class Server implements Runnable {
 		return newId;
 	}
 
+	/**
+	 * Get index of the connected client that sent the message.
+	 * @param context
+	 * @param msg
+	 * @return
+	 */
 	static private int getSender(Context context,  Message msg) {
 		return getSender(context, msg.address, msg.port);
 	}
@@ -91,6 +120,12 @@ public class Server implements Runnable {
 		return -1;
 	}
 
+	/**
+	 * Returns a packet received from the socket.
+	 * @param context
+	 * @return packet
+	 * @throws IOException
+	 */
 	static private DatagramPacket receivePacket(Context context) throws IOException {
 		byte[] data = new byte[1024];
 		DatagramPacket packet = new DatagramPacket(data, data.length);
@@ -100,9 +135,23 @@ public class Server implements Runnable {
 		return packet;
 	}
 
+	/**
+	 * Returns a message received from the socket.
+	 * @param context
+	 * @param message
+	 * @param client
+	 */
 	static private void sendMessage(Context context, Message message, ConnectedClient client) {
 		sendMessage(context, message, client.address, client.port);
 	}
+	
+	/**
+	 * Sends a message to given destination.
+	 * @param context
+	 * @param message
+	 * @param address
+	 * @param port
+	 */
 
 	static private void sendMessage(Context context, Message message, InetAddress address, int port) {
 		byte[] data = message.getData();
@@ -116,42 +165,26 @@ public class Server implements Runnable {
 		}
 	}
 
+	/**
+	 * Broadcast a message to all connected clients.
+	 * @param context
+	 * @param message
+	 */
 	static private void broadcastMessage(Context context, Message message) {
 		for (ConnectedClient client : context.clients) {
 			sendMessage(context, message, client);
 		}
 	}
 
-	public String getEntityStatusString(Entity entity) {
-		int id = entity.getId();
-		int[] pos = entity.getPos();
-		int dir = entity.getDir().ordinal();
-		int speed = entity.getSpeed();
-		int health = entity.getHealth();
-
-		return id +  "," +  pos[0] + "," + pos[1] + "," + dir + "," + speed + "," + health;
-	}
-
-	public void setEntityFromStatusString(String status) {
-		String[] parts = status.split(",");
-		if (parts.length != 6) {
-			throw(new java.lang.IllegalArgumentException("status string must contain 6 fields"));
-		}
-		@SuppressWarnings("unused")
-		int id = Integer.parseInt(parts[0]);
-		@SuppressWarnings("unused")
-		int x = Integer.parseInt(parts[1]);
-		@SuppressWarnings("unused")
-		int y = Integer.parseInt(parts[2]);
-		@SuppressWarnings("unused")
-		Facing dir = Facing.values[Integer.parseInt(parts[3])];
-		@SuppressWarnings("unused")
-		int speed = Integer.parseInt(parts[4]);
-		@SuppressWarnings("unused")
-		int health = Integer.parseInt(parts[5]);
-	}
-
+	/**
+	 * Implementation of the server state machine.
+	 * @author Daniel
+	 *
+	 */
 	protected enum States implements State {
+		/**
+		 * State where players connect
+		 */
 		WAIT_PLAYERS {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
@@ -208,6 +241,9 @@ public class Server implements Runnable {
 				return true;
 			}
 		},
+		/**
+		 * Pre-game preparation state.
+		 */
 		GAME_START {
 			public boolean run(Context context) throws IOException, ClassNotFoundException {
 				DatagramPacket packet = receivePacket(context);
@@ -245,6 +281,9 @@ public class Server implements Runnable {
 				return true;
 			}
 		},
+		/**
+		 * Game main loop
+		 */
 		GAME_LOOP {
 			public boolean run(Context context) {
 				Message message = null;
@@ -297,6 +336,10 @@ public class Server implements Runnable {
 		}
 	}
 
+	/**
+	 * Do a tick on server game and broadcast changes to connected players.
+	 * @param context
+	 */
 	static protected void doServerTick(Context context) {
 		context.game.doTick();
 		// Mark players updated so their state gets broad casted
@@ -339,6 +382,9 @@ public class Server implements Runnable {
 		};
 	}
 
+	/**
+	 * Server thread.
+	 */
 	public void run() {
 		Boolean running = true;
 		try {
