@@ -76,6 +76,10 @@ public class RootLayoutController {
 		alert.showAndWait();
 	}
 
+	/**
+	 * Handles enabling/disabling debug information
+	 *
+	 */
 	@FXML void handleDebug() {
 		if (btnDebug.isSelected()) {
 			Launcher.setAppDebug(true);
